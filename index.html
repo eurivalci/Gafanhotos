@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f0e0c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gafanhotos Nav">
+<meta name="description" content="Trek Nav Gafanhotos — Sistema de Navegação GPS para Provas de Regularidade">
+<title>Trek Nav Gafanhotos — Navegação GPS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --bg:#0f0e0c;
+  --bg2:#161510;
+  --bg3:#1e1c18;
+  --border:#2e2c26;
+  --text:#c8c0a8;
+  --text-bright:#fff8ee;
+  --text-dim:#5a5648;
+  --accent:#ff8c00;
+  --accent2:#ffa940;
+  --ok:#4dff91;
+  --warn:#ffe066;
+  --danger:#ff3c3c;
+  --info:#4ab3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;height:100dvh;overflow:hidden;font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);touch-action:manipulation}
+
+/* Desktop: centraliza o app como um painel mobile */
+@media(min-width:600px){
+  body{display:flex;align-items:center;justify-content:center;background:#050504}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(255,140,0,.015) 40px,rgba(255,140,0,.015) 41px);pointer-events:none;z-index:0}
+  #app-shell{position:relative;width:420px;height:100dvh;max-height:900px;overflow:hidden;box-shadow:0 0 80px rgba(255,140,0,.15),0 0 0 1px rgba(255,140,0,.2);z-index:1}
+}
+@media(min-width:900px){
+  #app-shell{height:90dvh}
+}
+@media(max-width:599px){
+  #app-shell{width:100%;height:100%;height:100dvh}
+}
+.view{display:none;height:100%;flex-direction:column;overflow:hidden}
+.view.active{display:flex}
+
+/* TABS */
+.tabs{display:flex;background:var(--bg2);border-top:2px solid var(--border);flex-shrink:0;overflow-x:auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:52px;padding:7px 2px 6px;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:center;color:var(--text-dim);border:none;background:none;cursor:pointer;border-top:3px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.tab.active{color:var(--accent);border-top-color:var(--accent);background:rgba(255,140,0,.07)}
+.tab .ti{display:block;font-size:15px;margin-bottom:1px}
+.tab .tl{display:inline}
+@media(max-width:360px){.tab .tl{display:none}.tab{min-width:40px;padding:8px 2px}.tab .ti{font-size:18px;margin-bottom:0}}
+
+/* TOPBAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg2);border-bottom:2px solid var(--accent);flex-shrink:0}
+.topbar-logo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:5px;color:var(--accent);text-shadow:0 0 16px rgba(255,140,0,.5)}
+.topbar-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:3px;margin-top:1px}
+#main-clock,#map-clock,#plan-clock{font-family:'Share Tech Mono',monospace;font-size:22px;color:var(--text-bright);letter-spacing:3px;background:rgba(255,140,0,.12);padding:3px 10px;border:1px solid rgba(255,140,0,.3)}
+.status-pill{font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 10px;border:1px solid var(--text-dim);color:var(--text-dim);letter-spacing:2px}
+.status-pill.running{border-color:var(--ok);color:var(--ok);background:rgba(77,255,145,.08);box-shadow:0 0 8px rgba(77,255,145,.2)}
+.status-pill.late{border-color:var(--danger);color:var(--danger);background:rgba(255,60,60,.1);animation:blink-b 1s step-end infinite}
+@keyframes blink-b{50%{border-color:transparent;background:transparent}}
+
+/* GPS BAR */
+.gps-bar{display:flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(255,140,0,.06);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;flex-shrink:0}
+.gps-dot{width:7px;height:7px;border-radius:50%;background:var(--text-dim);flex-shrink:0}
+.gps-dot.active{background:var(--ok);box-shadow:0 0 8px var(--ok);animation:gp 1.5s ease-in-out infinite}
+.gps-dot.searching{background:var(--warn);animation:blink .8s step-end infinite}
+@keyframes gp{0%,100%{box-shadow:0 0 4px var(--ok)}50%{box-shadow:0 0 14px var(--ok)}}
+@keyframes blink{50%{opacity:0}}
+.gps-txt{color:var(--text);font-size:12px}
+.gps-coords{margin-left:auto;color:var(--text-dim);font-size:11px}
+.acc-badge{padding:2px 7px;font-size:10px}
+.acc-good{color:var(--ok);border:1px solid rgba(77,255,145,.35)}
+.acc-bad{color:var(--warn);border:1px solid rgba(255,224,102,.4)}
+
+/* ALERT */
+.alert-box{margin:6px 10px;padding:10px 14px;border-left:4px solid var(--warn);background:rgba(255,224,102,.1);font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--warn);letter-spacing:1px;display:none;gap:10px;align-items:center;font-weight:bold}
+.alert-box.show{display:flex}
+.alert-box.danger{border-left-color:var(--danger);background:rgba(255,60,60,.12);color:var(--danger)}
+.alert-box.ok{border-left-color:var(--ok);background:rgba(77,255,145,.1);color:var(--ok)}
+
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border)}
+
+/* DASHBOARD GRID */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 10px 0}
+.dash-grid.tri{grid-template-columns:1fr 1fr 1fr}
+.mc{background:var(--bg2);border:1px solid var(--border);padding:12px 14px;position:relative;overflow:hidden}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.mc.g::before{background:var(--ok)}.mc.c::before{background:var(--accent)}.mc.o::before{background:var(--accent2)}.mc.b::before{background:var(--info)}.mc.r::before{background:var(--danger)}
+.mc-label{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:3px;color:#d0c0a0;margin-bottom:6px;text-transform:uppercase}
+.mc-val{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;line-height:1;color:var(--text-bright)}
+.mc-val.big{font-size:54px;color:var(--text-bright)}
+.mc-unit{font-size:18px;font-weight:400;color:var(--accent2);margin-left:3px}
+.mc-sub{font-family:'Share Tech Mono',monospace;font-size:12px;color:#a09880;margin-top:6px;letter-spacing:1px}
+
+/* ACTIVE TRECHO */
+.atc{margin:10px;background:var(--bg2);border:2px solid var(--accent);padding:14px;position:relative}
+.atc::before{content:'TRECHO ATIVO';position:absolute;top:-10px;left:12px;background:var(--accent);color:var(--bg);font-family:'Share Tech Mono',monospace;font-size:9px;padding:1px 8px;letter-spacing:3px}
+.atc-num{font-family:'Barlow Condensed',sans-serif;font-size:60px;font-weight:900;color:var(--accent);line-height:1;text-shadow:0 0 20px rgba(255,140,0,.4)}
+.atc-desc{font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--text);margin-top:4px;letter-spacing:1px}
+.atc-type{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;padding:4px 12px;margin-top:7px}
+.atc-type.nav{background:rgba(74,179,255,.15);color:var(--info);border:1px solid var(--info)}
+.atc-type.vel{background:rgba(255,140,0,.15);color:var(--accent);border:1px solid var(--accent)}
+
+/* COUNTDOWN */
+.cds{margin:0 10px 8px;background:var(--bg2);border:1px solid var(--border);padding:14px;text-align:center}
+#countdown{font-family:'Share Tech Mono',monospace;font-size:52px;letter-spacing:6px;color:var(--text-bright);text-shadow:0 0 20px rgba(255,140,0,.5)}
+.cd-label{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:4px;color:#b0a880;margin-top:6px;text-transform:uppercase}
+.pbar{height:5px;background:var(--bg3);margin-top:12px;border-radius:1px}
+.pfill{height:100%;background:var(--accent);transition:width .8s linear;box-shadow:0 0 8px rgba(255,140,0,.6)}
+
+/* CONTROLS */
+.controls{display:flex;gap:8px;padding:10px;flex-shrink:0;background:var(--bg2);border-top:1px solid var(--border)}
+.btn{flex:1;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:14px 6px;border:none;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.btn-start{background:var(--accent);color:#000;border:2px solid var(--accent)}.btn-start:active{background:#ff6600}
+.btn-check{background:var(--bg3);color:var(--ok);border:2px solid var(--ok)}.btn-check:active{background:rgba(77,255,145,.2)}
+.btn-stop{background:var(--bg3);color:var(--danger);border:2px solid var(--danger)}.btn-stop:active{background:rgba(255,60,60,.2)}
+.btn:disabled{opacity:.25;cursor:not-allowed}
+
+/* MAP */
+#map{flex:1;z-index:1}
+.map-vw{position:relative;flex:1;display:flex;flex-direction:column}
+.map-hud{position:absolute;top:56px;left:8px;right:8px;z-index:400;background:rgba(15,14,12,.92);border:2px solid var(--accent);padding:10px 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;pointer-events:none}
+.mhi .mhl{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase}
+.mhi .mhv{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:var(--text-bright)}
+.map-btns{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:400;display:flex;gap:8px}
+.mbtn{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;padding:10px 18px;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mbtn-c{background:var(--accent);color:#000;border:2px solid var(--accent)}
+.mbtn-l{background:rgba(15,14,12,.92);color:var(--text);border:2px solid var(--border)}
+.map-search{display:flex;gap:8px;padding:8px 10px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;align-items:center}
+.map-search input{flex:1;background:rgba(15,14,12,.95);border:2px solid var(--accent);color:var(--text-bright);font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1px;padding:8px 12px;outline:none;-webkit-appearance:none}
+.map-search input::placeholder{color:var(--text-dim)}
+.map-search button{background:var(--accent);color:#000;border:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;padding:8px 14px;cursor:pointer}
+
+/* PLAN TABLE WRAP */
+.plan-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;min-height:100px}
+.plan-table-wrap table{min-width:900px}
+.plan-table-wrap th:first-child,.plan-table-wrap td:first-child{position:sticky;left:0;background:var(--bg3);z-index:2}
+.plan-table-wrap td:first-child{background:var(--bg2)}
+.passos-calc{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--ok);min-width:60px;display:inline-block;text-align:center}
+.plan-bar{display:flex;gap:6px;padding:8px 10px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.pb{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;padding:6px 10px;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pb-g{background:rgba(77,255,145,.12);color:var(--ok);border:1px solid rgba(77,255,145,.3)}
+.pb-o{background:rgba(255,140,0,.12);color:var(--accent);border:1px solid rgba(255,140,0,.3)}
+.pb-r{background:rgba(255,60,60,.1);color:var(--danger);border:1px solid rgba(255,60,60,.3)}
+.pb-b{background:rgba(74,179,255,.1);color:var(--info);border:1px solid rgba(74,179,255,.3)}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th{background:var(--bg3);color:#d0c8a8;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;padding:10px 12px;text-align:left;border-bottom:2px solid var(--accent);white-space:nowrap;position:sticky;top:0;text-transform:uppercase}
+td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text-bright);white-space:nowrap;vertical-align:middle;font-size:15px}
+tr:hover td{background:rgba(255,140,0,.06)}
+.tin{display:flex;align-items:center;background:transparent;border:1px solid transparent}
+.tin:focus-within{border-color:var(--accent);background:rgba(255,140,0,.07)}
+.tin input{background:transparent;border:none;color:var(--accent2);font-family:'Share Tech Mono',monospace;font-size:14px;padding:7px 7px;outline:none;width:70px}
+input.ci{background:transparent;border:none;color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:15px;width:100%;outline:none;padding:3px 0}
+input.ci:focus{background:rgba(255,140,0,.09);border-bottom:2px solid var(--accent);color:#fff;padding:3px 4px}
+input.ci::placeholder{color:var(--text-dim);font-size:13px}
+.plan-foot{padding:8px 12px;background:var(--bg2);border-top:2px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:10px;display:flex;gap:16px;flex-wrap:wrap;flex-shrink:0}
+.pf-item{display:flex;gap:6px;align-items:center}
+.pf-lbl{color:var(--text-dim);letter-spacing:2px}
+.pf-val{color:var(--accent);font-weight:bold}
+
+/* LOG */
+.log-list{padding:10px}
+.log-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)}
+.log-time{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);flex-shrink:0;padding-top:1px}
+.log-icon{font-size:14px;flex-shrink:0}
+.log-msg{font-size:12px;color:var(--text);line-height:1.5}
+.log-tag{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;padding:1px 5px;margin-right:4px;margin-bottom:2px}
+.log-tag.cp{background:rgba(255,140,0,.15);color:var(--accent);border:1px solid rgba(255,140,0,.3)}
+.log-tag.gps{background:rgba(77,255,145,.1);color:var(--ok);border:1px solid rgba(77,255,145,.2)}
+.log-tag.warn{background:rgba(255,224,102,.1);color:var(--warn);border:1px solid rgba(255,224,102,.2)}
+.log-tag.sys{background:rgba(74,179,255,.1);color:var(--info);border:1px solid rgba(74,179,255,.2)}
+.log-clear-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:6px 14px;background:rgba(255,60,60,.1);color:var(--danger);border:1px solid rgba(255,60,60,.3);cursor:pointer}
+
+/* CALC */
+.calc-wrap{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.calc-inner-tabs{display:flex;overflow-x:auto;background:var(--bg3);border-bottom:2px solid var(--border);flex-shrink:0}
+.calc-inner-tabs::-webkit-scrollbar{display:none}
+.cit{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;padding:11px 16px;color:#aaa090;border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.cit.active{color:var(--accent);border-bottom-color:var(--accent)}
+.calc-section{display:none;padding:12px}
+.calc-section.active{display:block}
+.sec{margin-bottom:16px}
+.sec-title{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:#b0a890;padding:8px 0 8px;text-transform:uppercase;border-bottom:1px solid var(--border);margin-bottom:12px}
+.card{background:var(--bg2);border:1px solid var(--border);padding:14px 16px;margin-bottom:2px}
+.card.orange{border-left:3px solid var(--accent)}
+.card.blue{border-left:3px solid var(--info)}
+.card.green{border-left:3px solid var(--ok)}
+.card.yellow{border-left:3px solid var(--warn)}
+.card.red{border-left:3px solid var(--danger)}
+.frow{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-end}
+.fg{display:flex;flex-direction:column;flex:1;min-width:65px}
+.fl{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:#c0b898;margin-bottom:5px;text-transform:uppercase;display:block}
+.fi{background:var(--bg);border:1px solid #4a4840;color:#fff8ee;font-family:'Share Tech Mono',monospace;font-size:16px;padding:10px 12px;outline:none;width:100%;-webkit-appearance:none;appearance:none}
+.fi:focus{border-color:var(--accent);background:rgba(255,140,0,.06)}
+.fi::placeholder{color:#6a6858}
+.fsel{background:var(--bg);border:1px solid #4a4840;color:#e8e0c8;font-family:'Share Tech Mono',monospace;font-size:14px;padding:10px 12px;outline:none;width:100%;cursor:pointer;-webkit-appearance:none;appearance:none}
+.fsel:focus{border-color:var(--accent)}
+.cbtn{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;padding:12px 22px;border:none;cursor:pointer;background:var(--accent);color:#000;margin-top:6px;-webkit-tap-highlight-color:transparent}
+.cbtn:active{background:#ff6600}
+.cbtn-b{background:var(--info);color:#000}
+.cbtn-g{background:var(--ok);color:#000}
+.res{margin-top:12px;background:var(--bg3);border:1px solid #4a4840;padding:12px 14px}
+.res-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #333028}
+.res-row:last-child{border-bottom:none}
+.res-lbl{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:#b0a888}
+.res-val{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:#fff8ee}
+.res-val.big{font-size:36px;color:var(--accent)}
+.res-unit{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--accent2);margin-left:3px}
+.res-note{font-family:'Share Tech Mono',monospace;font-size:12px;color:#b0a888;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);line-height:1.7}
+.divider{height:1px;background:var(--border);margin:12px 0}
+.pbar-wrap{margin-top:10px}
+.pbar-label{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:10px;color:#a09880;letter-spacing:1px;margin-bottom:5px}
+
+/* CHRONO */
+.chrono-display{font-family:'Share Tech Mono',monospace;font-size:38px;color:var(--text-bright);letter-spacing:4px;text-align:center;background:var(--bg);padding:12px;border:1px solid var(--border);text-shadow:0 0 20px rgba(255,140,0,.4)}
+.chrono-ms{font-size:22px;color:var(--text-dim)}
+.lap-list{margin-top:8px;max-height:120px;overflow-y:auto}
+.lap-item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:10px}
+.lap-n{color:var(--text-dim)}
+.lap-t{color:var(--accent2)}
+.lap-split{color:var(--text-dim);font-size:9px}
+.goal-ring{text-align:center;padding:10px 0}
+
+/* DIFF METER */
+.diff-meter{height:20px;background:var(--bg);border:1px solid var(--border);position:relative;overflow:hidden;border-radius:2px}
+.diff-bar{position:absolute;top:0;bottom:0;background:var(--ok);transition:all .5s;left:50%;width:0}
+.diff-bar.late{background:var(--danger)}
+.diff-zero{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--text-dim)}
+.diff-lbl{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:2px;margin-top:4px}
+.recover-val{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;color:var(--warn);text-align:center;line-height:1;text-shadow:0 0 20px rgba(255,224,102,.4)}
+.penalty-box{background:rgba(255,60,60,.07);border:2px solid rgba(255,60,60,.3);padding:12px}
+.penalty-val{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;color:var(--danger);text-align:center;line-height:1}
+
+/* MINI CARDS */
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.mini-card{background:var(--bg);border:1px solid var(--border);padding:8px 6px;text-align:center}
+.mc-l{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--text-dim);margin-bottom:3px}
+.mc-v{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--text-bright)}
+
+/* CK TABLE */
+.ck-table{font-size:11px}
+.ck-table th{font-size:8px}
+.ck-table td{font-family:'Share Tech Mono',monospace;font-size:11px}
+
+/* MODAL */
+.modal-wrap{display:none;position:absolute;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-wrap.open{display:flex}
+#app-shell{position:relative}
+.modal{background:var(--bg2);border:2px solid var(--accent);padding:20px;width:100%;max-width:380px;max-height:85vh;overflow-y:auto}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:4px;color:var(--accent);margin-bottom:16px;text-transform:uppercase}
+.mf{margin-bottom:12px}
+.ml{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);display:block;margin-bottom:5px;text-transform:uppercase}
+.mi{background:var(--bg);border:1px solid var(--border);color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:15px;padding:10px 12px;outline:none;width:100%;-webkit-appearance:none}
+.mi:focus{border-color:var(--accent)}
+.sci{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;line-height:1.8;margin-top:6px;padding:8px;background:var(--bg);border-left:2px solid var(--border)}
+.ma{display:flex;gap:10px;margin-top:18px}
+.ma button{flex:1;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;padding:12px;border:none;cursor:pointer}
+.ma button:first-child{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.ma button:last-child{background:var(--accent);color:#000}
+
+/* LICENSE PAGE */
+.lic-hero{background:linear-gradient(160deg,#1a1208 0%,#0f0e0c 60%);border-bottom:1px solid #3a3628;padding:32px 20px 24px;text-align:center;position:relative;overflow:hidden}
+.lic-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,140,0,.13) 0%,transparent 70%);pointer-events:none}
+.lic-icon{font-size:52px;margin-bottom:8px}
+.lic-title{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;letter-spacing:3px;color:#fff8ee;text-transform:uppercase}
+.lic-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:4px;margin-top:4px}
+.lic-badge{margin-top:18px;display:inline-block;background:rgba(255,140,0,.12);border:1px solid rgba(255,140,0,.35);border-radius:4px;padding:6px 18px}
+.lic-badge span{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;color:var(--accent)}
+.lic-body{padding:24px 20px 0}
+.lic-section{background:linear-gradient(135deg,rgba(255,140,0,.08),rgba(255,140,0,.03));border:1px solid rgba(255,140,0,.3);border-radius:8px;padding:20px;margin-bottom:16px}
+.lic-owner-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.lic-owner-icon{width:36px;height:36px;border-radius:50%;background:rgba(255,140,0,.15);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.lic-owner-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;color:#a09880}
+.lic-owner-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff8ee;letter-spacing:1px}
+.lic-copy{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:2px;border-top:1px solid rgba(255,140,0,.2);padding-top:12px}
+.lic-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.lic-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px}
+.lic-card-icon{font-size:24px;margin-bottom:8px}
+.lic-card-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;margin-bottom:6px}
+.lic-card-text{font-family:'Barlow',sans-serif;font-size:13px;color:#c8c0a8;line-height:1.6}
+.lic-terms{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:18px;margin-bottom:16px}
+.lic-terms-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;color:#d0c8a8;margin-bottom:12px;text-transform:uppercase}
+.lic-terms-text{font-family:'Barlow',sans-serif;font-size:13px;color:#c0b8a0;line-height:1.9}
+.lic-terms-text p{margin:0 0 12px}
+.lic-terms-text p:last-child{margin:0}
+.lic-footer{text-align:center;padding:16px 0 32px;border-top:1px solid var(--border);margin-top:4px}
+.lic-footer-text{font-family:'Share Tech Mono',monospace;font-size:11px;color:#a09880;letter-spacing:2px;line-height:2.2}
+.lic-footer-icon{margin-top:12px;font-size:24px;opacity:.6}
+
+/* PLAN TABLE */
+.plan-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+#plan-table th{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;background:var(--bg3);color:#d0c8a8;padding:9px 10px;text-align:left;border-bottom:2px solid var(--accent);white-space:nowrap;position:sticky;top:0}
+#plan-table td{padding:7px 10px;border-bottom:1px solid var(--border);font-size:13px;white-space:nowrap;vertical-align:middle}
+#plan-table tr:hover td{background:rgba(255,140,0,.05)}
+input.ci{background:transparent;border:none;color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:14px;width:100%;outline:none;padding:2px 0}
+input.ci:focus{background:rgba(255,140,0,.08);border-bottom:1px solid var(--accent);color:#fff8ee;padding:2px 4px}
+input.ci::placeholder{color:var(--text-dim)}
+.passos-calc{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--ok);padding:2px 4px;background:rgba(77,255,145,.07);border:1px solid rgba(77,255,145,.15);min-width:50px;display:inline-block;text-align:center}
+</style>
+</head>
+<body>
+<div id="app-shell">
+
+<!-- ═══════════════════════════════════════════════════════ VIEW: PAINEL ═ -->
+<div class="view active" id="view-dash">
+  <div class="topbar">
+    <div>
+      <div class="topbar-logo">🦗 GAFANHOTOS</div>
+      <div class="topbar-sub">SISTEMA DE NAVEGAÇÃO</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+      <div id="main-clock">00:00:00</div>
+      <div class="status-pill" id="status-pill">AGUARDANDO</div>
+    </div>
+  </div>
+
+  <div class="gps-bar">
+    <div class="gps-dot searching" id="gps-dot"></div>
+    <span class="gps-txt" id="gps-txt">BUSCANDO GPS...</span>
+    <span class="acc-badge acc-bad" id="acc-badge">ACC: ---</span>
+    <span class="gps-coords" id="gps-coords">---.-----°, ---.-----°</span>
+  </div>
+
+  <div class="alert-box" id="alert-box">
+    <span id="alert-icon">⚠</span>
+    <span id="alert-msg">—</span>
+  </div>
+
+  <div class="scroll" id="dash-scroll">
+    <!-- Métricas principais -->
+    <div class="dash-grid" style="padding-top:10px">
+      <div class="mc c" style="grid-column:span 2">
+        <div class="mc-label">RITMO ATUAL</div>
+        <div class="mc-val big" id="d-ritmo">--:--<span class="mc-unit">min/km</span></div>
+        <div class="mc-sub" id="d-ritmo-sub">META: --:-- min/km</div>
+      </div>
+    </div>
+    <div class="dash-grid">
+      <div class="mc g">
+        <div class="mc-label">DISTÂNCIA</div>
+        <div class="mc-val" id="d-dist">0<span class="mc-unit">m</span></div>
+        <div class="mc-sub" id="d-dist-sub">TOTAL: --- m</div>
+      </div>
+      <div class="mc o">
+        <div class="mc-label">VELOCIDADE</div>
+        <div class="mc-val" id="d-vel">0.0<span class="mc-unit">km/h</span></div>
+        <div class="mc-sub" id="d-vel-sub">META: --- km/h</div>
+      </div>
+    </div>
+    <div class="dash-grid tri">
+      <div class="mc b">
+        <div class="mc-label">PASSOS</div>
+        <div class="mc-val" style="font-size:30px" id="d-passos">0</div>
+        <div class="mc-sub" id="d-passos-sub">passo: ---cm</div>
+      </div>
+      <div class="mc r">
+        <div class="mc-label">REGULARIDADE</div>
+        <div class="mc-val" style="font-size:30px" id="d-reg">100<span class="mc-unit">%</span></div>
+      </div>
+      <div class="mc g">
+        <div class="mc-label">PRÓX. CP</div>
+        <div class="mc-val" style="font-size:30px" id="d-proxcp">---<span class="mc-unit">m</span></div>
+      </div>
+    </div>
+
+    <!-- Trecho ativo -->
+    <div class="atc" id="atc-box">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="atc-num" id="atc-num">01</div>
+          <div class="atc-desc" id="atc-desc">CONFIGURE A MISSÃO PARA INICIAR</div>
+          <div class="atc-type vel" id="atc-type">VELOCIDADE</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;color:#b0a880;text-transform:uppercase">TEMPO TRECHO</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:700;color:var(--text-bright)" id="atc-time">00:00</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:13px;color:#a09880;letter-spacing:1px;margin-top:4px" id="atc-dist-info">0.0 km</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Countdown próx CP -->
+    <div class="cds">
+      <div id="countdown">00:00:00</div>
+      <div class="cd-label">TEMPO ATÉ PRÓXIMO CP</div>
+      <div class="pbar"><div class="pfill" id="cd-bar" style="width:0%"></div></div>
+    </div>
+
+    <!-- Pace bar -->
+    <div style="margin:0 10px 10px;background:var(--bg2);border:1px solid var(--border);padding:12px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:3px;color:#d0c0a0;margin-bottom:8px;text-transform:uppercase">PACE ANALYSIS</div>
+      <div style="display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;margin-bottom:4px">
+        <span style="color:var(--accent)">REAL</span>
+        <span style="color:var(--text-dim)">META</span>
+      </div>
+      <div class="pbar" style="height:10px">
+        <div class="pfill" id="pace-bar" style="width:50%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--accent)" id="pace-real-lbl">--:--</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--text-dim)" id="pace-meta-lbl">--:--</span>
+      </div>
+    </div>
+
+    <!-- Métricas secundárias -->
+    <div class="dash-grid">
+      <div class="mc b">
+        <div class="mc-label">PASSOS TRECHO</div>
+        <div class="mc-val" style="font-size:32px" id="d-passos-trecho">0</div>
+        <div class="mc-sub" id="d-passos-trecho-sub">TRECHO: --- m</div>
+      </div>
+      <div class="mc r">
+        <div class="mc-label">TEMPO TOTAL</div>
+        <div class="mc-val" style="font-size:32px" id="d-tempo">00:00:00</div>
+      </div>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-start" id="btn-iniciar" onclick="iniciarProva()">▶ INICIAR</button>
+    <button class="btn btn-check" id="btn-cp" onclick="marcarCP()" disabled>✓ CP</button>
+    <button class="btn btn-stop" id="btn-parar" onclick="pararProva()" disabled>■ PARAR</button>
+    <button class="btn" style="background:var(--bg3);color:var(--accent);border:2px solid var(--border);flex:0;padding:14px 16px" onclick="abrirModal()">⚙</button>
+  </div>
+
+  <div class="tabs" id="tabs-dash">
+    <button class="tab active" onclick="irPara('dash')"><span class="ti">📊</span><span class="tl">PAINEL</span></button>
+    <button class="tab" onclick="irPara('map')"><span class="ti">🗺️</span><span class="tl">MAPA</span></button>
+    <button class="tab" onclick="irPara('plan')"><span class="ti">📋</span><span class="tl">PLANO</span></button>
+    <button class="tab" onclick="irPara('log')"><span class="ti">📝</span><span class="tl">LOG</span></button>
+    <button class="tab" onclick="irPara('lic')"><span class="ti">⚖</span><span class="tl">LICENÇA</span></button>
+    <button class="tab" onclick="irPara('calc')"><span class="ti">🧮</span><span class="tl">CALC</span></button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ VIEW: MAPA ═ -->
+<div class="view" id="view-map">
+  <div class="topbar">
+    <div class="topbar-logo">🗺 MAPA</div>
+    <div id="map-clock">00:00:00</div>
+  </div>
+  <div class="map-search">
+    <input type="text" id="map-search-input" placeholder="BUSCAR WAYPOINT OU COORD..." autocomplete="off">
+    <button onclick="buscarNoMapa()">🔍</button>
+  </div>
+  <div class="map-vw">
+    <div id="map" style="flex:1;z-index:1;background:#141210;min-height:200px"></div>
+
+    <!-- HUD overlay -->
+    <div class="map-hud">
+      <div class="mhi"><div class="mhl">DIST</div><div class="mhv" id="mhv-dist">0.0<span style="font-size:12px;color:var(--accent2)">km</span></div></div>
+      <div class="mhi"><div class="mhl">VEL</div><div class="mhv" id="mhv-vel">0.0<span style="font-size:12px;color:var(--accent2)">km/h</span></div></div>
+      <div class="mhi"><div class="mhl">RITMO</div><div class="mhv" id="mhv-ritmo">--:--</div></div>
+    </div>
+    <!-- Map buttons -->
+    <div class="map-btns">
+      <button class="mbtn mbtn-c" onclick="centrarMapa()">📍 CENTRAR</button>
+      <button class="mbtn mbtn-l" onclick="alternarCamada()">🗾 CAMADA</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab" onclick="irPara('dash')"><span class="ti">📊</span><span class="tl">PAINEL</span></button>
+    <button class="tab active" onclick="irPara('map')"><span class="ti">🗺️</span><span class="tl">MAPA</span></button>
+    <button class="tab" onclick="irPara('plan')"><span class="ti">📋</span><span class="tl">PLANO</span></button>
+    <button class="tab" onclick="irPara('log')"><span class="ti">📝</span><span class="tl">LOG</span></button>
+    <button class="tab" onclick="irPara('lic')"><span class="ti">⚖</span><span class="tl">LICENÇA</span></button>
+    <button class="tab" onclick="irPara('calc')"><span class="ti">🧮</span><span class="tl">CALC</span></button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ VIEW: PLANO ═ -->
+<div class="view" id="view-plan">
+  <div class="topbar">
+    <div>
+      <div class="topbar-logo">📋 PLANILHA</div>
+      <div class="topbar-sub" id="plan-nome">SEM PROVA CONFIGURADA</div>
+    </div>
+    <div id="plan-clock">00:00:00</div>
+  </div>
+  <div class="plan-bar">
+    <button class="pb pb-g" onclick="addLinha()">＋ LINHA</button>
+    <button class="pb pb-o" onclick="calcularPlanilha()">⟳ CALCULAR</button>
+    <button class="pb pb-r" onclick="limparPlanilha()">✕ LIMPAR</button>
+    <button class="pb pb-b" onclick="exportarCSV()">↓ CSV</button>
+    <button class="pb pb-b" onclick="document.getElementById('csv-import').click()">↑ IMPORTAR</button>
+    <button class="pb" style="background:rgba(255,224,102,.12);color:var(--warn);border:1px solid rgba(255,224,102,.3)" onclick="recuperarProva()">🔄 RECUPERAR</button>
+    <input type="file" id="csv-import" accept=".csv" style="display:none" onchange="importarCSV(event)">
+    <span id="save-indicator" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:2px;align-self:center;margin-left:auto">AUTO-SAVE</span>
+  </div>
+  <div class="scroll">
+    <div class="plan-table-wrap">
+      <table id="plan-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>TRECHO</th>
+            <th>INÍCIO</th>
+            <th>FIM</th>
+            <th>DIST (m)</th>
+            <th>ACUM (m)</th>
+            <th>PASSO (cm)</th>
+            <th>PASSOS</th>
+            <th>VEL (km/h)</th>
+            <th>T.PREV</th>
+            <th style="background:rgba(255,140,0,.15);color:var(--accent)">CAD. p/min</th>
+            <th style="background:rgba(255,140,0,.08)">p/10s</th>
+            <th style="background:rgba(255,140,0,.08)">p/15s</th>
+            <th>H.CHEGADA</th>
+            <th>H.REAL</th>
+            <th>DIFF</th>
+            <th>PONTUAÇÃO</th>
+            <th>OBS</th>
+          </tr>
+        </thead>
+        <tbody id="plan-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="plan-foot">
+    <div class="pf-item"><span class="pf-lbl">DIST TOTAL</span><span class="pf-val" id="pf-dist">0 m</span></div>
+    <div class="pf-item"><span class="pf-lbl">TEMPO TOTAL</span><span class="pf-val" id="pf-tempo">00:00:00</span></div>
+    <div class="pf-item"><span class="pf-lbl">PASSOS TOTAL</span><span class="pf-val" id="pf-passos">0</span></div>
+    <div class="pf-item"><span class="pf-lbl">CAD. MÉDIA</span><span class="pf-val" id="pf-cad">— p/min</span></div>
+    <div class="pf-item"><span class="pf-lbl">PONTUAÇÃO</span><span class="pf-val" id="pf-pts">0 pts</span></div>
+  </div>
+  <div class="tabs">
+    <button class="tab" onclick="irPara('dash')"><span class="ti">📊</span><span class="tl">PAINEL</span></button>
+    <button class="tab" onclick="irPara('map')"><span class="ti">🗺️</span><span class="tl">MAPA</span></button>
+    <button class="tab active" onclick="irPara('plan')"><span class="ti">📋</span><span class="tl">PLANO</span></button>
+    <button class="tab" onclick="irPara('log')"><span class="ti">📝</span><span class="tl">LOG</span></button>
+    <button class="tab" onclick="irPara('lic')"><span class="ti">⚖</span><span class="tl">LICENÇA</span></button>
+    <button class="tab" onclick="irPara('calc')"><span class="ti">🧮</span><span class="tl">CALC</span></button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ VIEW: LOG ═ -->
+<div class="view" id="view-log">
+  <div class="topbar">
+    <div class="topbar-logo">📝 LOG</div>
+    <button class="log-clear-btn" onclick="limparLog()">✕ LIMPAR</button>
+  </div>
+  <div class="scroll">
+    <div class="log-list" id="log-list">
+      <!-- Items de log inseridos via JS -->
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab" onclick="irPara('dash')"><span class="ti">📊</span><span class="tl">PAINEL</span></button>
+    <button class="tab" onclick="irPara('map')"><span class="ti">🗺️</span><span class="tl">MAPA</span></button>
+    <button class="tab" onclick="irPara('plan')"><span class="ti">📋</span><span class="tl">PLANO</span></button>
+    <button class="tab active" onclick="irPara('log')"><span class="ti">📝</span><span class="tl">LOG</span></button>
+    <button class="tab" onclick="irPara('lic')"><span class="ti">⚖</span><span class="tl">LICENÇA</span></button>
+    <button class="tab" onclick="irPara('calc')"><span class="ti">🧮</span><span class="tl">CALC</span></button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ VIEW: LICENÇA ═ -->
+<div class="view" id="view-lic">
+  <div class="topbar">
+    <div class="topbar-logo">TREK NAV GAFANHOTOS</div>
+  </div>
+  <div class="scroll" style="padding:0">
+    <div class="lic-hero">
+      <div class="lic-icon">🦗</div>
+      <div class="lic-title">Trek Nav Gafanhotos</div>
+      <div class="lic-sub">SISTEMA DE NAVEGAÇÃO · GPS · REGULARIDADE</div>
+      <div class="lic-badge"><span>VERSÃO 1.0 · 2026</span></div>
+    </div>
+    <div class="lic-body">
+      <div class="lic-section">
+        <div class="lic-owner-row">
+          <div class="lic-owner-icon">👤</div>
+          <div>
+            <div class="lic-owner-label">TITULAR DOS DIREITOS</div>
+            <div class="lic-owner-name">Eurivalci Duarte Pinheiro</div>
+          </div>
+        </div>
+        <div class="lic-copy">© 2026 · TODOS OS DIREITOS RESERVADOS</div>
+      </div>
+      <div class="lic-grid">
+        <div class="lic-card" style="border-left:3px solid var(--accent)">
+          <div class="lic-card-icon">🔒</div>
+          <div class="lic-card-title" style="color:var(--accent)">SOFTWARE PROPRIETÁRIO</div>
+          <div class="lic-card-text">Este software e seu código-fonte são propriedade exclusiva do titular.</div>
+        </div>
+        <div class="lic-card" style="border-left:3px solid var(--ok)">
+          <div class="lic-card-icon">✅</div>
+          <div class="lic-card-title" style="color:var(--ok)">USO AUTORIZADO</div>
+          <div class="lic-card-text">Permitido exclusivamente para uso pessoal do licenciado.</div>
+        </div>
+        <div class="lic-card" style="border-left:3px solid var(--danger)">
+          <div class="lic-card-icon">🚫</div>
+          <div class="lic-card-title" style="color:var(--danger)">PROIBIDO</div>
+          <div class="lic-card-text">Reprodução, distribuição, venda ou uso comercial sem autorização.</div>
+        </div>
+        <div class="lic-card" style="border-left:3px solid var(--warn)">
+          <div class="lic-card-icon">⚠️</div>
+          <div class="lic-card-title" style="color:var(--warn)">RESTRIÇÕES</div>
+          <div class="lic-card-text">Engenharia reversa, modificação ou sublicenciamento são vedados.</div>
+        </div>
+      </div>
+      <div class="lic-terms">
+        <div class="lic-terms-title">Termos da Licença</div>
+        <div class="lic-terms-text">
+          <p>Este software é licenciado, não vendido. A licença concedida é pessoal, intransferível e não exclusiva, permitindo ao usuário utilizar o aplicativo <strong style="color:var(--text)">Trek Nav Gafanhotos</strong> exclusivamente para fins pessoais.</p>
+          <p>É expressamente proibido: <strong style="color:var(--text)">(i)</strong> copiar, reproduzir ou distribuir o software; <strong style="color:var(--text)">(ii)</strong> sublicenciar, alugar, arrendar ou vender; <strong style="color:var(--text)">(iii)</strong> realizar engenharia reversa ou descompilação; <strong style="color:var(--text)">(iv)</strong> utilizar para fins comerciais ou institucionais sem autorização expressa e por escrito do titular.</p>
+          <p>O titular reserva-se o direito de revogar esta licença a qualquer momento em caso de descumprimento dos termos aqui estabelecidos.</p>
+        </div>
+      </div>
+      <div class="lic-footer">
+        <div class="lic-footer-text">
+          TREK NAV GAFANHOTOS · SOFTWARE PROPRIETÁRIO<br>
+          © 2026 EURIVALCI DUARTE PINHEIRO<br>
+          TODOS OS DIREITOS RESERVADOS
+        </div>
+        <div class="lic-footer-icon">🦗</div>
+      </div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab" onclick="irPara('dash')"><span class="ti">📊</span><span class="tl">PAINEL</span></button>
+    <button class="tab" onclick="irPara('map')"><span class="ti">🗺️</span><span class="tl">MAPA</span></button>
+    <button class="tab" onclick="irPara('plan')"><span class="ti">📋</span><span class="tl">PLANO</span></button>
+    <button class="tab" onclick="irPara('log')"><span class="ti">📝</span><span class="tl">LOG</span></button>
+    <button class="tab active" onclick="irPara('lic')"><span class="ti">⚖</span><span class="tl">LICENÇA</span></button>
+    <button class="tab" onclick="irPara('calc')"><span class="ti">🧮</span><span class="tl">CALC</span></button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ VIEW: CALC ═ -->
+<div class="view" id="view-calc">
+  <div class="topbar">
+    <div>
+      <div class="topbar-logo">🧮 CALC TREK</div>
+      <div class="topbar-sub">CALCULADORA DE PROVA</div>
+    </div>
+  </div>
+  <div class="calc-wrap">
+    <!-- Inner tabs -->
+    <div class="calc-inner-tabs" id="calc-inner-tabs">
+      <button class="cit active" onclick="calcTab('vel',this)">⚡VEL</button>
+      <button class="cit" onclick="calcTab('dist',this)">📏DIST</button>
+      <button class="cit" onclick="calcTab('passos',this)">👣PASSOS</button>
+      <button class="cit" onclick="calcTab('tempo',this)">⏱TEMPO</button>
+      <button class="cit" onclick="calcTab('ritmo',this)">🏃RITMO</button>
+      <button class="cit" onclick="calcTab('diff',this)">📊DIFF</button>
+      <button class="cit" onclick="calcTab('tabela',this)">📋TABELA</button>
+    </div>
+
+    <!-- ── VELOCIDADE ── -->
+    <div class="calc-section active" id="calc-vel">
+      <div class="sec">
+        <div class="sec-title">CALCULAR VELOCIDADE MÉDIA</div>
+        <div class="card orange">
+          <div class="frow">
+            <div class="fg"><label class="fl">Distância</label><input type="number" class="fi" id="vel-dist" placeholder="0" min="0" step="0.1"></div>
+            <div class="fg" style="max-width:90px"><label class="fl">Unidade</label>
+              <select class="fsel" id="vel-unit"><option value="km">km</option><option value="m">metros</option></select>
+            </div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label class="fl">Horas</label><input type="number" class="fi" id="vel-h" placeholder="0" min="0"></div>
+            <div class="fg"><label class="fl">Minutos</label><input type="number" class="fi" id="vel-m" placeholder="0" min="0" max="59"></div>
+            <div class="fg"><label class="fl">Segundos</label><input type="number" class="fi" id="vel-s" placeholder="0" min="0" max="59"></div>
+          </div>
+          <button class="cbtn" onclick="calcVel()">CALCULAR</button>
+          <div class="res" id="vel-res" style="display:none">
+            <div class="res-row"><span class="res-lbl">VELOCIDADE MÉDIA</span><span><span class="res-val big" id="vel-result">—</span><span class="res-unit">km/h</span></span></div>
+            <div class="res-row"><span class="res-lbl">RITMO (min/km)</span><span class="res-val" id="vel-pace">—</span></div>
+            <div class="res-row"><span class="res-lbl">m/s</span><span class="res-val" id="vel-ms">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">TEMPO ESPERADO POR VELOCIDADE ALVO</div>
+        <div class="card blue">
+          <div class="frow">
+            <div class="fg"><label class="fl">Distância</label><input type="number" class="fi" id="vt-dist" placeholder="0" min="0" step="0.1"></div>
+            <div class="fg" style="max-width:90px"><label class="fl">Unidade</label>
+              <select class="fsel" id="vt-unit"><option value="km">km</option><option value="m">metros</option></select>
+            </div>
+            <div class="fg"><label class="fl">Vel. Alvo (km/h)</label><input type="number" class="fi" id="vt-vel" placeholder="6" min="0" step="0.1"></div>
+          </div>
+          <button class="cbtn cbtn-b" onclick="calcVT()">CALCULAR</button>
+          <div class="res" id="vt-res" style="display:none">
+            <div class="res-row"><span class="res-lbl">TEMPO ESPERADO</span><span class="res-val big" id="vt-result">—</span></div>
+            <div class="res-row"><span class="res-lbl">CHEGADA (se saiu agora)</span><span class="res-val" id="vt-arrival">—</span></div>
+            <div class="res-row"><span class="res-lbl">RITMO</span><span class="res-val" id="vt-pace">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">CONVERSOR RÁPIDO</div>
+        <div class="card green">
+          <div class="frow" style="align-items:flex-end">
+            <div class="fg"><label class="fl">Valor</label><input type="number" class="fi" id="conv-val" placeholder="0" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">De → Para</label>
+              <select class="fsel" id="conv-type">
+                <option value="kh_ms">km/h → m/s</option>
+                <option value="ms_kh">m/s → km/h</option>
+                <option value="kh_mk">km/h → min/km</option>
+                <option value="mk_kh">min/km → km/h</option>
+              </select>
+            </div>
+            <button class="cbtn cbtn-g" style="flex:0;white-space:nowrap" onclick="calcConv()">OK</button>
+          </div>
+          <div class="res" id="conv-res" style="display:none">
+            <div class="res-row"><span class="res-lbl">RESULTADO</span><span class="res-val big" id="conv-result">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DISTÂNCIA ── -->
+    <div class="calc-section" id="calc-dist">
+      <div class="sec">
+        <div class="sec-title">DISTÂNCIA PERCORRIDA</div>
+        <div class="card orange">
+          <div class="frow">
+            <div class="fg"><label class="fl">Velocidade (km/h)</label><input type="number" class="fi" id="dp-vel" placeholder="6" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Horas</label><input type="number" class="fi" id="dp-h" placeholder="0" min="0"></div>
+            <div class="fg"><label class="fl">Min</label><input type="number" class="fi" id="dp-m" placeholder="0" min="0" max="59"></div>
+            <div class="fg"><label class="fl">Seg</label><input type="number" class="fi" id="dp-s" placeholder="0" min="0" max="59"></div>
+          </div>
+          <button class="cbtn" onclick="calcDP()">CALCULAR</button>
+          <div class="res" id="dp-res" style="display:none">
+            <div class="res-row"><span class="res-lbl">DISTÂNCIA PERCORRIDA</span><span><span class="res-val big" id="dp-km">—</span><span class="res-unit">km</span></span></div>
+            <div class="res-row"><span class="res-lbl">EM METROS</span><span><span class="res-val" id="dp-m-res">—</span><span class="res-unit">m</span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">DISTÂNCIA RESTANTE + PROGRESSO</div>
+        <div class="card blue">
+          <div class="frow">
+            <div class="fg"><label class="fl">Dist. Total (km)</label><input type="number" class="fi" id="dr-total" placeholder="20" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Já Percorrida (km)</label><input type="number" class="fi" id="dr-perc" placeholder="5" min="0" step="0.1"></div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label class="fl">Velocidade Atual (km/h)</label><input type="number" class="fi" id="dr-vel" placeholder="6" min="0" step="0.1"></div>
+          </div>
+          <button class="cbtn cbtn-b" onclick="calcDR()">CALCULAR</button>
+          <div class="res" id="dr-res" style="display:none">
+            <div class="res-row"><span class="res-lbl">RESTANTE</span><span><span class="res-val big" id="dr-rest">—</span><span class="res-unit">km</span></span></div>
+            <div class="res-row"><span class="res-lbl">TEMPO RESTANTE</span><span class="res-val" id="dr-time">—</span></div>
+            <div class="res-row"><span class="res-lbl">PROGRESSO</span><span class="res-val" id="dr-pct">—</span></div>
+            <div class="pbar-wrap">
+              <div class="pbar-label"><span id="dr-bar-start">0 km</span><span id="dr-bar-end">— km</span></div>
+              <div class="pbar" style="height:8px"><div class="pfill" id="dr-bar" style="width:0%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">DIVISÃO DE TRECHO</div>
+        <div class="card green">
+          <div class="frow">
+            <div class="fg"><label class="fl">Dist. Total (km)</label><input type="number" class="fi" id="dt-total" placeholder="20" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Nº de Checkpoints</label><input type="number" class="fi" id="dt-cps" placeholder="5" min="1" max="50"></div>
+          </div>
+          <button class="cbtn cbtn-g" onclick="calcDT()">GERAR</button>
+          <div id="dt-res" style="display:none;margin-top:10px">
+            <div class="tbl-wrap"><table id="dt-table"><thead><tr><th>#</th><th>KM</th><th>METROS</th></tr></thead><tbody id="dt-tbody"></tbody></table></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PASSOS ── -->
+    <div class="calc-section" id="calc-passos">
+      <div class="sec">
+        <div class="sec-title">CALIBRAR COMPRIMENTO DO PASSO</div>
+        <div class="card orange">
+          <div class="frow">
+            <div class="fg"><label class="fl">Distância Percorrida</label><input type="number" class="fi" id="cal-dist" placeholder="100" min="0"></div>
+            <div class="fg" style="max-width:90px"><label class="fl">Unidade</label>
+              <select class="fsel" id="cal-unit"><option value="m">metros</option><option value="km">km</option></select>
+            </div>
+            <div class="fg"><label class="fl">Nº de Passos</label><input type="number" class="fi" id="cal-steps" placeholder="128" min="1"></div>
+          </div>
+          <button class="cbtn" onclick="calcCal()">CALIBRAR</button>
+          <div class="res" id="cal-res" style="display:none">
+            <div class="res-row"><span class="res-lbl">COMPRIMENTO DO PASSO</span><span><span class="res-val big" id="cal-result">—</span><span class="res-unit">cm</span></span></div>
+            <div class="res-row"><span class="res-lbl">EM METROS</span><span class="res-val" id="cal-m">—</span></div>
+            <div class="res-note" id="cal-note"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">CONVERTER PASSOS ↔ DISTÂNCIA</div>
+        <div class="card blue">
+          <div class="frow">
+            <div class="fg"><label class="fl">Comp. Passo (cm)</label><input type="number" class="fi" id="s2d-comp" placeholder="75" min="1"></div>
+          </div>
+          <div class="frow" style="align-items:flex-end">
+            <div class="fg"><label class="fl">Nº de Passos</label><input type="number" class="fi" id="s2d-steps" placeholder="1000" min="1"></div>
+            <button class="cbtn cbtn-b" style="flex:0;white-space:nowrap" onclick="calcS2D()">→ DIST</button>
+          </div>
+          <div class="res" id="s2d-res" style="display:none">
+            <div class="res-row"><span class="res-lbl">DISTÂNCIA</span><span><span class="res-val big" id="s2d-m">—</span><span class="res-unit">m</span></span></div>
+            <div class="res-row"><span class="res-lbl">EM KM</span><span class="res-val" id="s2d-km">—</span></div>
+          </div>
+          <div class="divider"></div>
+          <div class="frow" style="align-items:flex-end">
+            <div class="fg"><label class="fl">Distância (m)</label><input type="number" class="fi" id="d2s-dist" placeholder="750" min="1"></div>
+            <button class="cbtn cbtn-b" style="flex:0;white-space:nowrap" onclick="calcD2S()">→ PASSOS</button>
+          </div>
+          <div class="res" id="d2s-res" style="display:none">
+            <div class="res-row"><span class="res-lbl">Nº DE PASSOS</span><span class="res-val big" id="d2s-steps">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">CADÊNCIA PARA VELOCIDADE ALVO</div>
+        <div class="card green">
+          <div class="frow">
+            <div class="fg"><label class="fl">Velocidade Alvo (km/h)</label><input type="number" class="fi" id="cad-vel" placeholder="6" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Comp. Passo (cm)</label><input type="number" class="fi" id="cad-comp" placeholder="75" min="1"></div>
+          </div>
+          <button class="cbtn cbtn-g" onclick="calcCad()">CALCULAR CADÊNCIA</button>
+          <div class="res" id="cad-res" style="display:none">
+            <div class="g3" style="margin-bottom:10px">
+              <div class="mini-card"><div class="mc-l">PASSOS/MIN</div><div class="mc-v" id="cad-pm">—</div></div>
+              <div class="mini-card"><div class="mc-l">PASSOS/10s</div><div class="mc-v" id="cad-10">—</div></div>
+              <div class="mini-card"><div class="mc-l">PASSOS/15s</div><div class="mc-v" id="cad-15">—</div></div>
+            </div>
+            <div class="res-row"><span class="res-lbl">PASSOS POR HORA</span><span class="res-val" id="cad-ph">—</span></div>
+            <div class="res-row"><span class="res-lbl">METRO POR PASSO</span><span class="res-val" id="cad-mps">—</span></div>
+            <div class="res-note" id="cad-note"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TEMPO ── -->
+    <div class="calc-section" id="calc-tempo">
+      <div class="sec">
+        <div class="sec-title">CRONÔMETRO COM LAPS E META</div>
+        <div class="card orange">
+          <div class="chrono-display">
+            <span id="chrono-hms">00:00:00</span><span class="chrono-ms">.<span id="chrono-cs">00</span></span>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="cbtn" id="chrono-btn" onclick="toggleChrono()" style="flex:1">INICIAR</button>
+            <button class="cbtn cbtn-b" onclick="lapChrono()" style="flex:1">LAP</button>
+            <button class="cbtn" onclick="resetChrono()" style="flex:1;background:var(--bg3);color:var(--danger);border:1px solid var(--danger)">RESET</button>
+          </div>
+          <div class="divider"></div>
+          <div class="frow">
+            <div class="fg"><label class="fl">Meta (h:m:s)</label><input type="text" class="fi" id="chrono-goal" placeholder="01:00:00"></div>
+          </div>
+          <div style="margin-top:8px">
+            <div class="pbar-label"><span>PROGRESSO DA META</span><span id="goal-pct">0%</span></div>
+            <div class="pbar" style="height:8px"><div class="pfill" id="goal-bar" style="width:0%"></div></div>
+          </div>
+          <div class="lap-list" id="lap-list"></div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">HORA DE CHEGADA PREVISTA</div>
+        <div class="card blue">
+          <div class="frow">
+            <div class="fg"><label class="fl">Hora de Saída</label><input type="time" class="fi" id="arr-saida" value="08:00"></div>
+            <div class="fg"><label class="fl">Horas</label><input type="number" class="fi" id="arr-h" placeholder="2" min="0"></div>
+            <div class="fg"><label class="fl">Min</label><input type="number" class="fi" id="arr-m" placeholder="30" min="0" max="59"></div>
+            <div class="fg"><label class="fl">Seg</label><input type="number" class="fi" id="arr-s" placeholder="0" min="0" max="59"></div>
+          </div>
+          <button class="cbtn cbtn-b" onclick="calcArr()">CALCULAR CHEGADA</button>
+          <div class="res" id="arr-res" style="display:none">
+            <div class="res-row"><span class="res-lbl">CHEGADA PREVISTA</span><span class="res-val big" id="arr-result">—</span></div>
+            <div class="res-row"><span class="res-lbl">DURAÇÃO TOTAL</span><span class="res-val" id="arr-dur">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">CONVERSOR DE TEMPO</div>
+        <div class="card green">
+          <div class="frow" style="align-items:flex-end">
+            <div class="fg"><label class="fl">Valor</label><input type="text" class="fi" id="tc-val" placeholder="90"></div>
+            <div class="fg"><label class="fl">Converter</label>
+              <select class="fsel" id="tc-type">
+                <option value="min_hms">Minutos → H:M:S</option>
+                <option value="sec_hms">Segundos → H:M:S</option>
+                <option value="hms_min">H:M:S → Minutos</option>
+                <option value="hdec_hms">Horas decimais → H:M:S</option>
+              </select>
+            </div>
+            <button class="cbtn cbtn-g" style="flex:0" onclick="calcTC()">OK</button>
+          </div>
+          <div class="res" id="tc-res" style="display:none">
+            <div class="res-row"><span class="res-lbl">RESULTADO</span><span class="res-val big" id="tc-result">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RITMO ── -->
+    <div class="calc-section" id="calc-ritmo">
+      <div class="sec">
+        <div class="sec-title">PARÂMETROS DE RITMO IDEAL</div>
+        <div class="card orange">
+          <div class="frow">
+            <div class="fg"><label class="fl">Velocidade (km/h)</label><input type="number" class="fi" id="rit-vel" placeholder="6" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Distância Total (km)</label><input type="number" class="fi" id="rit-dist" placeholder="20" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Comp. Passo (cm)</label><input type="number" class="fi" id="rit-comp" placeholder="75" min="1"></div>
+          </div>
+          <button class="cbtn" onclick="calcRit()">CALCULAR RITMO</button>
+          <div id="rit-res" style="display:none">
+            <div class="g3" style="margin:10px 0">
+              <div class="mini-card"><div class="mc-l">TEMPO TOTAL</div><div class="mc-v" id="rit-total" style="font-size:16px">—</div></div>
+              <div class="mini-card"><div class="mc-l">MIN/KM</div><div class="mc-v" id="rit-minkm" style="font-size:16px">—</div></div>
+              <div class="mini-card"><div class="mc-l">M/S</div><div class="mc-v" id="rit-ms">—</div></div>
+            </div>
+            <div class="g3" style="margin-bottom:10px">
+              <div class="mini-card"><div class="mc-l">PASS/MIN</div><div class="mc-v" id="rit-pm">—</div></div>
+              <div class="mini-card"><div class="mc-l">PASS/10s</div><div class="mc-v" id="rit-p10">—</div></div>
+              <div class="mini-card"><div class="mc-l">PASS/15s</div><div class="mc-v" id="rit-p15">—</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">TABELA DE CHECKPOINTS POR METRO</div>
+        <div class="card blue">
+          <div class="frow">
+            <div class="fg"><label class="fl">Velocidade (km/h)</label><input type="number" class="fi" id="ck-vel" placeholder="6" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Dist. Trecho (km)</label><input type="number" class="fi" id="ck-dist" placeholder="5" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Comp. Passo (cm)</label><input type="number" class="fi" id="ck-comp" placeholder="75" min="1"></div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label class="fl">Intervalo (m)</label>
+              <select class="fsel" id="ck-int">
+                <option value="50">50m</option>
+                <option value="100" selected>100m</option>
+                <option value="200">200m</option>
+                <option value="500">500m</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">Hora de Saída</label><input type="time" class="fi" id="ck-saida" value="08:00"></div>
+          </div>
+          <button class="cbtn cbtn-b" onclick="calcCK()">GERAR TABELA</button>
+          <div id="ck-res" style="display:none;margin-top:10px">
+            <div class="tbl-wrap" style="max-height:300px;overflow-y:auto">
+              <table class="ck-table"><thead><tr><th>METRO</th><th>PASSOS</th><th>TEMPO</th><th>HORA</th></tr></thead>
+              <tbody id="ck-tbody"></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DIFF ── -->
+    <div class="calc-section" id="calc-diff">
+      <div class="sec">
+        <div class="sec-title">IDEAL vs REAL — INDICADOR VISUAL</div>
+        <div class="card orange">
+          <div class="frow">
+            <div class="fg"><label class="fl">Vel. Ideal (km/h)</label><input type="number" class="fi" id="dif-ideal" placeholder="6" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Vel. Real (km/h)</label><input type="number" class="fi" id="dif-real" placeholder="5.5" min="0" step="0.1"></div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label class="fl">Dist. Percorrida (km)</label><input type="number" class="fi" id="dif-dist" placeholder="5" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Tempo Decorrido</label><input type="text" class="fi" id="dif-tempo" placeholder="01:00:00"></div>
+          </div>
+          <button class="cbtn" onclick="calcDif()">CALCULAR DIFF</button>
+          <div id="dif-res" style="display:none">
+            <div class="diff-meter" style="margin-top:12px">
+              <div class="diff-bar" id="dif-bar"></div>
+              <div class="diff-zero"></div>
+            </div>
+            <div class="diff-lbl" id="dif-bar-lbl">NEUTRO</div>
+            <div class="res" style="margin-top:6px">
+              <div class="res-row"><span class="res-lbl">ATRASO/AVANÇO</span><span><span class="res-val big" id="dif-delta">—</span><span class="res-unit" id="dif-delta-u">min</span></span></div>
+              <div class="res-row"><span class="res-lbl">DIST. ATRASO</span><span><span class="res-val" id="dif-dist-delta">—</span><span class="res-unit">m</span></span></div>
+              <div class="res-row"><span class="res-lbl">STATUS</span><span id="dif-badge">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">VELOCIDADE DE RECUPERAÇÃO</div>
+        <div class="card yellow">
+          <div class="frow">
+            <div class="fg"><label class="fl">Atraso (metros)</label><input type="number" class="fi" id="rec-atraso" placeholder="200" min="0"></div>
+            <div class="fg"><label class="fl">Dist. Restante (km)</label><input type="number" class="fi" id="rec-rest" placeholder="10" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Vel. Ideal (km/h)</label><input type="number" class="fi" id="rec-ideal" placeholder="6" min="0" step="0.1"></div>
+          </div>
+          <button class="cbtn" style="background:var(--warn);color:#000" onclick="calcRec()">CALCULAR</button>
+          <div id="rec-res" style="display:none">
+            <div class="recover-val" id="rec-vel">—</div>
+            <div style="text-align:center;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:2px;margin-top:4px">VEL. NECESSÁRIA (km/h)</div>
+            <div class="res" style="margin-top:10px">
+              <div class="res-row"><span class="res-lbl">AUMENTO NECESSÁRIO</span><span><span class="res-val" id="rec-aum">—</span><span class="res-unit">km/h</span></span></div>
+              <div class="res-row"><span class="res-lbl">PASSOS EXTRAS/MIN (75cm)</span><span class="res-val" id="rec-pass">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">CALCULADORA DE PENALIDADE</div>
+        <div class="card red">
+          <div class="frow">
+            <div class="fg"><label class="fl">Tipo de Penalidade</label>
+              <select class="fsel" id="pen-tipo">
+                <option value="tempo">Tempo fixo (min)</option>
+                <option value="dist">Distância extra (m)</option>
+                <option value="vel">Redução de vel. (%)</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">Valor</label><input type="number" class="fi" id="pen-val" placeholder="5" min="0" step="0.1"></div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label class="fl">Vel. Base (km/h)</label><input type="number" class="fi" id="pen-vel" placeholder="6" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Dist. Restante (km)</label><input type="number" class="fi" id="pen-rest" placeholder="10" min="0" step="0.1"></div>
+          </div>
+          <button class="cbtn" style="background:var(--danger);color:#fff" onclick="calcPen()">CALCULAR IMPACTO</button>
+          <div id="pen-res" style="display:none">
+            <div class="penalty-box">
+              <div class="penalty-val" id="pen-result">—</div>
+              <div style="text-align:center;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--danger);letter-spacing:2px;margin-top:4px">TEMPO PERDIDO (min)</div>
+            </div>
+            <div class="res" style="margin-top:8px">
+              <div class="res-row"><span class="res-lbl">VEL EFETIVA APÓS PEN.</span><span><span class="res-val" id="pen-vel-eff">—</span><span class="res-unit">km/h</span></span></div>
+              <div class="res-row"><span class="res-lbl">TEMPO TOTAL COM PEN.</span><span class="res-val" id="pen-total">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TABELA ── -->
+    <div class="calc-section" id="calc-tabela">
+      <div class="sec">
+        <div class="sec-title">CONFIGURAR TABELA</div>
+        <div class="card orange" style="padding:10px 14px">
+          <div class="frow">
+            <div class="fg"><label class="fl">Vel. da Prova (km/h)</label><input type="number" class="fi" id="tab-vel" placeholder="6" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Dist. Min (km)</label><input type="number" class="fi" id="tab-min" placeholder="1" min="0" step="0.1"></div>
+            <div class="fg"><label class="fl">Dist. Max (km)</label><input type="number" class="fi" id="tab-max" placeholder="20" min="0" step="0.1"></div>
+          </div>
+          <button class="cbtn" onclick="gerarTabelaVel()">GERAR TABELA</button>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">VELOCIDADE · DISTÂNCIA · TEMPO</div>
+        <div id="tab-res">
+          <div class="tbl-wrap">
+            <table id="tab-table">
+              <thead id="tab-thead"></thead>
+              <tbody id="tab-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">REFERÊNCIA: PASSOS POR 100m</div>
+        <div class="card blue">
+          <div class="frow" style="align-items:flex-end">
+            <div class="fg"><label class="fl">Comp. Passo (cm)</label><input type="number" class="fi" id="ref-comp" placeholder="75" min="1"></div>
+            <button class="cbtn cbtn-b" style="flex:0;white-space:nowrap" onclick="calcRef()">ATUALIZAR</button>
+          </div>
+          <div class="tbl-wrap" style="margin-top:10px">
+            <table id="ref-table">
+              <thead><tr><th>VEL (km/h)</th><th>PASSOS/100m</th><th>PASSOS/MIN</th><th>MIN/KM</th></tr></thead>
+              <tbody id="ref-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end calc-wrap -->
+
+  <div class="tabs">
+    <button class="tab" onclick="irPara('dash')"><span class="ti">📊</span><span class="tl">PAINEL</span></button>
+    <button class="tab" onclick="irPara('map')"><span class="ti">🗺️</span><span class="tl">MAPA</span></button>
+    <button class="tab" onclick="irPara('plan')"><span class="ti">📋</span><span class="tl">PLANO</span></button>
+    <button class="tab" onclick="irPara('log')"><span class="ti">📝</span><span class="tl">LOG</span></button>
+    <button class="tab" onclick="irPara('lic')"><span class="ti">⚖</span><span class="tl">LICENÇA</span></button>
+    <button class="tab active" onclick="irPara('calc')"><span class="ti">🧮</span><span class="tl">CALC</span></button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ MODAL ═ -->
+<div class="modal-wrap" id="mm">
+  <div class="modal">
+    <div class="modal-title">⚙ Configurar Missão</div>
+    <div class="mf"><label class="ml">NOME DA PROVA</label><input type="text" class="mi" id="cfg-nome" placeholder="Ex: GAFANHOTOS TRAIL 2026"></div>
+    <div class="mf"><label class="ml">EQUIPE / NÚMERO</label><input type="text" class="mi" id="cfg-equipe" placeholder="Ex: EQUIPE 07"></div>
+    <div class="mf"><label class="ml">HORÁRIO DE LARGADA</label><input type="time" class="mi" id="cfg-largada" value="08:00"></div>
+    <div class="mf"><label class="ml">VELOCIDADE PADRÃO (KM/H)</label><input type="number" class="mi" id="cfg-vel" placeholder="6.0" min="0.1" step="0.1"></div>
+    <div class="mf">
+      <label class="ml">COMPRIMENTO DO PASSO (CM)</label>
+      <input type="number" class="mi" id="cfg-passo" placeholder="75" min="30" max="150" step="1">
+      <div class="sci">👣 CONTADOR DE PASSOS usa o acelerômetro do celular.<br>Mantenha no bolso da calça ou na mão durante a trilha.<br>Comprimento médio: caminhada 65–80cm · corrida 90–120cm</div>
+    </div>
+    <div class="ma">
+      <button onclick="fecharModal()">CANCELAR</button>
+      <button onclick="salvarConfig()">SALVAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ JS ═ -->
+<script>
+// ── ESTADO GLOBAL ────────────────────────────────────────────────────────
+const S = {
+  rodando: false,
+  inicio: null,
+  pausado: 0,
+  intervalo: null,
+  gpsWatch: null,
+  pos: null,
+  distTotal: 0,
+  cpAtual: 0,
+  config: { nome:'GAFANHOTOS TRAIL', equipe:'—', largada:'08:00', vel:6, passo:75 }
+};
+
+// ── NAVEGAÇÃO ENTRE VIEWS ─────────────────────────────────────────────────
+function irPara(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  if(v==='map') setTimeout(()=>{iniciarMapa(); if(leafletMap) leafletMap.invalidateSize();},100);
+}
+
+// ── RELÓGIO PRINCIPAL ─────────────────────────────────────────────────────
+setInterval(()=>{
+  const t = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  ['main-clock','map-clock','plan-clock'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t});
+},1000);
+
+// ── GPS ───────────────────────────────────────────────────────────────────
+function iniciarGPS(){
+  if(!navigator.geolocation){addLog('GPS não suportado neste dispositivo','warn','⚠');return;}
+  const dot=document.getElementById('gps-dot'), txt=document.getElementById('gps-txt');
+  dot.className='gps-dot searching'; txt.textContent='BUSCANDO GPS...';
+  S.gpsWatch = navigator.geolocation.watchPosition(pos=>{
+    S.pos = pos.coords;
+    dot.className='gps-dot active';
+    txt.textContent='GPS ATIVO';
+    const acc = pos.coords.accuracy;
+    const badge=document.getElementById('acc-badge');
+    badge.textContent=`ACC: ±${Math.round(acc)}m`;
+    badge.className='acc-badge '+(acc<20?'acc-good':'acc-bad');
+    document.getElementById('gps-coords').textContent=`${pos.coords.latitude.toFixed(5)}°, ${pos.coords.longitude.toFixed(5)}°`;
+    addLog(`GPS: ±${Math.round(acc)}m  ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,'gps','📡');
+  }, err=>{
+    dot.className='gps-dot'; txt.textContent='ERRO GPS';
+    addLog('Erro GPS: '+err.message,'warn','⚠');
+  },{enableHighAccuracy:true,timeout:15000,maximumAge:3000});
+}
+
+// ── PROVA ─────────────────────────────────────────────────────────────────
+function iniciarProva(){
+  S.rodando=true; S.inicio=Date.now(); S.pausado=0;
+  document.getElementById('btn-iniciar').disabled=true;
+  document.getElementById('btn-cp').disabled=false;
+  document.getElementById('btn-parar').disabled=false;
+  document.getElementById('status-pill').textContent='EM PROVA';
+  document.getElementById('status-pill').className='status-pill running';
+  S.intervalo = setInterval(tickProva,1000);
+  iniciarGPS();
+  addLog('Prova iniciada — '+S.config.nome,'cp','🏁');
+}
+
+function tickProva(){
+  if(!S.rodando) return;
+  const elapsed = Math.floor((Date.now()-S.inicio)/1000);
+  const h=Math.floor(elapsed/3600), m=Math.floor((elapsed%3600)/60), s=elapsed%60;
+  const fmt=(n)=>String(n).padStart(2,'0');
+  document.getElementById('d-tempo').textContent=`${fmt(h)}:${fmt(m)}:${fmt(s)}`;
+  // Distância em metros
+  const distM = Math.round(elapsed * S.config.vel/3.6);
+  const velSim = +(S.config.vel + Math.sin(elapsed/30)*0.3).toFixed(1);
+  const distExib = distM>=1000 ? (distM/1000).toFixed(2)+' km' : distM+' m';
+  document.getElementById('d-dist').innerHTML=`${distM>=1000?(distM/1000).toFixed(2):''+distM}<span class="mc-unit">${distM>=1000?'km':'m'}</span>`;
+  document.getElementById('d-dist-sub').textContent=`PERCORRIDO: ${distExib}`;
+  document.getElementById('d-vel').innerHTML=`${velSim}<span class="mc-unit">km/h</span>`;
+  document.getElementById('mhv-dist').innerHTML=`${distExib}`;
+  document.getElementById('mhv-vel').innerHTML=`${velSim}<span style="font-size:12px;color:var(--accent2)">km/h</span>`;
+  // Passos acumulados
+  const passoM = (S.config.passo||75)/100;
+  const passosTotal = Math.round(distM/passoM);
+  document.getElementById('d-passos').textContent=passosTotal.toLocaleString('pt-BR');
+  document.getElementById('d-passos-sub').textContent=`passo: ${S.config.passo||75}cm`;
+  // Passos do trecho atual (desde último CP)
+  const distTrecho = Math.round((elapsed % 600) * S.config.vel/3.6);
+  const passosTrecho = Math.round(distTrecho/passoM);
+  document.getElementById('d-passos-trecho').textContent=passosTrecho.toLocaleString('pt-BR');
+  document.getElementById('d-passos-trecho-sub').textContent=`TRECHO: ${distTrecho}m`;
+  // Ritmo
+  const ritmoSec = 3600/velSim;
+  const rm=Math.floor(ritmoSec/60), rs=Math.round(ritmoSec%60);
+  const ritmoStr=`${String(rm).padStart(2,'0')}:${String(rs).padStart(2,'0')}`;
+  document.getElementById('d-ritmo').innerHTML=`${ritmoStr}<span class="mc-unit">min/km</span>`;
+  document.getElementById('mhv-ritmo').textContent=ritmoStr;
+  // Countdown 10 minutos entre CPs (simulado)
+  const restSec = Math.max(0, 600-(elapsed%600));
+  const cm=Math.floor(restSec/60), cs=restSec%60;
+  document.getElementById('countdown').textContent=`00:${String(cm).padStart(2,'0')}:${String(cs).padStart(2,'0')}`;
+  document.getElementById('cd-bar').style.width=`${((600-restSec)/600)*100}%`;
+}
+
+function marcarCP(){
+  S.cpAtual++;
+  addLog(`CP ${S.cpAtual} marcado`,'cp','📍');
+  mostrarAlerta(`✓ CP ${S.cpAtual} REGISTRADO`,'ok');
+  setTimeout(()=>esconderAlerta(),4000);
+}
+
+function pararProva(){
+  S.rodando=false;
+  clearInterval(S.intervalo);
+  if(S.gpsWatch) navigator.geolocation.clearWatch(S.gpsWatch);
+  document.getElementById('btn-iniciar').disabled=false;
+  document.getElementById('btn-cp').disabled=true;
+  document.getElementById('btn-parar').disabled=true;
+  document.getElementById('status-pill').textContent='FINALIZADO';
+  document.getElementById('status-pill').className='status-pill';
+  addLog('Prova finalizada','sys','🏆');
+}
+
+function mostrarAlerta(msg,tipo='warn'){
+  const el=document.getElementById('alert-box');
+  el.className='alert-box show '+(tipo||'');
+  document.getElementById('alert-msg').textContent=msg;
+}
+function esconderAlerta(){document.getElementById('alert-box').className='alert-box'}
+
+// ── MODAL CONFIG ──────────────────────────────────────────────────────────
+function abrirModal(){
+  document.getElementById('cfg-nome').value=S.config.nome;
+  document.getElementById('cfg-equipe').value=S.config.equipe;
+  document.getElementById('cfg-largada').value=S.config.largada;
+  document.getElementById('cfg-vel').value=S.config.vel;
+  document.getElementById('cfg-passo').value=S.config.passo;
+  document.getElementById('mm').classList.add('open');
+}
+function fecharModal(){document.getElementById('mm').classList.remove('open')}
+function salvarConfig(){
+  S.config.nome=document.getElementById('cfg-nome').value||'GAFANHOTOS';
+  S.config.equipe=document.getElementById('cfg-equipe').value||'—';
+  S.config.largada=document.getElementById('cfg-largada').value||'08:00';
+  S.config.vel=parseFloat(document.getElementById('cfg-vel').value)||6;
+  S.config.passo=parseInt(document.getElementById('cfg-passo').value)||75;
+  document.getElementById('plan-nome').textContent=S.config.nome+' · '+S.config.equipe;
+  document.getElementById('atc-desc').textContent=S.config.nome.toUpperCase();
+  addLog('Configuração salva: '+S.config.nome,'sys','⚙');
+  fecharModal();
+}
+document.getElementById('mm').addEventListener('click',function(e){if(e.target===this)fecharModal()});
+
+// ── PLANILHA ──────────────────────────────────────────────────────────────
+let planLinhas = [];
+
+function addLinha(){
+  const idx = planLinhas.length+1;
+  planLinhas.push({trecho:'T'+idx,inicio:'',fim:'',dist:'',acum:'',passo:String(S.config.passo||75),passos:'',vel:String(S.config.vel||6),tprev:'',hcheg:'',hreal:'',diff:'',pts:'',obs:''});
+  renderPlanilha();
+  salvarAuto();
+}
+
+function renderPlanilha(){
+  const tbody=document.getElementById('plan-tbody');
+  tbody.innerHTML='';
+  let totalDistM=0, totalPassos=0, totalPts=0;
+  planLinhas.forEach((l,i)=>{
+    const distM=parseFloat(l.dist)||0;
+    const passoM=(parseFloat(l.passo)||S.config.passo||75)/100;
+    const vel=parseFloat(l.vel)||S.config.vel||6;
+    // Auto-calc passos
+    const passosCalc=distM&&passoM?Math.round(distM/passoM):0;
+    if(distM&&passoM) planLinhas[i].passos=passosCalc;
+    // Auto-calc tempo previsto (dist em m, vel em km/h)
+    let tprevCalc='—';
+    let tSec=0;
+    if(distM&&vel){
+      tSec=Math.round((distM/1000)/vel*3600);
+      tprevCalc=fmtHMS(tSec);
+      planLinhas[i].tprev=tprevCalc;
+    }
+    // Cadência = passos / minutos do trecho
+    const tMin=tSec/60;
+    const cad=tMin>0&&passosCalc?Math.round(passosCalc/tMin):0;
+    const p10=cad?Math.round(cad/6):0;
+    const p15=cad?Math.round(cad/4):0;
+    planLinhas[i].cad=cad;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="color:var(--accent);font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-align:center;min-width:30px">${i+1}</td>
+      <td><input class="ci" value="${l.trecho||''}" onchange="planLinhas[${i}].trecho=this.value;salvarAuto()" style="width:72px" placeholder="T${i+1}"></td>
+      <td><input class="ci" value="${l.inicio||''}" onchange="planLinhas[${i}].inicio=this.value;salvarAuto()" style="width:90px" placeholder="local..."></td>
+      <td><input class="ci" value="${l.fim||''}" onchange="planLinhas[${i}].fim=this.value;salvarAuto()" style="width:90px" placeholder="local..."></td>
+      <td><input class="ci" type="number" value="${l.dist||''}" onchange="planLinhas[${i}].dist=this.value;recalcLinha(${i});salvarAuto()" style="width:68px" step="1" min="0" placeholder="m"></td>
+      <td style="color:var(--accent2);font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700">${l.acum||'—'}</td>
+      <td>
+        <input class="ci" type="number" value="${l.passo||S.config.passo||75}" onchange="planLinhas[${i}].passo=this.value;recalcLinha(${i});salvarAuto()" style="width:52px" min="30" max="150" placeholder="cm">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)"> cm</span>
+      </td>
+      <td><span class="passos-calc" id="passos-${i}">${passosCalc||'—'}</span></td>
+      <td><input class="ci" type="number" value="${l.vel||S.config.vel||6}" onchange="planLinhas[${i}].vel=this.value;recalcLinha(${i});salvarAuto()" style="width:52px" step="0.1" min="0.1" placeholder="km/h"></td>
+      <td style="color:var(--ok);font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700" id="tprev-${i}">${tprevCalc}</td>
+      <td style="background:rgba(255,140,0,.07);text-align:center">
+        <span id="cad-${i}" style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--accent)">${cad||'—'}</span>
+        ${cad?`<div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);margin-top:1px">p/min</div>`:''}
+      </td>
+      <td style="background:rgba(255,140,0,.04);text-align:center">
+        <span id="p10-${i}" style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--accent2)">${p10||'—'}</span>
+        ${p10?`<div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim)">em 10s</div>`:''}
+      </td>
+      <td style="background:rgba(255,140,0,.04);text-align:center">
+        <span id="p15-${i}" style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--accent2)">${p15||'—'}</span>
+        ${p15?`<div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim)">em 15s</div>`:''}
+      </td>
+      <td><input class="ci" value="${l.hcheg||''}" onchange="planLinhas[${i}].hcheg=this.value;salvarAuto()" style="width:52px" placeholder="hh:mm"></td>
+      <td><input class="ci" value="${l.hreal||''}" onchange="planLinhas[${i}].hreal=this.value;calcDiff(${i});salvarAuto()" style="width:52px" placeholder="hh:mm"></td>
+      <td><span style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:${l.diff&&l.diff[0]==='-'?'var(--danger)':'var(--ok)'}" id="diff-${i}">${l.diff||'—'}</span></td>
+      <td><input class="ci" type="number" value="${l.pts||''}" onchange="planLinhas[${i}].pts=this.value;salvarAuto()" style="width:50px"></td>
+      <td><input class="ci" value="${l.obs||''}" onchange="planLinhas[${i}].obs=this.value;salvarAuto()" style="width:100px" placeholder="notas..."></td>`;
+    tbody.appendChild(tr);
+    totalDistM+=distM;
+    totalPassos+=passosCalc||0;
+    totalPts+=parseFloat(l.pts)||0;
+  });
+  // Totais
+  let totalSec=0;
+  planLinhas.forEach(l=>{
+    if(l.tprev&&l.tprev!=='—'){
+      const p=(l.tprev+':0:0').split(':').map(Number);
+      totalSec+=p[0]*3600+(p[1]||0)*60+(p[2]||0);
+    }
+  });
+  const cadMedia=totalSec>0&&totalPassos?Math.round(totalPassos/(totalSec/60)):0;
+  document.getElementById('pf-dist').textContent=totalDistM>=1000?(totalDistM/1000).toFixed(2)+' km':Math.round(totalDistM)+' m';
+  document.getElementById('pf-tempo').textContent=totalSec?fmtHMS(totalSec):'00:00:00';
+  document.getElementById('pf-passos').textContent=totalPassos.toLocaleString('pt-BR');
+  document.getElementById('pf-cad').textContent=cadMedia?(cadMedia+' p/min'):'— p/min';
+  document.getElementById('pf-pts').textContent=Math.round(totalPts)+' pts';
+}
+
+function recalcLinha(i){
+  const l=planLinhas[i];
+  const distM=parseFloat(l.dist)||0;
+  const passoM=(parseFloat(l.passo)||75)/100;
+  const vel=parseFloat(l.vel)||S.config.vel||6;
+  // Passos
+  const passos=distM&&passoM?Math.round(distM/passoM):0;
+  planLinhas[i].passos=passos;
+  const elP=document.getElementById('passos-'+i);
+  if(elP) elP.textContent=passos||'—';
+  // Tempo previsto
+  let tSec=0;
+  if(distM&&vel){
+    tSec=Math.round((distM/1000)/vel*3600);
+    const t=fmtHMS(tSec);
+    planLinhas[i].tprev=t;
+    const elT=document.getElementById('tprev-'+i);
+    if(elT) elT.textContent=t;
+  }
+  // Cadência
+  const tMin=tSec/60;
+  const cad=tMin>0&&passos?Math.round(passos/tMin):0;
+  const p10=cad?Math.round(cad/6):0;
+  const p15=cad?Math.round(cad/4):0;
+  planLinhas[i].cad=cad;
+  const elC=document.getElementById('cad-'+i);
+  if(elC) elC.textContent=cad||'—';
+  const el10=document.getElementById('p10-'+i);
+  if(el10) el10.textContent=p10||'—';
+  const el15=document.getElementById('p15-'+i);
+  if(el15) el15.textContent=p15||'—';
+}
+
+function calcDiff(i){
+  const l=planLinhas[i];
+  if(!l.hcheg||!l.hreal) return;
+  const toMin=s=>{const p=s.split(':').map(Number);return p[0]*60+(p[1]||0);};
+  const diff=toMin(l.hreal)-toMin(l.hcheg);
+  const sinal=diff>0?'+':'';
+  planLinhas[i].diff=sinal+diff+'min';
+  const el=document.getElementById('diff-'+i);
+  if(el){el.textContent=planLinhas[i].diff;el.style.color=diff>0?'var(--danger)':diff<0?'var(--ok)':'var(--text-dim)';}
+}
+
+function calcularPlanilha(){
+  let acumM=0;
+  planLinhas.forEach((l,i)=>{
+    const d=parseFloat(l.dist)||0;
+    acumM+=d;
+    planLinhas[i].acum=acumM>=1000?(acumM/1000).toFixed(2)+' km':Math.round(acumM)+'m';
+    recalcLinha(i);
+  });
+  renderPlanilha();
+  salvarAuto();
+}
+
+function limparPlanilha(){if(confirm('Limpar toda a planilha?')){planLinhas=[];renderPlanilha();salvarAuto();}}
+
+function exportarCSV(){
+  const header='#,Trecho,Inicio,Fim,Dist(m),Acum,Passo(cm),Passos,Vel(km/h),T.Prev,Cad(p/min),p/10s,p/15s,H.Chegada,H.Real,Diff,Pontos,Obs';
+  const rows=planLinhas.map((l,i)=>{
+    const passos=parseFloat(l.passos)||0;
+    const tSec=l.tprev&&l.tprev!=='—'?(l.tprev+':0:0').split(':').map(Number).reduce((a,v,j)=>a+v*[3600,60,1][j],0):0;
+    const cad=tSec>0&&passos?Math.round(passos/(tSec/60)):0;
+    return[i+1,l.trecho,l.inicio,l.fim,l.dist,l.acum,l.passo,l.passos,l.vel,l.tprev,cad,cad?Math.round(cad/6):'',cad?Math.round(cad/4):'',l.hcheg,l.hreal,l.diff,l.pts,l.obs].join(',');
+  });
+  const csv=[header,...rows].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='gafanhotos_planilha.csv'; a.click();
+}
+
+function importarCSV(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const lines=ev.target.result.split('\n').slice(1);
+    planLinhas=lines.filter(l=>l.trim()).map(l=>{
+      const c=l.split(',');
+      return{trecho:c[1]||'',inicio:c[2]||'',fim:c[3]||'',dist:c[4]||'',acum:c[5]||'',passo:c[6]||'75',passos:c[7]||'',vel:c[8]||'6',tprev:c[9]||'',hcheg:c[10]||'',hreal:c[11]||'',diff:c[12]||'',pts:c[13]||'',obs:c[14]||''};
+    });
+    renderPlanilha();
+    salvarAuto();
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ── SALVAMENTO AUTOMÁTICO ─────────────────────────────────────────────────
+const SAVE_KEY='gafanhotos_prova_v2';
+let autoSaveTimer=null;
+
+function salvarAuto(){
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer=setTimeout(()=>{
+    try{
+      const dados={
+        config:S.config,
+        planLinhas,
+        timestamp:new Date().toISOString(),
+        versao:'2.0'
+      };
+      localStorage.setItem(SAVE_KEY,JSON.stringify(dados));
+      const el=document.getElementById('save-indicator');
+      if(el){el.textContent='💾 SALVO';el.style.color='var(--ok)';setTimeout(()=>{el.textContent='AUTO-SAVE';el.style.color='var(--text-dim)';},2000);}
+    }catch(e){console.warn('Erro ao salvar:',e);}
+  },800);
+}
+
+function recuperarProva(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(!raw){alert('Nenhuma prova salva encontrada.');return;}
+    const dados=JSON.parse(raw);
+    const dt=new Date(dados.timestamp).toLocaleString('pt-BR');
+    if(confirm(`Recuperar prova salva?\n\n📋 ${dados.config?.nome||'—'}\n🕐 ${dt}\n📍 ${dados.planLinhas?.length||0} trechos`)){
+      S.config=dados.config||S.config;
+      planLinhas=dados.planLinhas||[];
+      document.getElementById('cfg-nome').value=S.config.nome||'';
+      document.getElementById('cfg-equipe').value=S.config.equipe||'';
+      document.getElementById('cfg-largada').value=S.config.largada||'08:00';
+      document.getElementById('cfg-vel').value=S.config.vel||6;
+      document.getElementById('cfg-passo').value=S.config.passo||75;
+      document.getElementById('plan-nome').textContent=S.config.nome+' · '+S.config.equipe;
+      renderPlanilha();
+      addLog(`Prova recuperada: ${S.config.nome} (${dt})`,'cp','🔄');
+      alert('✅ Prova recuperada com sucesso!');
+    }
+  }catch(e){alert('Erro ao recuperar: '+e.message);}
+}
+
+function temSalvamento(){
+  try{return!!localStorage.getItem(SAVE_KEY);}catch(e){return false;}
+}
+
+// ── LOG ───────────────────────────────────────────────────────────────────
+function addLog(msg, tag='sys', icon='ℹ'){
+  const list=document.getElementById('log-list');
+  const time=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const item=document.createElement('div'); item.className='log-item';
+  item.innerHTML=`<span class="log-time">${time}</span><span class="log-icon">${icon}</span><div class="log-msg"><span class="log-tag ${tag}">${tag.toUpperCase()}</span>${msg}</div>`;
+  list.insertBefore(item, list.firstChild);
+}
+function limparLog(){if(confirm('Limpar log?'))document.getElementById('log-list').innerHTML='';}
+
+// ── MAPA ──────────────────────────────────────────────────────────────────
+let leafletMap=null, leafletMarker=null, trilhaLayer=null, mapIniciado=false;
+const camadas=[
+  {nome:'Satélite',url:'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'},
+  {nome:'Terreno',url:'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'},
+];
+let camadaAtual=0;
+
+function iniciarMapa(){
+  if(mapIniciado) return;
+  const el=document.getElementById('map');
+  if(!el||el.offsetParent===null) return; // view não visível ainda
+  mapIniciado=true;
+
+  // Estilo escuro via CSS override para Leaflet
+  const style=document.createElement('style');
+  style.textContent=`.leaflet-tile{filter:brightness(0.75) saturate(0.8) hue-rotate(10deg)}.leaflet-container{background:#141210!important}.leaflet-control-attribution{font-size:8px!important;background:rgba(15,14,12,.7)!important;color:#5a5648!important}.leaflet-control-attribution a{color:#ff8c00!important}.leaflet-control-zoom a{background:#1e1c18!important;color:#ff8c00!important;border-color:#2e2c26!important}`;
+  document.head.appendChild(style);
+
+  // Coordenadas padrão: Fortaleza-CE
+  const lat=S.pos?S.pos.latitude:-3.7319;
+  const lon=S.pos?S.pos.longitude:-38.5267;
+  const zoom=S.pos?16:13;
+
+  leafletMap=L.map('map',{zoomControl:true,attributionControl:true}).setView([lat,lon],zoom);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© OSM',maxZoom:19,subdomains:'abc'
+  }).addTo(leafletMap);
+
+  // Ícone da posição atual
+  const iconePos=L.divIcon({
+    html:`<div style="width:16px;height:16px;border-radius:50%;background:#4dff91;border:3px solid #000;box-shadow:0 0 12px #4dff91"></div>`,
+    iconSize:[16,16],iconAnchor:[8,8],className:''
+  });
+
+  if(S.pos){
+    leafletMarker=L.marker([S.pos.latitude,S.pos.longitude],{icon:iconePos}).addTo(leafletMap);
+    leafletMarker.bindPopup('<b style="color:#ff8c00">📍 VOCÊ ESTÁ AQUI</b>').openPopup();
+  } else {
+    // Marcador em Fortaleza como demo
+    L.marker([-3.7319,-38.5267],{icon:iconePos}).addTo(leafletMap)
+     .bindPopup('<b style="color:#ff8c00">🦗 GAFANHOTOS</b><br><span style="font-size:10px;color:#888">Fortaleza-CE · GPS aguardando...</span>').openPopup();
+  }
+
+  trilhaLayer=L.layerGroup().addTo(leafletMap);
+  addLog('Mapa Leaflet inicializado','sys','🗺');
+}
+
+function centrarMapa(){
+  if(!leafletMap){iniciarMapa();return;}
+  if(S.pos) leafletMap.setView([S.pos.latitude,S.pos.longitude],17);
+  else leafletMap.setView([-3.7319,-38.5267],13);
+  addLog('Mapa centralizado','sys','📍');
+}
+
+function buscarNoMapa(){
+  const q=document.getElementById('map-search-input').value.trim();
+  if(!q) return;
+  addLog('Buscando: '+q,'sys','🔍');
+  // Geocoding via Nominatim (gratuito, sem chave)
+  fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1`)
+    .then(r=>r.json()).then(data=>{
+      if(data&&data[0]){
+        const {lat,lon,display_name}=data[0];
+        leafletMap.setView([lat,lon],14);
+        const icone=L.divIcon({html:`<div style="background:var(--accent);color:#000;padding:3px 8px;font-size:10px;font-family:monospace;font-weight:bold;white-space:nowrap">📍 ${q.toUpperCase()}</div>`,className:''});
+        L.marker([lat,lon],{icon:icone}).addTo(trilhaLayer);
+        addLog(`Encontrado: ${display_name.substring(0,60)}...`,'gps','📍');
+      } else {
+        addLog('Local não encontrado: '+q,'warn','⚠');
+      }
+    }).catch(()=>addLog('Erro na busca (sem internet?)','warn','⚠'));
+}
+
+function alternarCamada(){
+  if(!leafletMap){iniciarMapa();return;}
+  camadaAtual=(camadaAtual+1)%camadas.length;
+  leafletMap.eachLayer(l=>{if(l instanceof L.TileLayer) leafletMap.removeLayer(l);});
+  L.tileLayer(camadas[camadaAtual].url,{attribution:'© OSM',maxZoom:19}).addTo(leafletMap);
+  addLog('Camada: '+camadas[camadaAtual].nome,'sys','🗾');
+}
+
+// ── CALC TABS ─────────────────────────────────────────────────────────────
+function calcTab(id, btn){
+  document.querySelectorAll('.calc-section').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.cit').forEach(el=>el.classList.remove('active'));
+  document.getElementById('calc-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+const fmtHMS=(s)=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=Math.round(s%60);return`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`};
+const fmtHM=(s)=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return`${String(h).padStart(2,'0')}h${String(m).padStart(2,'0')}m`};
+const v=(id)=>parseFloat(document.getElementById(id).value)||0;
+const vi=(id)=>parseInt(document.getElementById(id).value)||0;
+const vs=(id)=>document.getElementById(id).value;
+const show=(id)=>document.getElementById(id).style.display='';
+const hide=(id)=>document.getElementById(id).style.display='none';
+const set=(id,val)=>document.getElementById(id).textContent=val;
+
+// ── CALC: VELOCIDADE ──────────────────────────────────────────────────────
+function calcVel(){
+  let dist=v('vel-dist'); if(vs('vel-unit')==='m') dist/=1000;
+  const t=v('vel-h')*3600+v('vel-m')*60+v('vel-s');
+  if(!dist||!t) return;
+  const vel=dist/(t/3600);
+  const ritSec=3600/vel;
+  set('vel-result',vel.toFixed(2));
+  set('vel-pace',`${Math.floor(ritSec/60)}:${String(Math.round(ritSec%60)).padStart(2,'0')} min/km`);
+  set('vel-ms',(vel/3.6).toFixed(2)+' m/s');
+  show('vel-res');
+}
+function calcVT(){
+  let dist=v('vt-dist'); if(vs('vt-unit')==='m') dist/=1000;
+  const vel=v('vt-vel'); if(!dist||!vel) return;
+  const tSec=(dist/vel)*3600;
+  const now=new Date(); now.setSeconds(now.getSeconds()+tSec);
+  const rit=3600/vel;
+  set('vt-result',fmtHMS(tSec));
+  set('vt-arrival',now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));
+  set('vt-pace',`${Math.floor(rit/60)}:${String(Math.round(rit%60)).padStart(2,'0')} min/km`);
+  show('vt-res');
+}
+function calcConv(){
+  const val=v('conv-val'), tipo=vs('conv-type'); let res;
+  if(tipo==='kh_ms') res=(val/3.6).toFixed(3)+' m/s';
+  else if(tipo==='ms_kh') res=(val*3.6).toFixed(2)+' km/h';
+  else if(tipo==='kh_mk'){const s=3600/val;res=`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')} min/km`;}
+  else if(tipo==='mk_kh') res=(60/val).toFixed(2)+' km/h';
+  set('conv-result',res||'—'); show('conv-res');
+}
+
+// ── CALC: DISTÂNCIA ───────────────────────────────────────────────────────
+function calcDP(){
+  const vel=v('dp-vel'), t=v('dp-h')*3600+v('dp-m')*60+v('dp-s');
+  if(!vel||!t) return;
+  const km=(vel*(t/3600));
+  set('dp-km',km.toFixed(3)); set('dp-m-res',Math.round(km*1000));
+  show('dp-res');
+}
+function calcDR(){
+  const total=v('dr-total'), perc=v('dr-perc'), vel=v('dr-vel');
+  if(!total) return;
+  const rest=Math.max(0,total-perc);
+  const pct=Math.min(100,(perc/total)*100);
+  const tSec=vel?(rest/vel)*3600:0;
+  set('dr-rest',rest.toFixed(2)); set('dr-time',vel?fmtHMS(tSec):'—'); set('dr-pct',pct.toFixed(1)+'%');
+  document.getElementById('dr-bar').style.width=pct+'%';
+  document.getElementById('dr-bar-start').textContent=perc.toFixed(1)+' km';
+  document.getElementById('dr-bar-end').textContent=total.toFixed(1)+' km';
+  show('dr-res');
+}
+function calcDT(){
+  const total=v('dt-total'), cps=vi('dt-cps'); if(!total||!cps) return;
+  const int=total/cps; let tbody=document.getElementById('dt-tbody'); tbody.innerHTML='';
+  for(let i=1;i<=cps;i++){
+    const km=(i*int); const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i}</td><td>${km.toFixed(2)}</td><td>${Math.round(km*1000)}</td>`;
+    tbody.appendChild(tr);
+  }
+  show('dt-res');
+}
+
+// ── CALC: PASSOS ──────────────────────────────────────────────────────────
+function calcCal(){
+  let dist=v('cal-dist'); if(vs('cal-unit')==='km') dist*=1000;
+  const steps=vi('cal-steps'); if(!dist||!steps) return;
+  const cm=(dist/steps)*100;
+  set('cal-result',cm.toFixed(1)); set('cal-m',(cm/100).toFixed(3));
+  set('cal-note',cm<60?'⚠ Passo muito curto — verificar contagem':cm>130?'⚠ Passo muito longo — verificar contagem':'✓ Comprimento dentro do esperado');
+  show('cal-res');
+}
+function calcS2D(){
+  const comp=v('s2d-comp'), steps=vi('s2d-steps'); if(!comp||!steps) return;
+  const m=(comp/100)*steps;
+  set('s2d-m',m.toFixed(1)); set('s2d-km',(m/1000).toFixed(3));
+  show('s2d-res');
+}
+function calcD2S(){
+  const comp=v('s2d-comp'), dist=v('d2s-dist'); if(!comp||!dist) return;
+  set('d2s-steps',Math.round(dist/(comp/100)));
+  show('d2s-res');
+}
+function calcCad(){
+  const vel=v('cad-vel'), comp=v('cad-comp'); if(!vel||!comp) return;
+  const ms=vel/3.6, ppm=(ms/(comp/100))*60;
+  set('cad-pm',Math.round(ppm)); set('cad-10',Math.round(ppm/6)); set('cad-15',Math.round(ppm/4));
+  set('cad-ph',Math.round(ppm*60)); set('cad-mps',(comp/100).toFixed(2));
+  set('cad-note',`A ${vel}km/h com passo de ${comp}cm: ${Math.round(ppm)} passos/min`);
+  show('cad-res');
+}
+
+// ── CALC: TEMPO ───────────────────────────────────────────────────────────
+let chronoRunning=false, chronoStart=0, chronoElapsed=0, chronoInterval=null;
+const chronoLaps=[];
+function toggleChrono(){
+  if(!chronoRunning){
+    chronoRunning=true; chronoStart=Date.now()-chronoElapsed;
+    chronoInterval=setInterval(tickChrono,50);
+    document.getElementById('chrono-btn').textContent='PARAR';
+  } else {
+    chronoRunning=false; chronoElapsed=Date.now()-chronoStart;
+    clearInterval(chronoInterval);
+    document.getElementById('chrono-btn').textContent='CONTINUAR';
+  }
+}
+function tickChrono(){
+  const e=Date.now()-chronoStart;
+  const h=Math.floor(e/3600000),m=Math.floor((e%3600000)/60000),s=Math.floor((e%60000)/1000),cs=Math.floor((e%1000)/10);
+  document.getElementById('chrono-hms').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.getElementById('chrono-cs').textContent=String(cs).padStart(2,'0');
+  const goalStr=vs('chrono-goal');
+  if(goalStr){const parts=goalStr.split(':').map(Number);const gms=(parts[0]*3600+(parts[1]||0)*60+(parts[2]||0))*1000;if(gms>0){const pct=Math.min(100,(e/gms)*100);document.getElementById('goal-bar').style.width=pct+'%';document.getElementById('goal-pct').textContent=pct.toFixed(1)+'%';}}
+}
+function lapChrono(){
+  const e=chronoRunning?Date.now()-chronoStart:chronoElapsed;
+  chronoLaps.push(e);
+  const list=document.getElementById('lap-list');
+  const prev=chronoLaps.length>1?chronoLaps[chronoLaps.length-2]:0;
+  const split=e-prev;
+  const div=document.createElement('div'); div.className='lap-item';
+  div.innerHTML=`<span class="lap-n">LAP ${chronoLaps.length}</span><span class="lap-t">${fmtHMS(e/1000)}</span><span class="lap-split">+${fmtHMS(split/1000)}</span>`;
+  list.insertBefore(div,list.firstChild);
+}
+function resetChrono(){
+  chronoRunning=false; clearInterval(chronoInterval);
+  chronoElapsed=0; chronoLaps.length=0;
+  document.getElementById('chrono-hms').textContent='00:00:00';
+  document.getElementById('chrono-cs').textContent='00';
+  document.getElementById('chrono-btn').textContent='INICIAR';
+  document.getElementById('lap-list').innerHTML='';
+  document.getElementById('goal-bar').style.width='0%';
+  document.getElementById('goal-pct').textContent='0%';
+}
+function calcArr(){
+  const saida=vs('arr-saida'), h=v('arr-h'), m=v('arr-m'), s=v('arr-s');
+  if(!saida) return;
+  const [sh,sm]=saida.split(':').map(Number);
+  const totalSec=h*3600+m*60+s;
+  const chegMs=(sh*3600+sm*60+totalSec)*1000;
+  const d=new Date(); d.setHours(0,0,0,0); d.setTime(d.getTime()+chegMs);
+  set('arr-result',d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));
+  set('arr-dur',fmtHMS(totalSec));
+  show('arr-res');
+}
+function calcTC(){
+  const val=vs('tc-val'), tipo=vs('tc-type'); let res;
+  if(tipo==='min_hms'){const s=parseFloat(val)*60;res=fmtHMS(s);}
+  else if(tipo==='sec_hms'){res=fmtHMS(parseFloat(val));}
+  else if(tipo==='hms_min'){const p=val.split(':').map(Number);res=((p[0]*60)+(p[1]||0)+(( p[2]||0)/60)).toFixed(2)+' min';}
+  else if(tipo==='hdec_hms'){res=fmtHMS(parseFloat(val)*3600);}
+  set('tc-result',res||'—'); show('tc-res');
+}
+
+// ── CALC: RITMO ───────────────────────────────────────────────────────────
+function calcRit(){
+  const vel=v('rit-vel'), dist=v('rit-dist'), comp=v('rit-comp'); if(!vel||!dist) return;
+  const tSec=(dist/vel)*3600, rit=3600/vel;
+  const ppm=comp?(vel/3.6/(comp/100))*60:0;
+  set('rit-total',fmtHMS(tSec));
+  set('rit-minkm',`${Math.floor(rit/60)}:${String(Math.round(rit%60)).padStart(2,'0')}`);
+  set('rit-ms',(vel/3.6).toFixed(2));
+  set('rit-pm',comp?Math.round(ppm):'—');
+  set('rit-p10',comp?Math.round(ppm/6):'—');
+  set('rit-p15',comp?Math.round(ppm/4):'—');
+  show('rit-res');
+}
+function calcCK(){
+  const vel=v('ck-vel'), dist=v('ck-dist'), comp=v('ck-comp'), int=vi('ck-int');
+  const saida=vs('ck-saida'); if(!vel||!dist||!int) return;
+  const [sh,sm]=(saida||'08:00').split(':').map(Number);
+  const tbody=document.getElementById('ck-tbody'); tbody.innerHTML='';
+  const totalM=dist*1000;
+  for(let m=int;m<=totalM;m+=int){
+    const tSec=(m/1000/vel)*3600;
+    const chegMs=(sh*3600+sm*60+tSec)*1000;
+    const d=new Date(); d.setHours(0,0,0,0); d.setTime(d.getTime()+chegMs);
+    const passos=comp?Math.round(m/(comp/100)):'—';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${m}m</td><td>${passos}</td><td>${fmtHMS(tSec)}</td><td>${d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</td>`;
+    tbody.appendChild(tr);
+  }
+  show('ck-res');
+}
+
+// ── CALC: DIFF ────────────────────────────────────────────────────────────
+function calcDif(){
+  const ideal=v('dif-ideal'), real=v('dif-real'), dist=v('dif-dist');
+  const tempoStr=vs('dif-tempo'); if(!ideal||!real||!dist) return;
+  const parts=(tempoStr+':0:0').split(':').map(Number);
+  const tReal=parts[0]*3600+parts[1]*60+(parts[2]||0);
+  const distIdeal=ideal*(tReal/3600);
+  const deltaM=(distIdeal-dist)*1000;
+  const deltaMin=deltaM/1000/ideal*60;
+  const late=deltaM>0;
+  const bar=document.getElementById('dif-bar');
+  const pct=Math.min(50,Math.abs(deltaM)/100);
+  bar.style.width=pct+'%';
+  bar.style.left=late?`calc(50% - ${pct}%)`:'50%';
+  bar.className='diff-bar'+(late?' late':'');
+  document.getElementById('dif-bar-lbl').textContent=late?`ATRASO: ${Math.abs(deltaM).toFixed(0)}m`:deltaM<0?`AVANÇO: ${Math.abs(deltaM).toFixed(0)}m`:'NO RITMO';
+  set('dif-delta',Math.abs(deltaMin).toFixed(1));
+  set('dif-dist-delta',Math.abs(deltaM).toFixed(0));
+  document.getElementById('dif-badge').textContent=late?'⚠ ATRASADO':'✓ ADIANTADO';
+  document.getElementById('dif-badge').style.color=late?'var(--danger)':'var(--ok)';
+  show('dif-res');
+}
+function calcRec(){
+  const atraso=v('rec-atraso'), rest=v('rec-rest'), ideal=v('rec-ideal'); if(!rest||!ideal) return;
+  const distRestM=rest*1000;
+  const tIdealSec=(rest/ideal)*3600;
+  const tNeedSec=tIdealSec;
+  const velNeed=((distRestM+atraso)/1000)/(tNeedSec/3600);
+  set('rec-vel',velNeed.toFixed(2));
+  set('rec-aum',(velNeed-ideal).toFixed(2));
+  const ppmIdeal=(ideal/3.6/0.75)*60;
+  const ppmNeed=(velNeed/3.6/0.75)*60;
+  set('rec-pass',`+${Math.round(ppmNeed-ppmIdeal)}`);
+  show('rec-res');
+}
+function calcPen(){
+  const tipo=vs('pen-tipo'), val=v('pen-val'), velBase=v('pen-vel'), rest=v('pen-rest');
+  if(!velBase||!rest) return;
+  let tPerdidoMin=0, velEf=velBase;
+  if(tipo==='tempo'){tPerdidoMin=val;}
+  else if(tipo==='dist'){tPerdidoMin=(val/1000/velBase)*60;}
+  else if(tipo==='vel'){velEf=velBase*(1-val/100);const tOrig=(rest/velBase)*60;const tNovo=(rest/velEf)*60;tPerdidoMin=tNovo-tOrig;}
+  const tTotalMin=(rest/velBase)*60+tPerdidoMin;
+  set('pen-result',tPerdidoMin.toFixed(1));
+  set('pen-vel-eff',velEf.toFixed(2));
+  set('pen-total',fmtHMS(tTotalMin*60));
+  show('pen-res');
+}
+
+// ── CALC: TABELA VEL × DIST ───────────────────────────────────────────────
+function gerarTabelaVel(){
+  const vel=v('tab-vel'), dmin=v('tab-min'), dmax=v('tab-max'); if(!vel||!dmax) return;
+  const vels=[vel-1,vel-0.5,vel,vel+0.5,vel+1].filter(x=>x>0);
+  const thead=document.getElementById('tab-thead'), tbody=document.getElementById('tab-tbody');
+  thead.innerHTML='<tr><th>DIST (km)</th>'+vels.map(vv=>`<th>${vv.toFixed(1)} km/h</th>`).join('')+'</tr>';
+  tbody.innerHTML='';
+  const step=dmax<=5?0.5:dmax<=20?1:2;
+  for(let d=dmin||step;d<=dmax+0.001;d=Math.round((d+step)*100)/100){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:var(--accent);font-family:'Share Tech Mono',monospace">${d.toFixed(1)}</td>`+vels.map(vv=>`<td>${fmtHM((d/vv)*3600)}</td>`).join('');
+    tbody.appendChild(tr);
+  }
+}
+function calcRef(){
+  const comp=v('ref-comp')||75;
+  const vels=[4,5,6,7,8,9,10];
+  const tbody=document.getElementById('ref-tbody'); tbody.innerHTML='';
+  vels.forEach(vv=>{
+    const pPer100=Math.round(100/(comp/100));
+    const ppm=Math.round((vv/3.6/(comp/100))*60);
+    const rit=3600/vv;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:var(--accent)">${vv}</td><td>${pPer100}</td><td>${ppm}</td><td>${Math.floor(rit/60)}:${String(Math.round(rit%60)).padStart(2,'0')}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ── INICIALIZAÇÃO ─────────────────────────────────────────────────────────
+(function init(){
+  addLog('Sistema Trek Nav Gafanhotos iniciado v2.1','sys','🦗');
+  addLog('Aguardando configuração de missão','sys','ℹ');
+  calcRef();
+  // Verificar salvamento automático
+  if(temSalvamento()){
+    const raw=localStorage.getItem(SAVE_KEY);
+    try{
+      const d=JSON.parse(raw);
+      const dt=new Date(d.timestamp).toLocaleString('pt-BR');
+      addLog(`Prova salva encontrada: ${d.config?.nome||'—'} (${dt}) — clique em 🔄 RECUPERAR`,'cp','💾');
+    }catch(e){}
+  }
+  // Planilha inicial com 3 linhas
+  for(let i=0;i<3;i++) planLinhas.push({trecho:'T'+(i+1),inicio:'',fim:'',dist:'',acum:'',passo:String(S.config.passo||75),passos:'',vel:String(S.config.vel||6),tprev:'',hcheg:'',hreal:'',diff:'',pts:'',obs:''});
+  renderPlanilha();
+})();
+</script>
+</div><!-- /#app-shell -->
+</body>
+</html>
