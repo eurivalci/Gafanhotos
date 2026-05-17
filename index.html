@@ -253,6 +253,185 @@ select.inp option{background:var(--surf);color:var(--txt)}
 .neutro-add-btn{flex-shrink:0;padding:11px 14px;background:var(--warn);border:none;border-radius:8px;font-size:18px;font-weight:700;font-family:var(--mono);color:#1a0a00;cursor:pointer}
 .neutro-add-btn:active{transform:scale(.95)}
 
+
+/* ABA DADOS / PERFIS */
+.perfil-card{background:var(--surf);border:1.5px solid var(--bord);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .15s}
+.perfil-card:hover,.perfil-card.ativo{border-color:var(--acc)}
+.perfil-card.ativo{background:var(--meta-bg)}
+.perfil-info{flex:1;min-width:0}
+.perfil-nome{font-size:15px;font-weight:700;color:var(--txt)}
+.perfil-meta{font-size:11px;color:var(--txt3);margin-top:2px}
+.perfil-ativo-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#0d2e14;color:var(--acc);border:1px solid var(--acc3);flex-shrink:0}
+.perfil-btns{display:flex;gap:5px;flex-shrink:0}
+.perfil-btn{padding:5px 9px;border:none;border-radius:6px;font-size:12px;font-weight:700;font-family:var(--mono);cursor:pointer}
+.pb-load{background:var(--acc);color:#071007}
+.pb-del{background:transparent;border:1px solid #662020;color:var(--danger)}
+.pb-del:active{background:#2e0a0a}
+
+.export-box{background:var(--surf2);border:1.5px solid var(--bord2);border-radius:10px;padding:12px;margin-bottom:10px}
+.export-txt{width:100%;background:var(--surf);border:1px solid var(--bord);border-radius:7px;padding:10px;font-size:12px;color:var(--txt2);font-family:var(--mono);resize:vertical;min-height:90px;margin-top:8px}
+
+.share-btn{width:100%;padding:13px;background:#1a1200;border:1.5px solid var(--info);border-radius:8px;font-size:14px;font-weight:700;font-family:var(--mono);color:var(--info);cursor:pointer;margin-top:6px;transition:transform .1s}
+.share-btn:active{transform:scale(.97)}
+.import-btn{width:100%;padding:13px;background:#0a0d1a;border:1.5px solid var(--info);border-radius:8px;font-size:14px;font-weight:700;font-family:var(--mono);color:var(--info);cursor:pointer;margin-top:6px}
+.import-btn:active{transform:scale(.97)}
+
+.autosave-dot{display:inline-block;width:7px;height:7px;background:var(--acc);border-radius:50%;margin-left:6px;animation:pulse 2s infinite}
+
+
+/* ================================================================
+   PAINEL DE BORDO — MAPA DE PROVA EM TEMPO REAL
+   ================================================================ */
+
+/* Overlay fullscreen */
+.bordo-overlay{
+  display:none;position:fixed;inset:0;
+  background:var(--bg);z-index:9999;
+  overflow-y:auto;padding:0 0 40px;
+}
+.bordo-overlay.open{display:block}
+
+/* Cabeçalho do bordo */
+.bordo-hdr{
+  background:var(--surf);border-bottom:2px solid var(--bord);
+  padding:10px 14px;display:flex;align-items:center;
+  justify-content:space-between;gap:8px;position:sticky;top:0;z-index:10;
+}
+.bordo-title{font-size:14px;font-weight:700;color:var(--acc);letter-spacing:2px}
+.bordo-clock{font-size:20px;font-weight:700;color:var(--warn);font-family:var(--mono)}
+.bordo-close{padding:6px 12px;background:var(--danger);border:none;border-radius:8px;
+  font-size:13px;font-weight:700;font-family:var(--mono);color:#fff;cursor:pointer}
+
+/* Barra de progresso geral */
+.bordo-progress-wrap{padding:10px 14px 6px;background:var(--surf2)}
+.bordo-progress-row{display:flex;justify-content:space-between;font-size:11px;
+  color:var(--txt3);margin-bottom:5px;font-weight:700}
+.bordo-prog-bg{height:12px;background:var(--surf);border-radius:6px;overflow:hidden;border:1px solid var(--bord)}
+.bordo-prog-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--acc),var(--warn));
+  transition:width .5s ease}
+
+/* Card tulipa ATUAL — destaque máximo */
+.bordo-atual{
+  background:var(--meta-bg);border:2px solid var(--acc);
+  border-radius:14px;margin:10px 12px;padding:14px;
+}
+.bordo-atual-label{font-size:10px;color:var(--txt3);letter-spacing:3px;font-weight:700;margin-bottom:6px}
+.bordo-atual-nome{font-size:22px;font-weight:700;color:var(--txt);margin-bottom:10px;line-height:1.2}
+
+/* Contagem regressiva grande */
+.bordo-countdown{text-align:center;padding:12px 0 8px}
+.bordo-cd-num{font-size:64px;font-weight:700;line-height:1;font-family:var(--mono)}
+.bordo-cd-lbl{font-size:11px;color:var(--txt3);letter-spacing:2px;margin-top:4px;font-weight:700}
+.bordo-cd-num.positivo{color:var(--acc)}
+.bordo-cd-num.aviso   {color:var(--warn);animation:blink-c 1s infinite}
+.bordo-cd-num.atrasado{color:var(--danger);animation:blink-c .6s infinite}
+.bordo-cd-num.neutro  {color:var(--warn)}
+
+/* Grid de métricas da tulipa atual */
+.bordo-met-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}
+.bordo-met{background:var(--surf);border:1px solid var(--bord);border-radius:8px;padding:9px;text-align:center}
+.bordo-met-val{font-size:16px;font-weight:700;color:var(--acc);line-height:1}
+.bordo-met-lbl{font-size:9px;color:var(--txt3);letter-spacing:1px;margin-top:3px;font-weight:700}
+
+/* Horários prev/real da tulipa atual */
+.bordo-times{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.bordo-time-box{border-radius:10px;padding:10px;text-align:center}
+.bordo-time-prev{background:#0d2e14;border:1px solid var(--acc3)}
+.bordo-time-real{background:var(--surf2);border:1.5px solid var(--bord2)}
+.bordo-time-val{font-size:26px;font-weight:700;line-height:1;font-family:var(--mono)}
+.bordo-time-prev .bordo-time-val{color:var(--acc)}
+.bordo-time-real .bordo-time-val{color:var(--warn)}
+.bordo-time-lbl{font-size:10px;color:var(--txt3);letter-spacing:1px;margin-top:4px;font-weight:700}
+
+/* Status badge grande */
+.bordo-status{text-align:center;padding:8px 12px;border-radius:10px;font-size:15px;font-weight:700;margin:8px 0}
+.bs-ok   {background:#0d2e14;color:var(--acc);border:1.5px solid var(--acc3)}
+.bs-warn {background:#2e2200;color:var(--warn);border:1.5px solid #664d00}
+.bs-late {background:#2e0a0a;color:var(--danger);border:1.5px solid #662020}
+.bs-nd   {background:var(--surf2);color:var(--txt3);border:1.5px solid var(--bord)}
+.bs-neutro{background:#2e2200;color:var(--warn);border:1.5px solid #664d00}
+
+/* Botão CHEGUEI grande */
+.bordo-cheguei{width:100%;padding:18px;background:var(--acc);border:none;border-radius:12px;
+  font-size:20px;font-weight:700;font-family:var(--mono);color:#071007;
+  cursor:pointer;letter-spacing:2px;margin-top:6px;transition:transform .1s}
+.bordo-cheguei:active{transform:scale(.97)}
+.bordo-cheguei-warn{background:var(--warn);color:#1a0a00}
+
+/* Próxima tulipa */
+.bordo-proxima{background:var(--surf);border:1px solid var(--bord);border-radius:12px;margin:6px 12px;padding:12px}
+.bordo-prox-label{font-size:10px;color:var(--txt3);letter-spacing:2px;font-weight:700;margin-bottom:6px}
+.bordo-prox-nome{font-size:16px;font-weight:700;color:var(--txt2);margin-bottom:6px}
+.bordo-prox-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.bordo-prox-item{background:var(--surf2);border:1px solid var(--bord);border-radius:7px;padding:7px;text-align:center}
+.bordo-prox-val{font-size:14px;font-weight:700;color:var(--txt2)}
+.bordo-prox-lbl{font-size:9px;color:var(--txt3);letter-spacing:.5px;margin-top:2px;font-weight:700}
+
+/* Lista resumo de tulipas */
+.bordo-lista{padding:0 12px}
+.bordo-lista-title{font-size:10px;color:var(--txt3);letter-spacing:2px;font-weight:700;margin:10px 0 6px}
+.bordo-row{display:flex;align-items:center;gap:8px;padding:8px 10px;
+  border-radius:8px;margin-bottom:4px;border:1px solid var(--bord);background:var(--surf)}
+.bordo-row.br-done {border-color:var(--acc3);background:#0a1a0a}
+.bordo-row.br-atual{border-color:var(--acc);background:var(--meta-bg)}
+.bordo-row.br-pend {border-color:var(--bord);opacity:.6}
+.bordo-row.br-neutro{border-color:#664d00;background:#1a1200}
+.bordo-row-num{font-size:11px;font-weight:700;color:var(--txt3);width:18px;flex-shrink:0;text-align:center}
+.bordo-row-nome{flex:1;font-size:13px;font-weight:700;color:var(--txt);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bordo-row-prev{font-size:12px;color:var(--txt2);flex-shrink:0}
+.bordo-row-status{font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.brs-ok   {background:#0d2e14;color:var(--acc)}
+.brs-warn {background:#2e2200;color:var(--warn)}
+.brs-late {background:#2e0a0a;color:var(--danger)}
+.brs-curr {background:var(--acc);color:#071007}
+.brs-pend {background:var(--surf2);color:var(--txt3)}
+.brs-neutro{background:#2e2200;color:var(--warn)}
+
+/* Botão lançar bordo */
+.bordo-launch-btn{
+  width:100%;padding:16px;background:linear-gradient(135deg,#0d2e14,#1a5a1a);
+  border:2px solid var(--acc);border-radius:12px;
+  font-size:17px;font-weight:700;font-family:var(--mono);
+  color:var(--acc);cursor:pointer;letter-spacing:1px;margin-bottom:10px;
+  transition:transform .1s;display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.bordo-launch-btn:active{transform:scale(.97)}
+
+
+/* ── MODAL DE EDIÇÃO DE TRECHO ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.75);z-index:19999;
+  align-items:center;justify-content:center;padding:16px;
+}
+.modal-overlay.open{display:flex}
+.modal-box{
+  background:var(--surf);border:2px solid var(--acc3);
+  border-radius:14px;width:100%;max-width:440px;
+  max-height:90vh;overflow-y:auto;padding:16px;
+}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bord)}
+.modal-title{font-size:14px;font-weight:700;color:var(--acc);letter-spacing:2px}
+.modal-close{padding:5px 11px;background:var(--surf2);border:1px solid var(--bord2);
+  border-radius:8px;font-size:16px;cursor:pointer;color:var(--txt2)}
+.modal-close:active{background:var(--surf3)}
+.modal-save{width:100%;padding:15px;background:var(--acc);border:none;border-radius:10px;
+  font-size:17px;font-weight:700;font-family:var(--mono);color:#071007;
+  cursor:pointer;margin-top:8px;letter-spacing:1px}
+.modal-save:active{transform:scale(.97)}
+.modal-del{width:100%;padding:12px;background:transparent;border:1.5px solid #662020;
+  border-radius:8px;font-size:13px;font-family:var(--mono);color:var(--danger);
+  cursor:pointer;margin-top:6px}
+.modal-del:active{background:#2e0a0a}
+
+/* Botão editar nos cards */
+.edit-tulipa{background:none;border:1px solid var(--bord2);border-radius:5px;
+  color:var(--txt2);font-family:var(--mono);font-size:11px;
+  cursor:pointer;padding:3px 8px;transition:border-color .15s}
+.edit-tulipa:hover{border-color:var(--acc);color:var(--acc)}
+.edit-tulipa:active{background:var(--surf2)}
+
 .tb-panel{display:none}
 .tb-panel.on{display:block}
 ::-webkit-scrollbar{width:4px}
@@ -279,12 +458,13 @@ select.inp option{background:var(--surf);color:var(--txt)}
     <input class="inp" type="time" id="inicio-time" style="width:126px;font-size:19px;padding:10px" onchange="atualizarInicio()">
   </div>
 
-  <div class="tabs">
+  <div class="tabs" style="grid-template-columns:repeat(6,1fr)">
     <div class="tab on"  onclick="goTab('calc',this)">CALC</div>
     <div class="tab"     onclick="goTab('dtr',this)">DIST<br>REAL</div>
     <div class="tab"     onclick="goTab('crono',this)">CRONO</div>
-    <div class="tab"     onclick="goTab('acum',this)">ACUMULADO</div>
-    <div class="tab"     onclick="goTab('prova',this)">PROVA<br>COMPLETA</div>
+    <div class="tab"     onclick="goTab('acum',this)">ACUM</div>
+    <div class="tab"     onclick="goTab('prova',this)">PROVA</div>
+    <div class="tab"     onclick="goTab('dados',this)">💾<br>DADOS</div>
   </div>
 
   <!-- ========== CALC ========== -->
@@ -520,9 +700,218 @@ select.inp option{background:var(--surf);color:var(--txt)}
     <div id="prova-list"></div>
 
     <!-- AÇÕES -->
+    <button class="bordo-launch-btn" onclick="abrirBordo()">
+      🗺️ INICIAR MAPA DE BORDO
+    </button>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
       <button class="pdf-btn" style="margin-top:0" onclick="gerarPDFProva()">📄 PDF DA PROVA</button>
       <button class="danger-btn" style="margin-top:0" onclick="limparProva()">🗑 LIMPAR PROVA</button>
+    </div>
+  </div>
+
+
+  <!-- ========== DADOS / PERFIS ========== -->
+  <div class="tb-panel" id="tb-dados">
+
+    <div class="sec">
+      <div class="sec-ttl">SALVAR PERFIL DE COMPETIDOR<span class="autosave-dot"></span></div>
+      <div style="font-size:11px;color:var(--txt3);margin-bottom:10px">Dados são salvos automaticamente. Use perfis para separar competidores.</div>
+      <div class="fld">
+        <span class="lbl">NOME DO COMPETIDOR / PERFIL</span>
+        <input class="inp" type="text" id="perfil-nome-inp" placeholder="ex: João Silva" style="font-size:18px">
+      </div>
+      <button class="go-btn" onclick="salvarPerfil()">💾 SALVAR PERFIL ATUAL</button>
+      <button class="acc-btn" onclick="salvarAuto()">↺ ATUALIZAR AUTO-SAVE</button>
+    </div>
+
+    <div class="sec" id="perfis-lista-sec">
+      <div class="sec-ttl">PERFIS SALVOS</div>
+      <div id="perfis-lista"><div style="color:var(--txt3);font-size:13px;text-align:center;padding:16px">Nenhum perfil salvo ainda.</div></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-ttl">EXPORTAR / COMPARTILHAR</div>
+      <div style="font-size:11px;color:var(--txt3);margin-bottom:8px">Gera um código com todos os dados atuais para enviar a outro competidor ou dispositivo.</div>
+      <button class="share-btn" onclick="exportarDados()">📤 GERAR CÓDIGO DE EXPORTAÇÃO</button>
+      <div class="export-box" id="export-box" style="display:none">
+        <div class="lbl">CÓDIGO — copie e envie (WhatsApp, email etc)</div>
+        <textarea class="export-txt" id="export-txt" readonly onclick="this.select()"></textarea>
+        <button class="share-btn" onclick="copiarExport()">📋 COPIAR CÓDIGO</button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-ttl">IMPORTAR DADOS DE OUTRO COMPETIDOR</div>
+      <div style="font-size:11px;color:var(--txt3);margin-bottom:8px">Cole o código recebido abaixo e confirme para carregar os dados.</div>
+      <div class="fld">
+        <span class="lbl">CÓDIGO RECEBIDO</span>
+        <textarea class="export-txt" id="import-txt" placeholder="Cole o código aqui..." style="min-height:80px"></textarea>
+      </div>
+      <button class="import-btn" onclick="importarDados()">📥 IMPORTAR E CARREGAR</button>
+    </div>
+
+    <div class="sec">
+      <div class="sec-ttl">LIMPAR TUDO</div>
+      <div style="font-size:11px;color:var(--txt3);margin-bottom:8px">Remove todos os dados da memória e do armazenamento local.</div>
+      <button class="danger-btn" onclick="limparTudo()" style="font-size:14px;padding:13px">🗑 APAGAR TODOS OS DADOS</button>
+    </div>
+
+  </div>
+
+
+  <!-- ═══════════════════ PAINEL DE BORDO ═══════════════════ -->
+  <div class="bordo-overlay" id="bordo-overlay">
+
+    <!-- Cabeçalho fixo -->
+    <div class="bordo-hdr">
+      <div>
+        <div class="bordo-title">🗺️ MAPA DE BORDO</div>
+        <div style="font-size:10px;color:var(--txt3);letter-spacing:1px" id="bordo-hdr-sub">GAFANHOTO NOVO</div>
+      </div>
+      <div class="bordo-clock" id="bordo-relogio">--:--:--</div>
+      <button class="bordo-close" onclick="fecharBordo()">✕ SAIR</button>
+    </div>
+
+    <!-- Progresso geral -->
+    <div class="bordo-progress-wrap">
+      <div class="bordo-progress-row">
+        <span id="bordo-prog-txt">Trecho 0 de 0</span>
+        <span id="bordo-prog-pct">0%</span>
+      </div>
+      <div class="bordo-prog-bg">
+        <div class="bordo-prog-fill" id="bordo-prog-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Tulipa ATUAL -->
+    <div class="bordo-atual" id="bordo-atual-card">
+      <div class="bordo-atual-label" id="bordo-atual-label">EM ANDAMENTO</div>
+      <div class="bordo-atual-nome" id="bordo-atual-nome">—</div>
+
+      <!-- Contagem regressiva -->
+      <div class="bordo-countdown">
+        <div class="bordo-cd-num positivo" id="bordo-cd">--:--</div>
+        <div class="bordo-cd-lbl" id="bordo-cd-lbl">PARA CHEGADA PREVISTA</div>
+      </div>
+
+      <!-- Métricas -->
+      <div class="bordo-met-grid">
+        <div class="bordo-met"><div class="bordo-met-val" id="bordo-dist">—</div><div class="bordo-met-lbl">DISTÂNCIA</div></div>
+        <div class="bordo-met"><div class="bordo-met-val" id="bordo-vel">—</div><div class="bordo-met-lbl">m/min</div></div>
+        <div class="bordo-met"><div class="bordo-met-val" id="bordo-passos">—</div><div class="bordo-met-lbl">PASSOS</div></div>
+      </div>
+
+      <!-- Horários -->
+      <div class="bordo-times">
+        <div class="bordo-time-box bordo-time-prev">
+          <div class="bordo-time-val" id="bordo-prev">--:--</div>
+          <div class="bordo-time-lbl">CHEGADA PREVISTA</div>
+        </div>
+        <div class="bordo-time-box bordo-time-real">
+          <div class="bordo-time-val" id="bordo-real">--:--</div>
+          <div class="bordo-time-lbl">CHEGADA REAL</div>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div class="bordo-status bs-nd" id="bordo-status">AGUARDANDO</div>
+
+      <!-- Botão cheguei -->
+      <button class="bordo-cheguei" id="bordo-btn-cheguei" onclick="bordoCheguei()">
+        ✓ REGISTRAR CHEGADA AGORA
+      </button>
+    </div>
+
+    <!-- PRÓXIMA tulipa -->
+    <div class="bordo-proxima" id="bordo-prox-card" style="display:none">
+      <div class="bordo-prox-label">↓ PRÓXIMO TRECHO</div>
+      <div class="bordo-prox-nome" id="bordo-prox-nome">—</div>
+      <div class="bordo-prox-grid">
+        <div class="bordo-prox-item"><div class="bordo-prox-val" id="bordo-prox-dist">—</div><div class="bordo-prox-lbl">DIST</div></div>
+        <div class="bordo-prox-item"><div class="bordo-prox-val" id="bordo-prox-vel">—</div><div class="bordo-prox-lbl">m/min</div></div>
+        <div class="bordo-prox-item"><div class="bordo-prox-val" id="bordo-prox-tempo">—</div><div class="bordo-prox-lbl">TEMPO</div></div>
+        <div class="bordo-prox-item"><div class="bordo-prox-val" id="bordo-prox-prev">—</div><div class="bordo-prox-lbl">PREV.</div></div>
+      </div>
+    </div>
+
+    <!-- Mini-lista de todas as tulipas -->
+    <div class="bordo-lista">
+      <div class="bordo-lista-title">ROTEIRO COMPLETO</div>
+      <div id="bordo-lista-rows"></div>
+    </div>
+
+  </div>
+
+
+  <!-- ── MODAL EDIÇÃO DE TRECHO ── -->
+  <div class="modal-overlay" id="edit-modal" onclick="fecharModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-hdr">
+        <span class="modal-title" id="edit-modal-title">✏️ EDITAR TRECHO</span>
+        <button class="modal-close" onclick="fecharModal()">✕</button>
+      </div>
+
+      <input type="hidden" id="edit-idx">
+
+      <!-- Campos comuns -->
+      <div class="fld">
+        <span class="lbl">NOME / TULIPA</span>
+        <input class="inp" type="text" id="edit-nome" placeholder="ex: Tulipa 1 — Subida">
+      </div>
+
+      <!-- Campos só para trecho normal -->
+      <div id="edit-fields-trecho">
+        <div class="col2">
+          <div class="fld">
+            <span class="lbl">DIST INICIAL (m)</span>
+            <input class="inp" type="number" id="edit-dist-ini" placeholder="0" inputmode="decimal" step="any">
+          </div>
+          <div class="fld">
+            <span class="lbl">DIST FINAL (m)</span>
+            <input class="inp" type="number" id="edit-dist-fim" placeholder="2500" inputmode="decimal" step="any">
+          </div>
+        </div>
+        <div class="col2">
+          <div class="fld">
+            <span class="lbl">VELOCIDADE (m/min)</span>
+            <input class="inp" type="number" id="edit-vel" placeholder="83.3" inputmode="decimal" step="any">
+          </div>
+          <div class="fld">
+            <span class="lbl">PASSO (cm)</span>
+            <input class="inp" type="number" id="edit-passo" placeholder="70" inputmode="decimal" step="any">
+          </div>
+        </div>
+      </div>
+
+      <!-- Campos só para neutro -->
+      <div id="edit-fields-neutro" style="display:none">
+        <div class="fld">
+          <span class="lbl">DURAÇÃO (min decimal)</span>
+          <input class="inp" type="number" id="edit-neutro-min" placeholder="10.0" inputmode="decimal" step="any">
+          <div class="unit-hint">10.5 = 10min 30seg</div>
+        </div>
+      </div>
+
+      <!-- Chegada real (para trechos normais) -->
+      <div id="edit-chegada-real" class="fld">
+        <span class="lbl">CHEGADA REAL (HH:MM) — opcional</span>
+        <input class="inp" type="time" id="edit-real" style="font-size:20px;padding:12px">
+        <div class="unit-hint">Deixe vazio para apagar a chegada registrada</div>
+      </div>
+
+      <!-- Preview calculado -->
+      <div id="edit-preview" style="display:none;background:var(--surf2);border:1px solid var(--bord);border-radius:8px;padding:10px;margin:8px 0">
+        <div style="font-size:10px;color:var(--txt3);letter-spacing:2px;font-weight:700;margin-bottom:6px">PREVIEW DO CÁLCULO</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px">
+          <div style="text-align:center"><div style="font-size:15px;font-weight:700;color:var(--acc)" id="ep-dist">—</div><div style="font-size:9px;color:var(--txt3);margin-top:2px;font-weight:700">DIST (m)</div></div>
+          <div style="text-align:center"><div style="font-size:15px;font-weight:700;color:var(--acc)" id="ep-tempo">—</div><div style="font-size:9px;color:var(--txt3);margin-top:2px;font-weight:700">TEMPO</div></div>
+          <div style="text-align:center"><div style="font-size:15px;font-weight:700;color:var(--acc)" id="ep-passos">—</div><div style="font-size:9px;color:var(--txt3);margin-top:2px;font-weight:700">PASSOS</div></div>
+          <div style="text-align:center"><div style="font-size:15px;font-weight:700;color:var(--acc)" id="ep-prev">—</div><div style="font-size:9px;color:var(--txt3);margin-top:2px;font-weight:700">CHEGADA PREV.</div></div>
+        </div>
+      </div>
+
+      <button class="modal-save" onclick="salvarEdicao()">✓ SALVAR ALTERAÇÕES</button>
+      <button class="modal-del"  onclick="confirmarRemocao()">🗑 REMOVER ESTE TRECHO</button>
     </div>
   </div>
 
@@ -550,6 +939,7 @@ function goTab(id,el){
   el.classList.add('on');
   window.scrollTo(0,0);
   if(id==='prova') renderProva();
+  if(id==='dados'){ renderPerfis(); }
 }
 
 // ===== INÍCIO =====
@@ -560,7 +950,7 @@ function atualizarInicio(){
   var p=v.split(':');
   inicioMin=parseInt(p[0])*60+parseInt(p[1]);
   document.getElementById('inicio-display').textContent=v;
-  renderAcum();renderProva();
+  renderAcum();renderProva();scheduleAutoSave();
 }
 function minParaHHMM(m){
   if(m===null||m===undefined||isNaN(m))return'--:--';
@@ -799,30 +1189,30 @@ var acEntradas=[];
 function addAoAcumulador(){
   if(!ultimoCalc){alert('Faca um calculo primeiro!');return;}
   acEntradas.push({nome:ultimoCalc.desc,dist:ultimoCalc.dist,tempoMin:ultimoCalc.tempoMin,velMmin:ultimoCalc.velMmin,passos:ultimoCalc.passos});
-  renderAcum();alert('Adicionado!');
+  renderAcum();scheduleAutoSave();alert('Adicionado!');
 }
 function addTempoRapido(){
   var mn=parseFloat(document.getElementById('qt-min').value)||0;
   if(mn<=0){alert('Informe os minutos!');return;}
   acEntradas.push({nome:'Tempo: '+fmtMin(mn)+' ('+mn.toFixed(2)+' min)',dist:0,tempoMin:mn,velMmin:0,passos:0});
-  renderAcum();document.getElementById('qt-min').value='';
+  renderAcum();scheduleAutoSave();document.getElementById('qt-min').value='';
 }
 function addManual(){
   var r=window._manRes;
   if(!r||r.tempoMin<=0){alert('Preencha os campos acima!');return;}
   var nome=document.getElementById('ac-nome').value||('Trecho '+(acEntradas.length+1));
   acEntradas.push({nome:nome,dist:r.dist,tempoMin:r.tempoMin,velMmin:r.velMmin,passos:r.passos});
-  renderAcum();resetManual();
+  renderAcum();scheduleAutoSave();resetManual();
 }
 function resetManual(){
   ['ac-nome','ac-dist','ac-passos','ac-vel','ac-min'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('ac-seg').value='0';document.getElementById('ac-passo-cm').value='70';
   document.getElementById('live-result').classList.remove('show');window._manRes=null;
 }
-function remAcum(i){acEntradas.splice(i,1);renderAcum();}
+function remAcum(i){acEntradas.splice(i,1);renderAcum();scheduleAutoSave();}
 function limparAcum(){
   if(acEntradas.length===0)return;
-  if(confirm('Zerar o acumulado?')){acEntradas=[];renderAcum();}
+  if(confirm('Zerar o acumulado?')){acEntradas=[];renderAcum();scheduleAutoSave();}
 }
 function renderAcum(){
   var entries=document.getElementById('ac-entries');entries.innerHTML='';
@@ -869,7 +1259,7 @@ function addNeutro(){
   recalcHorarios();
   document.getElementById('pn-nome').value='';
   document.getElementById('pn-min').value='';
-  renderProva();
+  renderProva();scheduleAutoSave();
 }
 
 /* Adicionar neutro no acumulado */
@@ -877,7 +1267,7 @@ function addNeutroAcum(){
   var mn = parseFloat(document.getElementById('qn-min').value)||0;
   if(mn<=0){alert('Informe a duração do neutro!');return;}
   acEntradas.push({nome:'⏸ NEUTRO: '+fmtMin(mn)+' ('+mn.toFixed(2)+' min)',dist:0,tempoMin:mn,velMmin:0,passos:0,neutro:true});
-  renderAcum();
+  renderAcum();scheduleAutoSave();
   document.getElementById('qn-min').value='';
 }
 
@@ -915,7 +1305,7 @@ function addTulipa(){
   // Limpar formulário
   ['pt-nome','pt-dist-ini','pt-dist-fim','pt-vel'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('pt-dist-ini').value = dFim; // próxima ini = fim anterior
-  renderProva();
+  renderProva();scheduleAutoSave();
 }
 
 /* Recalcular chegadas previstas em cascata (trechos + neutros) */
@@ -932,7 +1322,7 @@ function remTulipa(i){
   tulipas.splice(i,1);
   recalcHorarios();
   tulipaOpen = -1;
-  renderProva();
+  renderProva();scheduleAutoSave();
 }
 
 /* Expandir/colapsar card */
@@ -947,13 +1337,13 @@ function registrarChegada(i){
   var m   = hhmmParaMin(val);
   if(m===null){alert('Informe o horário no formato HH:MM!');return;}
   tulipas[i].chegadaRealMin = m;
-  renderProva();
+  renderProva();scheduleAutoSave();
 }
 
 /* Limpar chegada real */
 function limparChegada(i){
   tulipas[i].chegadaRealMin = null;
-  renderProva();
+  renderProva();scheduleAutoSave();
 }
 
 /* Marcar hora atual como chegada */
@@ -962,13 +1352,13 @@ function agora(i){
   var h = now.getHours(), m = now.getMinutes();
   tulipas[i].chegadaRealMin = h*60+m;
   document.getElementById('real-input-'+i).value = (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
-  renderProva();
+  renderProva();scheduleAutoSave();
 }
 
 /* Limpar toda a prova */
 function limparProva(){
   if(tulipas.length===0)return;
-  if(confirm('Apagar todos os trechos da prova?')){tulipas=[];tulipaOpen=-1;renderProva();}
+  if(confirm('Apagar todos os trechos da prova?')){tulipas=[];tulipaOpen=-1;renderProva();scheduleAutoSave();}
 }
 
 /* Calcular resumo da prova */
@@ -1042,8 +1432,9 @@ function renderProva(){
           +'  <div class="ttr ttr-prev"><div class="ttr-val">'+(t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'--:--')+'</div><div class="ttr-lbl">CHEGADA APÓS NEUTRO</div></div>'
           +'  <div class="ttr ttr-real" style="opacity:.5"><div class="ttr-val">—</div><div class="ttr-lbl">SEM CHEGADA REAL</div></div>'
           +'</div>'
-          +'<div style="text-align:right;margin-top:8px">'
-          +'  <button class="rem-tulipa" onclick="remTulipa('+i+')">🗑 remover neutro</button>'
+          +'<div style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px">'
+          +'  <button class="edit-tulipa" onclick="abrirEdicao('+i+')">✏️ editar</button>'
+          +'  <button class="rem-tulipa"  onclick="remTulipa('+i+')">🗑 remover</button>'
           +'</div>'
           +'</div>'
         :'');
@@ -1113,8 +1504,9 @@ function renderProva(){
         +'    <button class="apagar-btn" onclick="limparChegada('+i+')">✕</button>'
         +'  </div>'
         // remover
-        +'  <div style="margin-top:8px;text-align:right">'
-        +'    <button class="rem-tulipa" onclick="remTulipa('+i+')">🗑 remover trecho</button>'
+        +'  <div style="margin-top:8px;display:flex;justify-content:flex-end;gap:6px">'
+        +'    <button class="edit-tulipa" onclick="abrirEdicao('+i+')">✏️ editar</button>'
+        +'    <button class="rem-tulipa"  onclick="remTulipa('+i+')">🗑 remover</button>'
         +'  </div>'
         +'</div>'
       : '')
@@ -1303,10 +1695,665 @@ function gerarPDF(){
   setTimeout(function(){win.print();},400);
 }
 
+
+
+
+// =====================================================================
+//  EDIÇÃO DE TRECHO / NEUTRO
+// =====================================================================
+var _editIdx = -1;
+
+/* Abrir modal de edição */
+function abrirEdicao(i){
+  var t = tulipas[i];
+  if(!t) return;
+  _editIdx = i;
+
+  var isNeutro = t.tipo === 'neutro';
+  document.getElementById('edit-idx').value = i;
+  document.getElementById('edit-nome').value  = t.nome || '';
+  document.getElementById('edit-modal-title').textContent = isNeutro ? '✏️ EDITAR NEUTRO' : '✏️ EDITAR TRECHO';
+
+  // Mostrar campos corretos
+  document.getElementById('edit-fields-trecho').style.display  = isNeutro ? 'none' : 'block';
+  document.getElementById('edit-fields-neutro').style.display  = isNeutro ? 'block' : 'none';
+  document.getElementById('edit-chegada-real').style.display   = isNeutro ? 'none' : 'block';
+
+  if(isNeutro){
+    document.getElementById('edit-neutro-min').value = t.tempo || '';
+    document.getElementById('edit-preview').style.display = 'none';
+  } else {
+    document.getElementById('edit-dist-ini').value = t.dIni !== undefined ? t.dIni : '';
+    document.getElementById('edit-dist-fim').value = t.dFim !== undefined ? t.dFim : '';
+    document.getElementById('edit-vel').value       = t.vel   || '';
+    document.getElementById('edit-passo').value     = t.passo || 70;
+    // Chegada real
+    if(t.chegadaRealMin !== null && t.chegadaRealMin !== undefined){
+      document.getElementById('edit-real').value = minParaHHMM(t.chegadaRealMin);
+    } else {
+      document.getElementById('edit-real').value = '';
+    }
+    // Preview inicial
+    atualizarPreviewEdicao();
+  }
+
+  document.getElementById('edit-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Live preview ao digitar
+  ['edit-dist-ini','edit-dist-fim','edit-vel','edit-passo'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.oninput = atualizarPreviewEdicao;
+  });
+}
+
+/* Preview ao vivo no modal */
+function atualizarPreviewEdicao(){
+  var dIni = parseFloat(document.getElementById('edit-dist-ini').value);
+  var dFim = parseFloat(document.getElementById('edit-dist-fim').value);
+  var vel  = parseFloat(document.getElementById('edit-vel').value);
+  var pas  = parseFloat(document.getElementById('edit-passo').value) || 70;
+
+  var prev = document.getElementById('edit-preview');
+  if(isNaN(dIni)||isNaN(dFim)||isNaN(vel)||dFim<=dIni||vel<=0){
+    prev.style.display = 'none'; return;
+  }
+  var dist   = dFim - dIni;
+  var tempo  = dist / vel;
+  var passos = Math.round(dist / (pas / 100));
+
+  // Calcular horário previsto na posição i
+  var acumAntes = 0;
+  tulipas.forEach(function(t, idx){
+    if(idx < _editIdx) acumAntes += t.tempo;
+  });
+  var chegadaPrev = inicioMin !== null ? minParaHHMM(inicioMin + acumAntes + tempo) : '--:--';
+
+  document.getElementById('ep-dist').textContent   = dist.toLocaleString('pt-BR') + ' m';
+  document.getElementById('ep-tempo').textContent  = fmtMin(tempo);
+  document.getElementById('ep-passos').textContent = passos.toLocaleString('pt-BR');
+  document.getElementById('ep-prev').textContent   = chegadaPrev;
+  prev.style.display = 'block';
+}
+
+/* Salvar edição */
+function salvarEdicao(){
+  var i = parseInt(document.getElementById('edit-idx').value);
+  if(isNaN(i) || i < 0 || i >= tulipas.length){ fecharModal(); return; }
+
+  var t       = tulipas[i];
+  var isNeutro= t.tipo === 'neutro';
+  var nome    = document.getElementById('edit-nome').value.trim();
+  if(!nome){ alert('Informe o nome!'); return; }
+
+  if(isNeutro){
+    var dur = parseFloat(document.getElementById('edit-neutro-min').value);
+    if(isNaN(dur)||dur<=0){ alert('Informe a duração!'); return; }
+    tulipas[i].nome  = nome;
+    tulipas[i].tempo = dur;
+  } else {
+    var dIni = parseFloat(document.getElementById('edit-dist-ini').value);
+    var dFim = parseFloat(document.getElementById('edit-dist-fim').value);
+    var vel  = parseFloat(document.getElementById('edit-vel').value);
+    var pas  = parseFloat(document.getElementById('edit-passo').value) || 70;
+
+    if(isNaN(dIni)||isNaN(dFim)){ alert('Informe as distâncias!'); return; }
+    if(dFim<=dIni){ alert('Distância final deve ser maior que a inicial!'); return; }
+    if(isNaN(vel)||vel<=0){ alert('Informe a velocidade!'); return; }
+
+    var dist   = dFim - dIni;
+    var tempo  = dist / vel;
+    var passos = Math.round(dist / (pas / 100));
+
+    tulipas[i].nome   = nome;
+    tulipas[i].dIni   = dIni;
+    tulipas[i].dFim   = dFim;
+    tulipas[i].dist   = dist;
+    tulipas[i].vel    = vel;
+    tulipas[i].passo  = pas;
+    tulipas[i].tempo  = tempo;
+    tulipas[i].passos = passos;
+
+    // Chegada real
+    var realVal = document.getElementById('edit-real').value;
+    tulipas[i].chegadaRealMin = realVal ? hhmmParaMin(realVal) : null;
+  }
+
+  // Recalcular toda a cascata de horários
+  recalcHorarios();
+  fecharModal();
+  renderProva();
+  scheduleAutoSave();
+
+  // Se o bordo está aberto, atualizar também
+  if(bordoAberto) bordoRenderTudo();
+}
+
+/* Confirmar remoção pelo modal */
+function confirmarRemocao(){
+  var i = parseInt(document.getElementById('edit-idx').value);
+  if(isNaN(i)) return;
+  var nome = tulipas[i] ? tulipas[i].nome : 'este trecho';
+  if(!confirm('Remover "' + nome + '"?')) return;
+  fecharModal();
+  remTulipa(i);
+}
+
+/* Fechar modal */
+function fecharModal(event){
+  if(event && event.target !== document.getElementById('edit-modal')) return;
+  document.getElementById('edit-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  _editIdx = -1;
+  // Limpar listeners de preview
+  ['edit-dist-ini','edit-dist-fim','edit-vel','edit-passo'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.oninput = null;
+  });
+}
+
+// =====================================================================
+//  PAINEL DE BORDO — MAPA EM TEMPO REAL
+// =====================================================================
+var bordoAberto    = false;
+var bordoIdx       = 0;      // índice da tulipa atual
+var bordoInterval  = null;   // timer principal (1s)
+var bordoRelogioIv = null;   // timer do relógio
+
+/* Abrir bordo */
+function abrirBordo(){
+  var trechos = tulipas.filter(function(t){return true;});
+  if(trechos.length === 0){
+    alert('Cadastre os trechos da prova antes de iniciar o mapa de bordo!');
+    return;
+  }
+  if(inicioMin === null){
+    alert('Defina o horário de início da prova antes de iniciar o bordo!');
+    return;
+  }
+
+  // Encontrar primeiro trecho não concluído
+  var primeiro = 0;
+  for(var i=0;i<tulipas.length;i++){
+    if(tulipas[i].chegadaRealMin === null){ primeiro=i; break; }
+    if(i===tulipas.length-1) primeiro=i;
+  }
+  bordoIdx = primeiro;
+  bordoAberto = true;
+  document.getElementById('bordo-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  bordoRenderTudo();
+
+  // Ticker a cada segundo
+  bordoInterval = setInterval(bordoTick, 1000);
+  // Relógio
+  bordoRelogioIv = setInterval(bordoAtualizaRelogio, 1000);
+  bordoAtualizaRelogio();
+}
+
+/* Fechar bordo */
+function fecharBordo(){
+  bordoAberto = false;
+  clearInterval(bordoInterval);
+  clearInterval(bordoRelogioIv);
+  document.getElementById('bordo-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* Relógio em tempo real */
+function bordoAtualizaRelogio(){
+  var n=new Date(),h=n.getHours(),m=n.getMinutes(),s=n.getSeconds();
+  document.getElementById('bordo-relogio').textContent =
+    (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+
+/* Tick principal — atualiza contagem regressiva e status */
+function bordoTick(){
+  if(!bordoAberto) return;
+  var t = tulipas[bordoIdx];
+  if(!t) return;
+
+  var now = new Date();
+  var nowMin = now.getHours()*60 + now.getMinutes() + now.getSeconds()/60;
+
+  if(t.tipo === 'neutro'){
+    // Neutro: mostrar tempo restante do neutro
+    var fimNeutro = t.chegadaPrevMin;
+    if(fimNeutro !== null){
+      var diffMin = fimNeutro - nowMin;
+      bordoSetCountdown(diffMin, 'neutro');
+    }
+    bordoRenderLista();
+    return;
+  }
+
+  // Trecho normal
+  var chegadaPrev = t.chegadaPrevMin;
+  if(chegadaPrev === null){ bordoRenderLista(); return; }
+
+  var restante = chegadaPrev - nowMin;
+
+  // Status baseado na chegada real ou na previsão
+  if(t.chegadaRealMin !== null){
+    // Já chegou — mostrar diferença
+    var diff = t.chegadaRealMin - chegadaPrev;
+    var absDiff = Math.abs(diff);
+    var statusTxt, statusCls;
+    if(absDiff <= 0.25)      { statusTxt = '✅ NO TEMPO';    statusCls = 'bs-ok'; }
+    else if(absDiff <= 0.5)  { statusTxt = '⚠️ ATENÇÃO';    statusCls = 'bs-warn'; }
+    else if(diff > 0)        { statusTxt = '🐢 ATRASADO ' + fmtDiff(diff); statusCls = 'bs-late'; }
+    else                     { statusTxt = '🐇 ADIANTADO ' + fmtDiff(diff); statusCls = 'bs-warn'; }
+    document.getElementById('bordo-status').textContent = statusTxt;
+    document.getElementById('bordo-status').className   = 'bordo-status ' + statusCls;
+    document.getElementById('bordo-real').textContent   = minParaHHMM(t.chegadaRealMin);
+    bordoSetCountdown(0, 'chegou');
+    document.getElementById('bordo-cd-lbl').textContent = 'CHEGADA REGISTRADA';
+    document.getElementById('bordo-btn-cheguei').textContent = '→ AVANÇAR PARA PRÓXIMO';
+    document.getElementById('bordo-btn-cheguei').className   = 'bordo-cheguei bordo-cheguei-warn';
+  } else {
+    // Ainda não chegou
+    document.getElementById('bordo-real').textContent = '--:--';
+    document.getElementById('bordo-btn-cheguei').textContent = '✓ REGISTRAR CHEGADA AGORA';
+    document.getElementById('bordo-btn-cheguei').className   = 'bordo-cheguei';
+
+    if(restante > 2){
+      bordoSetCountdown(restante, 'positivo');
+      document.getElementById('bordo-status').textContent = '🟢 NO CAMINHO';
+      document.getElementById('bordo-status').className   = 'bordo-status bs-ok';
+    } else if(restante > 0){
+      bordoSetCountdown(restante, 'aviso');
+      document.getElementById('bordo-status').textContent = '⚠️ CHEGADA IMINENTE!';
+      document.getElementById('bordo-status').className   = 'bordo-status bs-warn';
+    } else {
+      bordoSetCountdown(restante, 'atrasado');
+      document.getElementById('bordo-status').textContent = '🔴 ATRASADO ' + fmtDiff(restante);
+      document.getElementById('bordo-status').className   = 'bordo-status bs-late';
+    }
+    document.getElementById('bordo-cd-lbl').textContent = restante >= 0 ? 'PARA CHEGADA PREVISTA' : 'ALÉM DO PREVISTO';
+  }
+
+  bordoRenderLista();
+}
+
+/* Formatar contagem regressiva */
+function bordoSetCountdown(minDecimal, tipo){
+  var cd = document.getElementById('bordo-cd');
+  if(tipo === 'chegou'){ cd.textContent = '✓'; cd.className = 'bordo-cd-num positivo'; return; }
+  var abs = Math.abs(minDecimal);
+  var m   = Math.floor(abs);
+  var s   = Math.round((abs - m) * 60);
+  if(s === 60){ m++; s = 0; }
+  var neg = minDecimal < 0 ? '-' : '';
+  cd.textContent = neg + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  cd.className   = 'bordo-cd-num ' + tipo;
+}
+
+/* Render completo do bordo */
+function bordoRenderTudo(){
+  var t    = tulipas[bordoIdx];
+  var prox = tulipas[bordoIdx + 1] || null;
+  var total= tulipas.length;
+  var done = tulipas.filter(function(x,i){ return i < bordoIdx && x.chegadaRealMin !== null; }).length;
+
+  // Progresso
+  var pct = total > 0 ? Math.round((bordoIdx / total) * 100) : 0;
+  document.getElementById('bordo-prog-txt').textContent  = 'Trecho ' + (bordoIdx+1) + ' de ' + total;
+  document.getElementById('bordo-prog-pct').textContent  = pct + '%';
+  document.getElementById('bordo-prog-fill').style.width = pct + '%';
+  document.getElementById('bordo-hdr-sub').textContent   =
+    'INICIO: ' + (inicioMin !== null ? minParaHHMM(inicioMin) : '--:--') + '  |  ' + done + ' concluídos';
+
+  if(!t){ document.getElementById('bordo-atual-nome').textContent='PROVA CONCLUÍDA ✓'; return; }
+
+  // Tulipa atual
+  if(t.tipo === 'neutro'){
+    document.getElementById('bordo-atual-label').textContent = '⏸ NEUTRO / DESCANSO';
+    document.getElementById('bordo-atual-nome').textContent  = t.nome;
+    document.getElementById('bordo-dist').textContent  = '—';
+    document.getElementById('bordo-vel').textContent   = '—';
+    document.getElementById('bordo-passos').textContent= '—';
+    document.getElementById('bordo-prev').textContent  = t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'--:--';
+    document.getElementById('bordo-real').textContent  = '--:--';
+    document.getElementById('bordo-status').textContent= '⏸ DESCANSO — ' + fmtMin(t.tempo);
+    document.getElementById('bordo-status').className  = 'bordo-status bs-neutro';
+    document.getElementById('bordo-cd-lbl').textContent= 'FIM DO NEUTRO PREVISTO';
+    document.getElementById('bordo-btn-cheguei').textContent = '→ AVANÇAR (NEUTRO CUMPRIDO)';
+    document.getElementById('bordo-btn-cheguei').className   = 'bordo-cheguei bordo-cheguei-warn';
+  } else {
+    document.getElementById('bordo-atual-label').textContent = '🏃 TRECHO ATUAL — ' + (bordoIdx+1) + '/' + total;
+    document.getElementById('bordo-atual-nome').textContent  = t.nome;
+    document.getElementById('bordo-dist').textContent  = t.dist>0?t.dist.toLocaleString('pt-BR')+' m':'—';
+    document.getElementById('bordo-vel').textContent   = t.vel>0?t.vel.toFixed(1):'—';
+    document.getElementById('bordo-passos').textContent= t.passos>0?t.passos.toLocaleString('pt-BR'):'—';
+    document.getElementById('bordo-prev').textContent  = t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'--:--';
+    document.getElementById('bordo-real').textContent  = t.chegadaRealMin!==null?minParaHHMM(t.chegadaRealMin):'--:--';
+    document.getElementById('bordo-btn-cheguei').textContent = '✓ REGISTRAR CHEGADA AGORA';
+    document.getElementById('bordo-btn-cheguei').className   = 'bordo-cheguei';
+  }
+
+  // Próxima tulipa
+  var pc = document.getElementById('bordo-prox-card');
+  if(prox){
+    pc.style.display = 'block';
+    document.getElementById('bordo-prox-nome').textContent  = (prox.tipo==='neutro'?'⏸ NEUTRO: ':'')+prox.nome;
+    document.getElementById('bordo-prox-dist').textContent  = prox.dist>0?prox.dist.toLocaleString('pt-BR')+' m':'—';
+    document.getElementById('bordo-prox-vel').textContent   = prox.vel>0?prox.vel.toFixed(1)+' m/min':'neutro';
+    document.getElementById('bordo-prox-tempo').textContent = fmtMin(prox.tempo);
+    document.getElementById('bordo-prox-prev').textContent  = prox.chegadaPrevMin!==null?minParaHHMM(prox.chegadaPrevMin):'--:--';
+  } else {
+    pc.style.display = 'none';
+  }
+
+  bordoRenderLista();
+  bordoTick(); // forçar atualização imediata
+}
+
+/* Renderizar mini-lista do roteiro */
+function bordoRenderLista(){
+  var rows = document.getElementById('bordo-lista-rows');
+  rows.innerHTML = '';
+  tulipas.forEach(function(t,i){
+    var div = document.createElement('div');
+    var cls, stBadge='', stCls='';
+
+    if(t.tipo === 'neutro'){
+      cls = 'bordo-row br-neutro';
+      stBadge = '⏸'; stCls = 'brs-neutro';
+    } else if(i < bordoIdx){
+      // Concluído
+      cls = 'bordo-row br-done';
+      if(t.chegadaRealMin !== null && t.chegadaPrevMin !== null){
+        var d=Math.abs(t.chegadaRealMin-t.chegadaPrevMin);
+        stBadge=d<=0.25?'✅':(d<=0.5?'⚠️':'🔴');
+        stCls=d<=0.25?'brs-ok':(d<=0.5?'brs-warn':'brs-late');
+      } else { stBadge='✓'; stCls='brs-ok'; }
+    } else if(i === bordoIdx){
+      cls='bordo-row br-atual';
+      stBadge='▶ AGORA'; stCls='brs-curr';
+    } else {
+      cls='bordo-row br-pend';
+      stBadge='⏳'; stCls='brs-pend';
+    }
+
+    div.className = cls;
+    div.innerHTML =
+      '<span class="bordo-row-num">'+(i+1)+'</span>'
+      +'<span class="bordo-row-nome">'+(t.tipo==='neutro'?'⏸ ':'')+t.nome+'</span>'
+      +'<span class="bordo-row-prev">'+(t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'—')+'</span>'
+      +'<span class="bordo-row-status '+stCls+'">'+stBadge+'</span>';
+
+    // Click para navegar
+    (function(idx){ div.onclick = function(){ bordoIrPara(idx); }; })(i);
+    rows.appendChild(div);
+  });
+}
+
+/* Registrar chegada pelo bordo */
+function bordoCheguei(){
+  var t = tulipas[bordoIdx];
+  if(!t) return;
+
+  if(t.chegadaRealMin !== null || t.tipo === 'neutro'){
+    // Já registrado ou neutro — avançar para próximo
+    bordoAvancar();
+    return;
+  }
+
+  // Registrar hora atual
+  var now = new Date();
+  tulipas[bordoIdx].chegadaRealMin = now.getHours()*60 + now.getMinutes();
+  scheduleAutoSave();
+  bordoRenderTudo();
+}
+
+/* Avançar para próxima tulipa */
+function bordoAvancar(){
+  if(bordoIdx < tulipas.length - 1){
+    bordoIdx++;
+    bordoRenderTudo();
+    // Scroll para o topo do overlay
+    document.getElementById('bordo-overlay').scrollTo({top:0,behavior:'smooth'});
+  } else {
+    // Prova concluída!
+    document.getElementById('bordo-atual-nome').textContent = '🏁 PROVA CONCLUÍDA!';
+    document.getElementById('bordo-status').textContent = '🏆 PARABÉNS!';
+    document.getElementById('bordo-status').className   = 'bordo-status bs-ok';
+    document.getElementById('bordo-btn-cheguei').style.display = 'none';
+    bordoRenderLista();
+    clearInterval(bordoInterval);
+    scheduleAutoSave();
+  }
+}
+
+/* Navegar diretamente para uma tulipa */
+function bordoIrPara(idx){
+  bordoIdx = idx;
+  bordoRenderTudo();
+  document.getElementById('bordo-overlay').scrollTo({top:0,behavior:'smooth'});
+}
+
+// =====================================================================
+//  SISTEMA DE STORAGE — LocalStorage + Perfis + Export/Import
+// =====================================================================
+var STORAGE_KEY = 'trekcalc_gafanhoto_v1';
+var PERFIS_KEY  = 'trekcalc_perfis_v1';
+var perfilAtivo = null;  // nome do perfil carregado
+
+/* Serializar estado atual */
+function estadoAtual(){
+  return {
+    versao: 1,
+    ts: Date.now(),
+    inicioMin: inicioMin,
+    inicioVal: document.getElementById('inicio-time').value || '',
+    acEntradas: acEntradas,
+    tulipas: tulipas,
+    isDark: isDark
+  };
+}
+
+/* Restaurar estado */
+function restaurarEstado(e){
+  if(!e||e.versao!==1) return false;
+  try{
+    // Início da prova
+    inicioMin = e.inicioMin || null;
+    document.getElementById('inicio-display').textContent =
+      inicioMin !== null ? minParaHHMM(inicioMin) : '--:--';
+    if(e.inicioVal) document.getElementById('inicio-time').value = e.inicioVal;
+
+    // Dados
+    acEntradas = e.acEntradas || [];
+    tulipas    = e.tulipas    || [];
+
+    // Tema
+    if(typeof e.isDark !== 'undefined'){
+      isDark = e.isDark;
+      document.body.classList.toggle('light', !isDark);
+      document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
+    }
+
+    renderAcum();
+    renderProva();
+    return true;
+  } catch(err){ console.error('Erro ao restaurar:', err); return false; }
+}
+
+/* Auto-save — chamado sempre que dados mudam */
+function autoSave(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(estadoAtual()));
+  } catch(err){ console.warn('AutoSave falhou:', err); }
+}
+
+/* Carregar auto-save na inicialização */
+function carregarAutoSave(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      var e = JSON.parse(raw);
+      return restaurarEstado(e);
+    }
+  } catch(err){ console.warn('AutoSave corrompido:', err); }
+  return false;
+}
+
+/* Salvar perfil nomeado */
+function salvarPerfil(){
+  var nome = document.getElementById('perfil-nome-inp').value.trim();
+  if(!nome){ alert('Informe o nome do competidor/perfil!'); return; }
+  var perfis = carregarPerfis();
+  perfis[nome] = estadoAtual();
+  perfis[nome].nomePerfil = nome;
+  localStorage.setItem(PERFIS_KEY, JSON.stringify(perfis));
+  perfilAtivo = nome;
+  autoSave();
+  renderPerfis();
+  alert('Perfil "' + nome + '" salvo!');
+}
+
+/* Atualizar auto-save manualmente */
+function salvarAuto(){
+  autoSave();
+  var btn = event.target;
+  var orig = btn.textContent;
+  btn.textContent = '✓ SALVO!';
+  setTimeout(function(){ btn.textContent = orig; }, 1500);
+}
+
+/* Carregar lista de perfis */
+function carregarPerfis(){
+  try{
+    var raw = localStorage.getItem(PERFIS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e){ return {}; }
+}
+
+/* Carregar um perfil */
+function carregarPerfil(nome){
+  var perfis = carregarPerfis();
+  if(!perfis[nome]){ alert('Perfil não encontrado!'); return; }
+  if(!confirm('Carregar o perfil "' + nome + '"?\nOs dados atuais não salvos serão perdidos.')){ return; }
+  if(restaurarEstado(perfis[nome])){
+    perfilAtivo = nome;
+    autoSave();
+    renderPerfis();
+    alert('Perfil "' + nome + '" carregado!');
+  }
+}
+
+/* Remover perfil */
+function removerPerfil(nome){
+  if(!confirm('Remover o perfil "' + nome + '"?')) return;
+  var perfis = carregarPerfis();
+  delete perfis[nome];
+  localStorage.setItem(PERFIS_KEY, JSON.stringify(perfis));
+  if(perfilAtivo === nome) perfilAtivo = null;
+  renderPerfis();
+}
+
+/* Renderizar lista de perfis */
+function renderPerfis(){
+  var perfis = carregarPerfis();
+  var nomes  = Object.keys(perfis);
+  var lista  = document.getElementById('perfis-lista');
+  if(!lista) return;
+  if(nomes.length === 0){
+    lista.innerHTML = '<div style="color:var(--txt3);font-size:13px;text-align:center;padding:16px">Nenhum perfil salvo ainda.</div>';
+    return;
+  }
+  lista.innerHTML = '';
+  nomes.forEach(function(nome){
+    var p  = perfis[nome];
+    var ts = p.ts ? new Date(p.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
+    var nTrechos = (p.tulipas||[]).length;
+    var nAcum    = (p.acEntradas||[]).length;
+    var isAtivo  = (nome === perfilAtivo);
+    var div = document.createElement('div');
+    div.className = 'perfil-card' + (isAtivo ? ' ativo' : '');
+    div.innerHTML =
+      '<div class="perfil-info">'
+      + '<div class="perfil-nome">👤 ' + nome + '</div>'
+      + '<div class="perfil-meta">Salvo: '+ts+' | '+nTrechos+' trechos | '+nAcum+' acum.</div>'
+      + '</div>'
+      + (isAtivo ? '<span class="perfil-ativo-badge">ATIVO</span>' : '')
+      + '<div class="perfil-btns">'
+      + '<button class="perfil-btn pb-load" onclick="carregarPerfil(\''+nome.replace(/'/g,"\\'")+'\')"  >▶ USAR</button>'
+      + '<button class="perfil-btn pb-del"  onclick="removerPerfil(\''+nome.replace(/'/g,"\\'")+'\')"  >✕</button>'
+      + '</div>';
+    lista.appendChild(div);
+  });
+}
+
+/* Exportar dados como JSON codificado em base64 */
+function exportarDados(){
+  var json   = JSON.stringify(estadoAtual());
+  var b64    = btoa(unescape(encodeURIComponent(json)));
+  var codigo = 'TREKCALC:' + b64;
+  document.getElementById('export-txt').value = codigo;
+  document.getElementById('export-box').style.display = 'block';
+}
+
+/* Copiar código de exportação */
+function copiarExport(){
+  var txt = document.getElementById('export-txt');
+  txt.select();
+  try{
+    document.execCommand('copy');
+    alert('Código copiado! Cole no WhatsApp ou email.');
+  } catch(e){
+    // Fallback moderno
+    navigator.clipboard && navigator.clipboard.writeText(txt.value)
+      .then(function(){ alert('Código copiado!'); })
+      .catch(function(){ alert('Selecione o texto e copie manualmente.'); });
+  }
+}
+
+/* Importar código recebido */
+function importarDados(){
+  var raw = document.getElementById('import-txt').value.trim();
+  if(!raw){ alert('Cole o código antes de importar!'); return; }
+  try{
+    var b64  = raw.startsWith('TREKCALC:') ? raw.slice(9) : raw;
+    var json = decodeURIComponent(escape(atob(b64)));
+    var e    = JSON.parse(json);
+    if(e.versao !== 1){ alert('Código inválido ou incompatível!'); return; }
+    if(!confirm('Importar dados?\nOs dados atuais serão substituídos.')){ return; }
+    restaurarEstado(e);
+    autoSave();
+    document.getElementById('import-txt').value = '';
+    alert('Dados importados com sucesso!');
+  } catch(err){
+    alert('Erro ao importar: código inválido.\n' + err.message);
+  }
+}
+
+/* Limpar tudo */
+function limparTudo(){
+  if(!confirm('Apagar TODOS os dados e perfis?\nEsta ação não pode ser desfeita.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(PERFIS_KEY);
+  acEntradas = []; tulipas = []; inicioMin = null; perfilAtivo = null;
+  document.getElementById('inicio-time').value   = '';
+  document.getElementById('inicio-display').textContent = '--:--';
+  renderAcum(); renderProva(); renderPerfis();
+  alert('Todos os dados foram apagados.');
+}
+
+/* Gotas de auto-save ao mudar dados sensíveis */
+var _autoSaveTimer = null;
+function scheduleAutoSave(){
+  clearTimeout(_autoSaveTimer);
+  _autoSaveTimer = setTimeout(autoSave, 600);
+}
+
 // init
 setManualModo('dvt',document.getElementById('mm-dvt'));
+carregarAutoSave();   // restaurar dados salvos
 renderAcum();
 renderProva();
+renderPerfis();
 </script>
 </body>
 </html>
