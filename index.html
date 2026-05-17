@@ -148,6 +148,7 @@ select.inp option{background:var(--surf);color:var(--txt)}
 .acc-total{background:var(--meta-bg);border:1.5px solid var(--acc3);border-radius:10px;padding:12px;margin-bottom:8px;text-align:center}
 .acc-total-v{font-size:36px;font-weight:700;color:var(--acc);line-height:1}
 .acc-total-l{font-size:11px;color:var(--txt3);letter-spacing:2px;margin-top:4px;font-weight:700}
+.acc-total-h{font-size:17px;font-weight:700;color:var(--txt2);margin-top:7px;letter-spacing:1px}
 .acc-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
 .acc-sub{background:var(--surf2);border:1px solid var(--bord);border-radius:8px;padding:9px;text-align:center}
 .acc-sub.hl{background:var(--meta-bg);border-color:var(--warn)}
@@ -432,6 +433,41 @@ select.inp option{background:var(--surf);color:var(--txt)}
 .edit-tulipa:hover{border-color:var(--acc);color:var(--acc)}
 .edit-tulipa:active{background:var(--surf2)}
 
+
+/* ── FLAGS: PC e VIRTUAL ── */
+.flag-pc{display:inline-flex;align-items:center;gap:4px;
+  background:#0a0d2e;border:1.5px solid var(--info);border-radius:20px;
+  padding:3px 10px;font-size:11px;font-weight:700;color:var(--info);
+  letter-spacing:1px;flex-shrink:0}
+.flag-virtual{display:inline-flex;align-items:center;gap:4px;
+  background:#2e0a2e;border:1.5px solid #cc44ff;border-radius:20px;
+  padding:3px 10px;font-size:11px;font-weight:700;color:#cc44ff;
+  letter-spacing:1px;flex-shrink:0}
+.flag-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+
+/* Checkboxes estilizados */
+.flag-check-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.flag-check{display:flex;align-items:center;gap:7px;cursor:pointer;
+  background:var(--surf2);border:1.5px solid var(--bord);border-radius:8px;
+  padding:10px 14px;transition:border-color .15s;flex:1;min-width:120px}
+.flag-check:hover{border-color:var(--bord2)}
+.flag-check input[type=checkbox]{width:20px;height:20px;cursor:pointer;
+  accent-color:var(--acc);flex-shrink:0}
+.flag-check.fc-pc   input{accent-color:var(--info)}
+.flag-check.fc-virt input{accent-color:#cc44ff}
+.flag-check .fc-lbl{font-size:13px;font-weight:700;line-height:1.2}
+.flag-check .fc-sub{font-size:10px;color:var(--txt3);margin-top:2px}
+.flag-check.fc-pc   .fc-lbl{color:var(--info)}
+.flag-check.fc-virt .fc-lbl{color:#cc44ff}
+
+/* Card virtual — visual diferente */
+.tulipa-card.is-virtual{border-style:dashed}
+.tulipa-card.is-virtual .tulipa-hdr{background:repeating-linear-gradient(
+  45deg,var(--surf2),var(--surf2) 4px,var(--surf3) 4px,var(--surf3) 8px)}
+
+/* Bordo — indicadores */
+.bordo-flag-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+
 .tb-panel{display:none}
 .tb-panel.on{display:block}
 ::-webkit-scrollbar{width:4px}
@@ -571,7 +607,7 @@ select.inp option{background:var(--surf);color:var(--txt)}
 
   <!-- ========== ACUMULADO ========== -->
   <div class="tb-panel" id="tb-acum">
-    <div class="acc-total"><div class="acc-total-v" id="ac-total-t">0:00</div><div class="acc-total-l">TEMPO ACUMULADO</div></div>
+    <div class="acc-total"><div class="acc-total-v" id="ac-total-t">0:00</div><div class="acc-total-l">TEMPO ACUMULADO (min:seg)</div><div class="acc-total-h" id="ac-total-h">0h 00min</div><div class="acc-total-l" style="font-size:10px;margin-top:1px">HORAS</div></div>
     <div class="acc-grid">
       <div class="acc-sub hl"><div class="acc-sub-v warn" id="ac-inicio-val">--:--</div><div class="acc-sub-l">INICIO DA PROVA</div></div>
       <div class="acc-sub hl"><div class="acc-sub-v warn" id="ac-fim-val">--:--</div><div class="acc-sub-l">HORARIO CHEGADA</div></div>
@@ -677,6 +713,19 @@ select.inp option{background:var(--surf);color:var(--txt)}
       <div class="col2">
         <div class="fld"><span class="lbl">VELOCIDADE (m/min)</span><input class="inp" type="number" id="pt-vel" placeholder="ex: 83.3" inputmode="decimal" step="any"><div class="unit-hint">deste trecho</div></div>
         <div class="fld"><span class="lbl">PASSO (cm)</span><input class="inp" type="number" id="pt-passo" value="70" inputmode="decimal" step="any"><div class="unit-hint">comprimento</div></div>
+      </div>
+      <div class="flag-check-row">
+        <label class="flag-check fc-virt">
+          <input type="checkbox" id="pt-virtual" onchange="toggleVirtualDist()">
+          <div><div class="fc-lbl">🟣 VIRTUAL</div><div class="fc-sub">Trecho sem marcação física</div></div>
+        </label>
+      </div>
+      <div id="pt-virtual-dist-wrap" style="display:none">
+        <div class="fld">
+          <span class="lbl" style="color:#cc44ff">DISTÂNCIA DO VIRTUAL (metros)</span>
+          <input class="inp" type="number" id="pt-virtual-dist" placeholder="ex: 1200" inputmode="decimal" step="any" style="border-color:#cc44ff">
+          <div class="unit-hint" style="color:#cc44ff">Distância definida pelo organizador para este virtual</div>
+        </div>
       </div>
       <button class="go-btn" onclick="addTulipa()">+ ADICIONAR TRECHO</button>
     </div>
@@ -910,6 +959,19 @@ select.inp option{background:var(--surf);color:var(--txt)}
         </div>
       </div>
 
+      <div class="flag-check-row" id="edit-flags-row">
+        <label class="flag-check fc-virt">
+          <input type="checkbox" id="edit-virtual" onchange="toggleEditVirtualDist()">
+          <div><div class="fc-lbl">🟣 VIRTUAL</div><div class="fc-sub">Trecho sem marcação física</div></div>
+        </label>
+      </div>
+      <div id="edit-virtual-dist-wrap" style="display:none">
+        <div class="fld">
+          <span class="lbl" style="color:#cc44ff">DISTÂNCIA DO VIRTUAL (metros)</span>
+          <input class="inp" type="number" id="edit-virtual-dist" placeholder="ex: 1200" inputmode="decimal" step="any" style="border-color:#cc44ff">
+          <div class="unit-hint" style="color:#cc44ff">Distância definida pelo organizador</div>
+        </div>
+      </div>
       <button class="modal-save" onclick="salvarEdicao()">✓ SALVAR ALTERAÇÕES</button>
       <button class="modal-del"  onclick="confirmarRemocao()">🗑 REMOVER ESTE TRECHO</button>
     </div>
@@ -1230,6 +1292,10 @@ function renderAcum(){
   var ini=inicioMin!==null?minParaHHMM(inicioMin):'--:--';
   document.getElementById('ac-total-t').textContent=fmtMin(tm);
   document.getElementById('ac-total-tmin').textContent=tm.toFixed(2)+' min';
+  var _h=Math.floor(tm/60),_m=Math.floor(tm%60),_s=Math.round((tm-Math.floor(tm))*60);
+  if(_s===60){_m++;_s=0;}if(_m===60){_h++;_m=0;}
+  document.getElementById('ac-total-h').textContent=
+    _h+'h '+(_m<10?'0':'')+_m+'min'+(_s>0?' '+(_s<10?'0':'')+_s+'s':'');
   document.getElementById('ac-total-d').textContent=td>0?td.toLocaleString('pt-BR')+' m':'— m';
   document.getElementById('ac-total-p').textContent=tp>0?tp.toLocaleString('pt-BR'):'—';
   document.getElementById('ac-total-vel').textContent=vm;
@@ -1271,6 +1337,32 @@ function addNeutroAcum(){
   document.getElementById('qn-min').value='';
 }
 
+/* Toggle PC no trecho — marcado durante a prova */
+function togglePC(i){
+  if(!tulipas[i]) return;
+  tulipas[i].temPC = !tulipas[i].temPC;
+  scheduleAutoSave();
+  renderProva();
+  if(bordoAberto) bordoRenderTudo();
+}
+
+/* Mostrar/ocultar campo de distância do virtual no formulário */
+function toggleVirtualDist(){
+  var cb=document.getElementById('pt-virtual');
+  var wrap=document.getElementById('pt-virtual-dist-wrap');
+  wrap.style.display=cb.checked?'block':'none';
+  if(!cb.checked)document.getElementById('pt-virtual-dist').value='';
+}
+
+/* Mostrar/ocultar campo de distância do virtual no modal */
+function toggleEditVirtualDist(){
+  var cb=document.getElementById('edit-virtual');
+  var wrap=document.getElementById('edit-virtual-dist-wrap');
+  wrap.style.display=cb.checked?'block':'none';
+  if(!cb.checked)document.getElementById('edit-virtual-dist').value='';
+  atualizarPreviewEdicao();
+}
+
 /* Adicionar novo trecho */
 function addTulipa(){
   var nome  = document.getElementById('pt-nome').value.trim();
@@ -1292,12 +1384,22 @@ function addTulipa(){
   var tempoAcumAntes = tulipas.reduce(function(s,t){return s+t.tempo;},0);
   var chegadaPrevMin = inicioMin !== null ? inicioMin + tempoAcumAntes + tempo : null;
 
+  var ehVirtual  = document.getElementById('pt-virtual').checked;
+  // Virtual é apenas informativo — NÃO altera dist/tempo/passos
+  var virtualDist = ehVirtual ? (parseFloat(document.getElementById('pt-virtual-dist').value)||0) : 0;
+
   tulipas.push({
     nome:nome, dIni:dIni, dFim:dFim, dist:dist,
     vel:vel, passo:passo, tempo:tempo, passos:passos,
     chegadaPrevMin:chegadaPrevMin,
-    chegadaRealMin:null   // preenchido pelo usuário durante a prova
+    chegadaRealMin:null,
+    temPC:false, virtual:ehVirtual, virtualDist:virtualDist
   });
+
+  // Resetar campos
+  document.getElementById('pt-virtual').checked = false;
+  document.getElementById('pt-virtual-dist').value = '';
+  document.getElementById('pt-virtual-dist-wrap').style.display = 'none';
 
   // Recalcular horários previstos de todos (cascata)
   recalcHorarios();
@@ -1470,12 +1572,14 @@ function renderProva(){
     var realVal  = t.chegadaRealMin!==null ? minParaHHMM(t.chegadaRealMin) : '';
 
     var card = document.createElement('div');
-    card.className = 'tulipa-card '+(isOpen?'open ':'')+statusClass;
+    card.className = 'tulipa-card '+(isOpen?'open ':'')+statusClass+(t.virtual?' is-virtual':'');
     card.innerHTML =
       '<div class="tulipa-hdr" onclick="toggleTulipa('+i+')">'
       +'  <span class="tulipa-num">TULIPA '+(i+1)+'</span>'
       +'  <span class="tulipa-nome">'+t.nome+'</span>'
       +'  <span class="tulipa-status-badge '+badgeClass+'">'+badgeTxt+'</span>'
+      +(t.virtual?'<span class="flag-virtual" style="font-size:10px;padding:2px 7px">🟣</span>':'')
+      +(t.temPC?'<span class="flag-pc" style="font-size:10px;padding:2px 7px">🔵 PC</span>':'')
       +'  <span class="collapse-icon">▼</span>'
       +'</div>'
       +(isOpen ?
@@ -1504,10 +1608,18 @@ function renderProva(){
         +'    <button class="apagar-btn" onclick="limparChegada('+i+')">✕</button>'
         +'  </div>'
         // remover
-        +'  <div style="margin-top:8px;display:flex;justify-content:flex-end;gap:6px">'
-        +'    <button class="edit-tulipa" onclick="abrirEdicao('+i+')">✏️ editar</button>'
-        +'    <button class="rem-tulipa"  onclick="remTulipa('+i+')">🗑 remover</button>'
-        +'  </div>'
+        +(t.virtual?'<div class="flag-row"><span class="flag-virtual">🟣 VIRTUAL'+(t.virtualDist>0?' — '+t.virtualDist.toLocaleString('pt-BR')+' m':'')+'</span></div>':'')
+        +(t.temPC?'<div class="flag-row"><span class="flag-pc">🔵 POSTO DE CONTROLE REGISTRADO</span></div>':'')
+        +'<div style="margin-top:10px">'
+        +(t.temPC
+          ?'<button onclick="togglePC('+i+')" style="width:100%;padding:11px;background:#0a0d2e;border:1.5px solid var(--info);border-radius:8px;font-size:13px;font-weight:700;font-family:var(--mono);color:var(--info);cursor:pointer;margin-bottom:7px">🔵 PC REGISTRADO — toque para remover</button>'
+          :'<button onclick="togglePC('+i+')" style="width:100%;padding:11px;background:var(--surf2);border:1.5px dashed var(--bord2);border-radius:8px;font-size:13px;font-weight:700;font-family:var(--mono);color:var(--txt3);cursor:pointer;margin-bottom:7px">🔵 MARCAR COMO PC</button>'
+        )
+        +'<div style="display:flex;justify-content:flex-end;gap:6px">'
+        +'<button class="edit-tulipa" onclick="abrirEdicao('+i+')">✏️ editar</button>'
+        +'<button class="rem-tulipa" onclick="remTulipa('+i+')">🗑 remover</button>'
+        +'</div>'
+        +'</div>'
         +'</div>'
       : '')
     ;
@@ -1553,7 +1665,11 @@ function gerarPDFProva(){
     }
     rows+='<tr style="background:'+(i%2===0?'#f8fff8':'#fff')+'">'
       +'<td style="padding:7px 6px;border-bottom:1px solid #c0d8c0;font-weight:700;color:#1a3a1a">'+(i+1)+'</td>'
-      +'<td style="padding:7px 6px;border-bottom:1px solid #c0d8c0;font-weight:600;color:#0f2010">'+t.nome+'</td>'
+      +'<td style="padding:7px 6px;border-bottom:1px solid #c0d8c0;font-weight:600;color:#0f2010">'
+      +t.nome
+      +(t.temPC?' <span style="font-size:10px;background:#e0e8ff;color:#0040aa;padding:1px 6px;border-radius:8px;font-weight:700">PC</span>':'')
+      +(t.virtual?' <span style="font-size:10px;background:#f0e0ff;color:#6600aa;padding:1px 6px;border-radius:8px;font-weight:700">VIRTUAL</span>':'')
+      +'</td>'
       +'<td style="padding:7px 6px;border-bottom:1px solid #c0d8c0;text-align:center">'+t.dIni.toLocaleString('pt-BR')+'→'+t.dFim.toLocaleString('pt-BR')+'</td>'
       +'<td style="padding:7px 6px;border-bottom:1px solid #c0d8c0;text-align:center;font-weight:700;color:#0f4020">'+t.dist.toLocaleString('pt-BR')+' m</td>'
       +'<td style="padding:7px 6px;border-bottom:1px solid #c0d8c0;text-align:center">'+t.vel.toFixed(1)+' m/min</td>'
@@ -1718,6 +1834,13 @@ function abrirEdicao(i){
   document.getElementById('edit-fields-trecho').style.display  = isNeutro ? 'none' : 'block';
   document.getElementById('edit-fields-neutro').style.display  = isNeutro ? 'block' : 'none';
   document.getElementById('edit-chegada-real').style.display   = isNeutro ? 'none' : 'block';
+  // Flags PC e Virtual (só para trechos normais)
+  document.getElementById('edit-flags-row').style.display = isNeutro ? 'none' : 'flex';
+  document.getElementById('edit-virtual').checked = !!t.virtual;
+  var evdw=document.getElementById('edit-virtual-dist-wrap');
+  var evdi=document.getElementById('edit-virtual-dist');
+  if(t.virtual && t.virtualDist>0){evdw.style.display='block';evdi.value=t.virtualDist;}
+  else{evdw.style.display='none';evdi.value='';}
 
   if(isNeutro){
     document.getElementById('edit-neutro-min').value = t.tempo || '';
@@ -1813,6 +1936,11 @@ function salvarEdicao(){
     tulipas[i].passo  = pas;
     tulipas[i].tempo  = tempo;
     tulipas[i].passos = passos;
+    var eVirt=document.getElementById('edit-virtual').checked;
+    tulipas[i].virtual=eVirt;
+    // Virtual apenas informativo — distância é nota, não afeta cálculo
+    var eVD=parseFloat(document.getElementById('edit-virtual-dist').value)||0;
+    tulipas[i].virtualDist=eVirt?eVD:0;
 
     // Chegada real
     var realVal = document.getElementById('edit-real').value;
@@ -2021,7 +2149,10 @@ function bordoRenderTudo(){
     document.getElementById('bordo-btn-cheguei').textContent = '→ AVANÇAR (NEUTRO CUMPRIDO)';
     document.getElementById('bordo-btn-cheguei').className   = 'bordo-cheguei bordo-cheguei-warn';
   } else {
-    document.getElementById('bordo-atual-label').textContent = '🏃 TRECHO ATUAL — ' + (bordoIdx+1) + '/' + total;
+    var flagsHtml = '';
+  if(t.temPC)   flagsHtml += ' <span style="font-size:12px;color:var(--info);font-weight:700;background:#0a0d2e;padding:2px 8px;border-radius:10px;border:1px solid var(--info)">🔵 PC</span>';
+  if(t.virtual) flagsHtml += ' <span style="font-size:12px;color:#cc44ff;font-weight:700;background:#2e0a2e;padding:2px 8px;border-radius:10px;border:1px solid #cc44ff">🟣 VIRTUAL</span>';
+  document.getElementById('bordo-atual-label').innerHTML = '🏃 TRECHO ATUAL — ' + (bordoIdx+1) + '/' + total + flagsHtml;
     document.getElementById('bordo-atual-nome').textContent  = t.nome;
     document.getElementById('bordo-dist').textContent  = t.dist>0?t.dist.toLocaleString('pt-BR')+' m':'—';
     document.getElementById('bordo-vel').textContent   = t.vel>0?t.vel.toFixed(1):'—';
@@ -2077,9 +2208,13 @@ function bordoRenderLista(){
     }
 
     div.className = cls;
+    var pcTag   = (!t.tipo&&t.temPC)  ? '<span style="font-size:9px;color:var(--info);font-weight:700;background:#0a0d2e;padding:1px 5px;border-radius:8px;border:1px solid var(--info)">PC</span>' : '';
+    var virtTag = (!t.tipo&&t.virtual)? '<span style="font-size:9px;color:#cc44ff;font-weight:700;background:#2e0a2e;padding:1px 5px;border-radius:8px;border:1px solid #cc44ff">VT</span>' : '';
     div.innerHTML =
       '<span class="bordo-row-num">'+(i+1)+'</span>'
-      +'<span class="bordo-row-nome">'+(t.tipo==='neutro'?'⏸ ':'')+t.nome+'</span>'
+      +'<span class="bordo-row-nome" style="display:flex;align-items:center;gap:4px">'
+      +(t.tipo==='neutro'?'⏸ ':'')+t.nome+' '+pcTag+virtTag
+      +'</span>'
       +'<span class="bordo-row-prev">'+(t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'—')+'</span>'
       +'<span class="bordo-row-status '+stCls+'">'+stBadge+'</span>';
 
