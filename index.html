@@ -468,6 +468,83 @@ select.inp option{background:var(--surf);color:var(--txt)}
 /* Bordo — indicadores */
 .bordo-flag-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
 
+
+/* ── CARD VIRTUAL (tipo próprio) ── */
+.virtual-card{background:#1a0a2e;border:1.5px solid #cc44ff;border-radius:10px;margin-bottom:8px;overflow:hidden}
+.virtual-hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#200a38;cursor:pointer;gap:8px}
+.virtual-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;background:#2e0a2e;color:#cc44ff;border:1px solid #882288;flex-shrink:0}
+.virtual-body{padding:11px 12px;border-top:1px solid #441a44}
+.quick-virtual-box{background:#1a0a2e;border:1.5px solid #cc44ff;border-radius:10px;padding:12px;margin-bottom:10px}
+.quick-virtual-row{display:flex;gap:8px;align-items:flex-end;margin-top:8px}
+.virtual-add-btn{flex-shrink:0;padding:11px 14px;background:#cc44ff;border:none;border-radius:8px;font-size:18px;font-weight:700;font-family:var(--mono);color:#fff;cursor:pointer}
+.virtual-add-btn:active{transform:scale(.95)}
+
+/* PC deveria/não deveria */
+.pc-deveria-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;margin-bottom:4px}
+.pc-dev-btn{padding:9px 4px;background:var(--surf2);border:1.5px solid var(--bord2);border-radius:8px;font-size:11px;font-weight:700;font-family:var(--mono);color:var(--txt2);cursor:pointer;text-align:center}
+.pc-dev-btn.pc-dev-sim{background:#0d2e14;border-color:var(--acc);color:var(--acc)}
+.pc-dev-btn.pc-dev-nao{background:#2e0a0a;border-color:var(--danger);color:var(--danger)}
+.pc-pen-warn{text-align:center;font-size:12px;font-weight:700;color:var(--danger);background:#2e0a0a;border:1px solid #662020;border-radius:7px;padding:6px;margin-top:4px}
+
+/* Apuração / prévia resultado */
+.apuracao-box{background:var(--surf);border:1.5px solid var(--warn);border-radius:10px;padding:12px;margin-bottom:10px}
+.apuracao-title{font-size:12px;font-weight:700;color:var(--warn);letter-spacing:2px;margin-bottom:10px;text-align:center}
+.ap-table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--mono)}
+.ap-table th{background:var(--surf2);color:var(--txt3);font-weight:700;letter-spacing:1px;padding:6px 4px;text-align:center;border-bottom:2px solid var(--bord2);font-size:10px}
+.ap-table td{padding:6px 4px;text-align:center;border-bottom:1px solid var(--bord);color:var(--txt)}
+.ap-table tr:last-child td{border-bottom:none}
+.ap-tipo-gps{color:var(--info);font-weight:700}
+.ap-tipo-vrt{color:#cc44ff;font-weight:700}
+.ap-pts-zero{color:var(--acc);font-weight:700}
+.ap-pts-warn{color:var(--warn);font-weight:700}
+.ap-pts-bad{color:var(--danger);font-weight:700}
+.ap-pts-nd{color:var(--txt3)}
+.ap-pending{color:var(--txt3);font-style:italic;font-size:10px}
+.ap-pc-pen{color:var(--danger);font-size:9px;display:block}
+.ap-total-row td{border-top:2px solid var(--warn)!important;font-weight:700;font-size:13px}
+.ap-total-pts{font-size:20px;font-weight:700;color:var(--warn)}
+.ap-toggle-btn{width:100%;padding:13px;background:#1a1200;border:1.5px solid var(--warn);border-radius:8px;font-size:13px;font-weight:700;font-family:var(--mono);color:var(--warn);cursor:pointer;margin-top:4px;letter-spacing:1px}
+.ap-toggle-btn:active{transform:scale(.97)}
+
+/* Diagnóstico da equipe */
+.diag-toggle-btn{width:100%;padding:13px;background:#0a1a2e;border:1.5px solid var(--info);border-radius:8px;font-size:13px;font-weight:700;font-family:var(--mono);color:var(--info);cursor:pointer;margin-top:8px;letter-spacing:1px}
+.diag-toggle-btn:active{transform:scale(.97)}
+.diag-box{background:var(--surf);border:1.5px solid var(--info);border-radius:10px;padding:14px;margin-bottom:10px;margin-top:8px}
+.diag-nivel-badge{border:2px solid;border-radius:12px;padding:16px 10px;text-align:center;margin-bottom:14px}
+.diag-nivel-icon{font-size:36px;display:block;margin-bottom:6px}
+.diag-nivel-name{font-size:20px;font-weight:700;font-family:var(--mono);letter-spacing:3px;display:block;margin-bottom:4px}
+.diag-nivel-desc{font-size:11px;color:var(--txt2);display:block;line-height:1.4}
+.diag-section{background:var(--surf2);border:1px solid var(--bord2);border-radius:8px;padding:10px;margin-bottom:8px}
+.diag-sec-title{font-size:10px;font-weight:700;color:var(--txt3);letter-spacing:2px;margin-bottom:8px;border-bottom:1px solid var(--bord);padding-bottom:5px}
+.diag-metric-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;font-size:11px;gap:4px}
+.diag-metric-label{color:var(--txt2);flex:1;min-width:0}
+.diag-metric-val{font-weight:700;font-family:var(--mono);color:var(--txt);min-width:44px;text-align:right;font-size:12px}
+.diag-bar-wrap{flex:1.5;height:7px;background:var(--bord);border-radius:4px;overflow:hidden;margin:0 6px}
+.diag-bar-fill{height:100%;border-radius:4px}
+.diag-stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px}
+.diag-stat-cell{background:var(--surf);border:1px solid var(--bord2);border-radius:7px;padding:9px 4px;text-align:center}
+.diag-stat-val{font-size:20px;font-weight:700;font-family:var(--mono)}
+.diag-stat-lbl{font-size:9px;color:var(--txt3);letter-spacing:.5px;margin-top:3px}
+.diag-tendency{font-size:11px;text-align:center;padding:7px;border-radius:6px;margin:8px 0 6px;font-weight:700;font-family:var(--mono);border:1px solid}
+.diag-trecho-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:5px 0;border-bottom:1px solid var(--bord);gap:4px}
+.diag-trecho-lbl{font-size:9px;color:var(--txt3);white-space:nowrap;flex-shrink:0}
+.diag-trecho-nome{color:var(--txt2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px}
+.diag-trecho-val{font-weight:700;font-family:var(--mono);font-size:12px;flex-shrink:0}
+.diag-rec-list{display:flex;flex-direction:column;gap:7px}
+.diag-rec-item{background:var(--surf);border-left:3px solid;border-radius:0 8px 8px 0;padding:9px 10px;font-size:12px;line-height:1.5}
+.diag-rec-icon{font-size:15px;margin-right:5px}
+.diag-rec-title{font-weight:700;display:block;margin-bottom:3px;font-size:11px;letter-spacing:.5px}
+.diag-rec-body{color:var(--txt2);font-size:11px;line-height:1.5}
+.diag-treino-item{display:flex;gap:8px;align-items:flex-start;padding:7px;background:var(--surf);border:1px solid var(--bord2);border-radius:7px}
+.diag-treino-icon{font-size:17px;flex-shrink:0;margin-top:1px}
+.diag-sem-dados{text-align:center;padding:24px;color:var(--txt3);font-size:13px;line-height:1.6}
+
+/* Dist oficial virtual */
+.vof-row{margin-top:8px;padding-top:8px;border-top:1px solid #441a44}
+.vof-input-row{display:flex;gap:6px;margin-top:4px;align-items:center}
+.vof-save-btn{flex-shrink:0;padding:9px 12px;background:#cc44ff;border:none;border-radius:7px;font-size:13px;font-weight:700;font-family:var(--mono);color:#fff;cursor:pointer}
+.vof-diff{margin-top:5px;font-size:12px;font-weight:700;text-align:center;padding:5px;border-radius:6px}
+
 .tb-panel{display:none}
 .tb-panel.on{display:block}
 ::-webkit-scrollbar{width:4px}
@@ -692,9 +769,10 @@ select.inp option{background:var(--surf);color:var(--txt)}
       <div class="pr-title">📊 RESUMO DA PROVA</div>
       <div class="pr-grid">
         <div class="pr-item"><div class="pr-val" id="pr-dist">—</div><div class="pr-lbl">DISTÂNCIA TOTAL</div></div>
-        <div class="pr-item"><div class="pr-val" id="pr-tempo">—</div><div class="pr-lbl">TEMPO TOTAL</div></div>
         <div class="pr-item"><div class="pr-val" id="pr-passos">—</div><div class="pr-lbl">PASSOS TOTAIS</div></div>
+        <div class="pr-item" style="grid-column:1/-1"><div class="pr-val" id="pr-tempo">—</div><div class="pr-lbl">TEMPO TOTAL</div></div>
         <div class="pr-item hl"><div class="pr-val warn" id="pr-chegada">—</div><div class="pr-lbl">CHEGADA PREVISTA</div></div>
+        <div class="pr-item hl"><div class="pr-val" style="color:var(--info)" id="pr-chegada-real">—</div><div class="pr-lbl">CHEGADA EFETIVA</div></div>
         <div class="pr-item"><div class="pr-val" id="pr-ok">—</div><div class="pr-lbl">NO TEMPO</div></div>
         <div class="pr-item"><div class="pr-val" id="pr-warn">—</div><div class="pr-lbl">ATENÇÃO</div></div>
         <div class="pr-item"><div class="pr-val" id="pr-late">—</div><div class="pr-lbl">FORA DO TEMPO</div></div>
@@ -714,19 +792,6 @@ select.inp option{background:var(--surf);color:var(--txt)}
         <div class="fld"><span class="lbl">VELOCIDADE (m/min)</span><input class="inp" type="number" id="pt-vel" placeholder="ex: 83.3" inputmode="decimal" step="any"><div class="unit-hint">deste trecho</div></div>
         <div class="fld"><span class="lbl">PASSO (cm)</span><input class="inp" type="number" id="pt-passo" value="70" inputmode="decimal" step="any"><div class="unit-hint">comprimento</div></div>
       </div>
-      <div class="flag-check-row">
-        <label class="flag-check fc-virt">
-          <input type="checkbox" id="pt-virtual" onchange="toggleVirtualDist()">
-          <div><div class="fc-lbl">🟣 VIRTUAL</div><div class="fc-sub">Trecho sem marcação física</div></div>
-        </label>
-      </div>
-      <div id="pt-virtual-dist-wrap" style="display:none">
-        <div class="fld">
-          <span class="lbl" style="color:#cc44ff">DISTÂNCIA DO VIRTUAL (metros)</span>
-          <input class="inp" type="number" id="pt-virtual-dist" placeholder="ex: 1200" inputmode="decimal" step="any" style="border-color:#cc44ff">
-          <div class="unit-hint" style="color:#cc44ff">Distância definida pelo organizador para este virtual</div>
-        </div>
-      </div>
       <button class="go-btn" onclick="addTulipa()">+ ADICIONAR TRECHO</button>
     </div>
 
@@ -745,8 +810,47 @@ select.inp option{background:var(--surf);color:var(--txt)}
       </div>
     </div>
 
+    <!-- VIRTUAL na aba PROVA -->
+    <div class="quick-virtual-box">
+      <div class="sec-ttl" style="margin-bottom:6px;color:#cc44ff">🟣 ADICIONAR VIRTUAL</div>
+      <div style="font-size:11px;color:var(--txt3);margin-bottom:8px">Trecho percorrido sem marcação física — registra nome e distância no roteiro</div>
+      <div class="fld"><span class="lbl">NOME DO VIRTUAL</span><input class="inp" type="text" id="pv-nome" placeholder="ex: Virtual 1 — Mata fechada" style="font-size:17px"></div>
+      <div class="fld">
+        <span class="lbl">INSERIR APÓS QUAL TRECHO?</span>
+        <select class="inp" id="pv-pos" style="font-size:14px;border-color:#cc44ff">
+          <option value="-1">No final da lista</option>
+        </select>
+        <div class="unit-hint" style="color:#cc44ff">O virtual ficará logo após o trecho selecionado</div>
+      </div>
+      <div class="quick-virtual-row">
+        <div style="flex:1">
+          <span class="lbl">DISTÂNCIA ESTIMADA (metros)</span>
+          <input class="inp" type="number" id="pv-dist" placeholder="ex: 1200" inputmode="decimal" step="any" style="border-color:#cc44ff">
+          <div class="unit-hint" style="color:#cc44ff">Distância estimada pela equipe</div>
+        </div>
+        <button class="virtual-add-btn" onclick="addVirtual()">+</button>
+      </div>
+    </div>
+
     <!-- LISTA DE TULIPAS -->
     <div id="prova-list"></div>
+
+    <!-- APURAÇÃO -->
+    <button class="ap-toggle-btn" id="ap-toggle-btn" onclick="toggleApuracao()">📊 VER PRÉVIA DA APURAÇÃO</button>
+    <div id="apuracao-section" style="display:none">
+      <div class="apuracao-box">
+        <div class="apuracao-title">📊 APURAÇÃO — PRÉVIA DO RESULTADO</div>
+        <div id="apuracao-content"></div>
+      </div>
+    </div>
+
+    <button class="diag-toggle-btn" id="diag-toggle-btn" onclick="toggleDiagnostico()">📋 VER DIAGNÓSTICO DA EQUIPE</button>
+    <div id="diagnostico-section" style="display:none">
+      <div class="diag-box">
+        <div style="font-size:11px;font-weight:700;color:var(--info);letter-spacing:2px;text-align:center;margin-bottom:12px">📋 DIAGNÓSTICO DA EQUIPE</div>
+        <div id="diagnostico-content"></div>
+      </div>
+    </div>
 
     <!-- AÇÕES -->
     <button class="bordo-launch-btn" onclick="abrirBordo()">
@@ -959,19 +1063,6 @@ select.inp option{background:var(--surf);color:var(--txt)}
         </div>
       </div>
 
-      <div class="flag-check-row" id="edit-flags-row">
-        <label class="flag-check fc-virt">
-          <input type="checkbox" id="edit-virtual" onchange="toggleEditVirtualDist()">
-          <div><div class="fc-lbl">🟣 VIRTUAL</div><div class="fc-sub">Trecho sem marcação física</div></div>
-        </label>
-      </div>
-      <div id="edit-virtual-dist-wrap" style="display:none">
-        <div class="fld">
-          <span class="lbl" style="color:#cc44ff">DISTÂNCIA DO VIRTUAL (metros)</span>
-          <input class="inp" type="number" id="edit-virtual-dist" placeholder="ex: 1200" inputmode="decimal" step="any" style="border-color:#cc44ff">
-          <div class="unit-hint" style="color:#cc44ff">Distância definida pelo organizador</div>
-        </div>
-      </div>
       <button class="modal-save" onclick="salvarEdicao()">✓ SALVAR ALTERAÇÕES</button>
       <button class="modal-del"  onclick="confirmarRemocao()">🗑 REMOVER ESTE TRECHO</button>
     </div>
@@ -1034,6 +1125,7 @@ function hhmmParaMin(s){
 // ===== HELPERS =====
 function fPeso(p){p=parseFloat(p)||0;if(p<=5)return 1;if(p<=10)return.96;if(p<=15)return.90;if(p<=20)return.83;return.74;}
 function fmtMin(d){var m=Math.floor(d),s=Math.round((d-m)*60);if(s===60){m++;s=0;}return m+':'+(s<10?'0':'')+s;}
+function fmtHoras(min){var h=Math.floor(min/60),m=Math.round(min%60);if(m===60){h++;m=0;}return h+'h'+(m<10?'0':'')+m;}
 function fmtDiff(diffMin){
   var abs=Math.abs(diffMin),m=Math.floor(abs),s=Math.round((abs-m)*60);
   if(s===60){m++;s=0;}
@@ -1312,6 +1404,31 @@ var tulipaOpen=-1;       // índice expandido
 
 
 /* Adicionar neutro na aba PROVA */
+/* Adicionar virtual no roteiro da prova */
+function addVirtual(){
+  var nome = document.getElementById('pv-nome').value.trim()||'Virtual';
+  var dist = parseFloat(document.getElementById('pv-dist').value)||0;
+  if(dist<=0){alert('Informe a distância estimada do virtual em metros!');return;}
+  var posVal = parseInt(document.getElementById('pv-pos').value);
+  var v = {
+    tipo:'virtual', nome:nome,
+    dIni:0, dFim:0, dist:dist,
+    vel:0, passo:0, tempo:0, passos:0,
+    chegadaPrevMin:null, chegadaRealMin:null,
+    temPC:false, distOficial:null
+  };
+  if(!isNaN(posVal) && posVal >= 0 && posVal < tulipas.length){
+    tulipas.splice(posVal + 1, 0, v);
+  } else {
+    tulipas.push(v);
+  }
+  recalcHorarios();
+  document.getElementById('pv-nome').value='';
+  document.getElementById('pv-dist').value='';
+  renderProva();
+  scheduleAutoSave();
+}
+
 function addNeutro(){
   var nome = document.getElementById('pn-nome').value.trim()||'Neutro';
   var min  = parseFloat(document.getElementById('pn-min').value)||0;
@@ -1341,26 +1458,32 @@ function addNeutroAcum(){
 function togglePC(i){
   if(!tulipas[i]) return;
   tulipas[i].temPC = !tulipas[i].temPC;
+  if(!tulipas[i].temPC) tulipas[i].pcDeveria = null; // reset ao desmarcar
   scheduleAutoSave();
   renderProva();
   if(bordoAberto) bordoRenderTudo();
 }
 
-/* Mostrar/ocultar campo de distância do virtual no formulário */
-function toggleVirtualDist(){
-  var cb=document.getElementById('pt-virtual');
-  var wrap=document.getElementById('pt-virtual-dist-wrap');
-  wrap.style.display=cb.checked?'block':'none';
-  if(!cb.checked)document.getElementById('pt-virtual-dist').value='';
+/* Marcar se deveria ou não ter pegado o PC */
+function setPCDeveria(i, val){
+  if(!tulipas[i]) return;
+  tulipas[i].pcDeveria = tulipas[i].pcDeveria === val ? null : val; // toggle
+  scheduleAutoSave();
+  renderProva();
 }
 
-/* Mostrar/ocultar campo de distância do virtual no modal */
-function toggleEditVirtualDist(){
-  var cb=document.getElementById('edit-virtual');
-  var wrap=document.getElementById('edit-virtual-dist-wrap');
-  wrap.style.display=cb.checked?'block':'none';
-  if(!cb.checked)document.getElementById('edit-virtual-dist').value='';
-  atualizarPreviewEdicao();
+/* Salvar distância oficial de um virtual */
+function salvarDistOficial(i){
+  var v = parseFloat(document.getElementById('vof-'+i).value);
+  if(isNaN(v)||v<=0){alert('Informe a distância oficial em metros!');return;}
+  tulipas[i].distOficial = v;
+  renderProva();scheduleAutoSave();
+}
+
+/* Helper: formatar diferença em segundos para exibição */
+function fmtDiffSeg(s){
+  var abs=Math.abs(s),m=Math.floor(abs/60),sec=abs%60;
+  return(s>=0?'+':'-')+(m>0?m+'min ':'')+String(sec).padStart(2,'0')+'seg';
 }
 
 /* Adicionar novo trecho */
@@ -1384,22 +1507,13 @@ function addTulipa(){
   var tempoAcumAntes = tulipas.reduce(function(s,t){return s+t.tempo;},0);
   var chegadaPrevMin = inicioMin !== null ? inicioMin + tempoAcumAntes + tempo : null;
 
-  var ehVirtual  = document.getElementById('pt-virtual').checked;
-  // Virtual é apenas informativo — NÃO altera dist/tempo/passos
-  var virtualDist = ehVirtual ? (parseFloat(document.getElementById('pt-virtual-dist').value)||0) : 0;
-
   tulipas.push({
     nome:nome, dIni:dIni, dFim:dFim, dist:dist,
     vel:vel, passo:passo, tempo:tempo, passos:passos,
     chegadaPrevMin:chegadaPrevMin,
     chegadaRealMin:null,
-    temPC:false, virtual:ehVirtual, virtualDist:virtualDist
+    temPC:false, pcDeveria:null
   });
-
-  // Resetar campos
-  document.getElementById('pt-virtual').checked = false;
-  document.getElementById('pt-virtual-dist').value = '';
-  document.getElementById('pt-virtual-dist-wrap').style.display = 'none';
 
   // Recalcular horários previstos de todos (cascata)
   recalcHorarios();
@@ -1471,6 +1585,7 @@ function resumoProva(){
     totalDist  +=t.dist;
     totalTempo +=t.tempo;
     totalPassos+=t.passos;
+    if(t.tipo==='virtual'){ return; }
     if(t.tipo==='neutro'){ totalNeutro+=t.tempo; return; }
     if(t.chegadaRealMin!==null && t.chegadaPrevMin!==null){
       var diff=t.chegadaRealMin - t.chegadaPrevMin;
@@ -1496,10 +1611,13 @@ function renderProva(){
     res.style.display='block';
     var chegadaFinal = tulipas.length>0 && tulipas[tulipas.length-1].chegadaPrevMin!==null
       ? minParaHHMM(tulipas[tulipas.length-1].chegadaPrevMin) : '--:--';
+    var ultimaReal=null;
+    for(var j=tulipas.length-1;j>=0;j--){if(tulipas[j].chegadaRealMin!==null){ultimaReal=tulipas[j].chegadaRealMin;break;}}
     document.getElementById('pr-dist').textContent   = r.totalDist>0 ? r.totalDist.toLocaleString('pt-BR')+' m':'— m';
-    document.getElementById('pr-tempo').textContent  = fmtMin(r.totalTempo)+' ('+r.totalTempo.toFixed(1)+' min)';
+    document.getElementById('pr-tempo').textContent  = fmtMin(r.totalTempo)+' • '+fmtHoras(r.totalTempo);
     document.getElementById('pr-passos').textContent = r.totalPassos>0?r.totalPassos.toLocaleString('pt-BR'):'—';
     document.getElementById('pr-chegada').textContent= chegadaFinal;
+    document.getElementById('pr-chegada-real').textContent= ultimaReal!==null?minParaHHMM(ultimaReal):'--:--';
     document.getElementById('pr-ok').textContent     = nEmoji(r.nOk,'✅');
     document.getElementById('pr-warn').textContent   = nEmoji(r.nWarn,'⚠️');
     document.getElementById('pr-late').textContent   = nEmoji(r.nLate,'🔴');
@@ -1510,8 +1628,65 @@ function renderProva(){
 
   // ── Cards das tulipas ─────────────────────────────────────────────
   container.innerHTML='';
+  var tempoAcum=0;
   tulipas.forEach(function(t,i){
+    tempoAcum+=t.tempo;
     var isOpen = tulipaOpen===i;
+
+    /* ── VIRTUAL ── */
+    if(t.tipo==='virtual'){
+      var card=document.createElement('div');
+      card.className='virtual-card'+(isOpen?' open':'');
+      card.innerHTML=
+        '<div class="virtual-hdr" onclick="toggleTulipa('+i+')">'  
+        +'  <span class="tulipa-num" style="color:#cc44ff">VIRTUAL '+(i+1)+'</span>'
+        +'  <span class="tulipa-nome" style="color:#cc44ff">'+t.nome+'</span>'
+        +'  <span class="virtual-badge">🟣 '+t.dist.toLocaleString('pt-BR')+' m</span>'
+        +'  <span style="font-size:10px;color:#cc44ff;flex-shrink:0">⏱'+fmtHoras(tempoAcum)+'</span>'
+        +'  <span class="collapse-icon" style="color:#cc44ff">▼</span>'
+        +'</div>'
+        +(isOpen?
+          (function(){
+            var vofVal = t.distOficial != null ? t.distOficial : '';
+            var vofDiffHtml = '';
+            if(t.distOficial != null){
+              var dof = Number(t.distOficial);
+              var dif = Math.round(t.dist - dof);
+              var difAbs = Math.abs(dif);
+              var difCor = difAbs === 0 ? 'var(--acc)' : (difAbs <= 50 ? 'var(--warn)' : 'var(--danger)');
+              var difStr = (dif > 0 ? '+' : (dif < 0 ? '' : '')) + dif + ' m';
+              vofDiffHtml = '<div class="vof-diff" style="color:'+difCor+';background:var(--surf2);border:1px solid '+difCor+'">'
+                + 'Diferença: '+difStr+' &nbsp;|&nbsp; Penalidade: '+difAbs+' pts</div>';
+            }
+            return '<div class="virtual-body">'
+            +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">'
+            +'  <div class="tm" style="background:#2e0a2e;border-color:#882288"><div class="tm-val" style="color:#cc44ff">'+t.dist.toLocaleString('pt-BR')+' m</div><div class="tm-lbl">ESTIMADA</div></div>'
+            +'  <div class="tm" style="background:#2e0a2e;border-color:#882288"><div class="tm-val" style="color:'+(t.distOficial!=null?'#cc44ff':'var(--txt3)')+'">'+( t.distOficial!=null ? Number(t.distOficial).toLocaleString('pt-BR')+' m' : 'não informada')+'</div><div class="tm-lbl">OFICIAL</div></div>'
+            +'  <div class="tm" style="background:#2e0a2e;border-color:#882288"><div class="tm-val" style="color:#cc44ff">'+fmtHoras(tempoAcum)+'</div><div class="tm-lbl">TEMPO ACUM.</div></div>'
+            +'</div>'
+            +'<div style="font-size:12px;color:#cc44ff;background:#2e0a2e;border:1px solid #882288;border-radius:8px;padding:9px;margin-bottom:8px;text-align:center">'
+            +'🟣 Trecho percorrido sem marcação física — apenas registro de distância'
+            +'</div>'
+            +'<div class="vof-row">'
+            +'<span style="font-size:11px;color:#cc44ff;font-weight:700;letter-spacing:1px">DIST OFICIAL (pós-prova)</span>'
+            +'<div class="vof-input-row">'
+            +'<input class="inp" type="number" id="vof-'+i+'" value="'+vofVal+'" placeholder="ex: 1150" inputmode="decimal" step="any" style="border-color:#cc44ff;font-size:17px">'
+            +'<button class="vof-save-btn" onclick="salvarDistOficial('+i+')">✓</button>'
+            +'</div>'
+            +'<div class="unit-hint" style="color:#cc44ff">Informe após a prova para calcular assertividade</div>'
+            + vofDiffHtml
+            +'</div>'
+            +'<div style="text-align:right;margin-top:8px">'
+            +'  <button class="edit-tulipa" onclick="abrirEdicaoVirtual('+i+')" style="border-color:#882288;color:#cc44ff">✏️ editar</button>'
+            +'  <button class="rem-tulipa" onclick="remTulipa('+i+')">🗑 remover</button>'
+            +'</div>'
+            +'</div>'
+          ;})()
+        :'')
+      ;
+      container.appendChild(card);
+      return;
+    }
 
     /* ── NEUTRO ── */
     if(t.tipo==='neutro'){
@@ -1522,13 +1697,15 @@ function renderProva(){
         +'  <span class="tulipa-num">NEUTRO '+(i+1)+'</span>'
         +'  <span class="tulipa-nome" style="color:var(--warn)">'+t.nome+'</span>'
         +'  <span class="neutro-badge">⏸ '+fmtMin(t.tempo)+'</span>'
+        +'  <span style="font-size:10px;color:var(--warn);flex-shrink:0">⏱'+fmtHoras(tempoAcum)+'</span>'
         +'  <span class="collapse-icon" style="color:var(--warn)">▼</span>'
         +'</div>'
         +(isOpen?
           '<div class="neutro-body">'
-          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">'
           +'  <div class="tm" style="background:#2e2200;border-color:#664d00"><div class="tm-val" style="color:var(--warn)">'+fmtMin(t.tempo)+'</div><div class="tm-lbl">DURAÇÃO</div></div>'
           +'  <div class="tm" style="background:#2e2200;border-color:#664d00"><div class="tm-val" style="color:var(--warn)">'+t.tempo.toFixed(2)+' min</div><div class="tm-lbl">MIN DECIMAL</div></div>'
+          +'  <div class="tm" style="background:#2e2200;border-color:#664d00"><div class="tm-val" style="color:var(--warn)">'+fmtHoras(tempoAcum)+'</div><div class="tm-lbl">TEMPO ACUM.</div></div>'
           +'</div>'
           +'<div class="tulipa-time-row">'
           +'  <div class="ttr ttr-prev"><div class="ttr-val">'+(t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'--:--')+'</div><div class="ttr-lbl">CHEGADA APÓS NEUTRO</div></div>'
@@ -1580,6 +1757,7 @@ function renderProva(){
       +'  <span class="tulipa-status-badge '+badgeClass+'">'+badgeTxt+'</span>'
       +(t.virtual?'<span class="flag-virtual" style="font-size:10px;padding:2px 7px">🟣</span>':'')
       +(t.temPC?'<span class="flag-pc" style="font-size:10px;padding:2px 7px">🔵 PC</span>':'')
+      +'  <span style="font-size:10px;color:var(--txt3);flex-shrink:0">⏱'+fmtHoras(tempoAcum)+'</span>'
       +'  <span class="collapse-icon">▼</span>'
       +'</div>'
       +(isOpen ?
@@ -1592,6 +1770,7 @@ function renderProva(){
         +'    <div class="tm"><div class="tm-val">'+t.vel.toFixed(1)+' m/min</div><div class="tm-lbl">VELOCIDADE</div></div>'
         +'    <div class="tm"><div class="tm-val">'+(t.vel*60/1000).toFixed(2)+' km/h</div><div class="tm-lbl">km/h</div></div>'
         +'    <div class="tm"><div class="tm-val">'+t.passo+' cm</div><div class="tm-lbl">PASSO</div></div>'
+        +'    <div class="tm" style="grid-column:1/-1;border-color:var(--acc3)"><div class="tm-val" style="color:var(--acc)">'+fmtHoras(tempoAcum)+'</div><div class="tm-lbl">TEMPO ACUMULADO ATÉ ESTE TRECHO</div></div>'
         +'  </div>'
         // horários prev vs real
         +'  <div class="tulipa-time-row">'
@@ -1615,6 +1794,13 @@ function renderProva(){
           ?'<button onclick="togglePC('+i+')" style="width:100%;padding:11px;background:#0a0d2e;border:1.5px solid var(--info);border-radius:8px;font-size:13px;font-weight:700;font-family:var(--mono);color:var(--info);cursor:pointer;margin-bottom:7px">🔵 PC REGISTRADO — toque para remover</button>'
           :'<button onclick="togglePC('+i+')" style="width:100%;padding:11px;background:var(--surf2);border:1.5px dashed var(--bord2);border-radius:8px;font-size:13px;font-weight:700;font-family:var(--mono);color:var(--txt3);cursor:pointer;margin-bottom:7px">🔵 MARCAR COMO PC</button>'
         )
+        +(t.temPC
+          ?'<div class="pc-deveria-row">'
+           +'<button class="pc-dev-btn'+(t.pcDeveria===true?' pc-dev-sim':'')+'" onclick="setPCDeveria('+i+',true)">✅ DEVERIA PEGAR</button>'
+           +'<button class="pc-dev-btn'+(t.pcDeveria===false?' pc-dev-nao':'')+'" onclick="setPCDeveria('+i+',false)">❌ NÃO DEVERIA</button>'
+           +'</div>'
+           +(t.pcDeveria===false?'<div class="pc-pen-warn">⚠️ PC indevido — +200 pontos de penalidade</div>':'')
+          :'')
         +'<div style="display:flex;justify-content:flex-end;gap:6px">'
         +'<button class="edit-tulipa" onclick="abrirEdicao('+i+')">✏️ editar</button>'
         +'<button class="rem-tulipa" onclick="remTulipa('+i+')">🗑 remover</button>'
@@ -1628,6 +1814,20 @@ function renderProva(){
 
   if(tulipas.length===0){
     container.innerHTML='<div style="text-align:center;padding:24px;color:var(--txt3);font-size:13px">Nenhum trecho cadastrado ainda.<br>Preencha o formulário acima.</div>';
+  }
+
+  // Atualizar select de posição do virtual
+  var posSelect = document.getElementById('pv-pos');
+  if(posSelect){
+    var curVal = posSelect.value;
+    posSelect.innerHTML = '<option value="-1">No final da lista</option>';
+    tulipas.forEach(function(t, idx){
+      var opt = document.createElement('option');
+      opt.value = idx;
+      opt.textContent = 'Após '+(idx+1)+': '+t.nome;
+      posSelect.appendChild(opt);
+    });
+    if(posSelect.querySelector('option[value="'+curVal+'"]')) posSelect.value = curVal;
   }
 }
 
@@ -1643,6 +1843,15 @@ function gerarPDFProva(){
 
   var rows='';
   tulipas.forEach(function(t,i){
+    if(t.tipo==='virtual'){
+      rows+='<tr style="background:#f8e8ff">'
+        +'<td style="padding:7px 6px;border-bottom:1px solid #e0c0f0;font-weight:700;color:#6600aa">'+(i+1)+'</td>'
+        +'<td colspan="3" style="padding:7px 6px;border-bottom:1px solid #e0c0f0;color:#6600aa;font-weight:600">🟣 VIRTUAL — '+t.nome+'</td>'
+        +'<td style="padding:7px 6px;border-bottom:1px solid #e0c0f0;text-align:center;color:#6600aa;font-weight:700">'+t.dist.toLocaleString('pt-BR')+' m</td>'
+        +'<td colspan="5" style="padding:7px 6px;border-bottom:1px solid #e0c0f0;text-align:center;color:#888">sem controle de tempo</td>'
+        +'</tr>';
+      return;
+    }
     if(t.tipo==='neutro'){
       rows+='<tr style="background:#fff8e0">'
         +'<td style="padding:7px 6px;border-bottom:1px solid #e0d0a0;font-weight:700;color:#7a5a00">'+(i+1)+'</td>'
@@ -1835,12 +2044,8 @@ function abrirEdicao(i){
   document.getElementById('edit-fields-neutro').style.display  = isNeutro ? 'block' : 'none';
   document.getElementById('edit-chegada-real').style.display   = isNeutro ? 'none' : 'block';
   // Flags PC e Virtual (só para trechos normais)
-  document.getElementById('edit-flags-row').style.display = isNeutro ? 'none' : 'flex';
-  document.getElementById('edit-virtual').checked = !!t.virtual;
-  var evdw=document.getElementById('edit-virtual-dist-wrap');
-  var evdi=document.getElementById('edit-virtual-dist');
-  if(t.virtual && t.virtualDist>0){evdw.style.display='block';evdi.value=t.virtualDist;}
-  else{evdw.style.display='none';evdi.value='';}
+  document.getElementById('edit-preview').style.display=isNeutro?'none':'block';
+  if(!isNeutro) atualizarPreviewEdicao();
 
   if(isNeutro){
     document.getElementById('edit-neutro-min').value = t.tempo || '';
@@ -1905,11 +2110,18 @@ function salvarEdicao(){
   if(isNaN(i) || i < 0 || i >= tulipas.length){ fecharModal(); return; }
 
   var t       = tulipas[i];
-  var isNeutro= t.tipo === 'neutro';
+  var isNeutro  = t.tipo === 'neutro';
+  var isVirtual = t.tipo === 'virtual';
   var nome    = document.getElementById('edit-nome').value.trim();
   if(!nome){ alert('Informe o nome!'); return; }
 
-  if(isNeutro){
+  if(isVirtual){
+    var d=parseFloat(document.getElementById('edit-neutro-min').value)||0;
+    if(d<=0){alert('Informe a distância!');return;}
+    tulipas[i].nome=nome; tulipas[i].dist=d;
+    recalcHorarios(); fecharModal(); renderProva(); scheduleAutoSave();
+    if(bordoAberto) bordoRenderTudo(); return;
+  } else if(isNeutro){
     var dur = parseFloat(document.getElementById('edit-neutro-min').value);
     if(isNaN(dur)||dur<=0){ alert('Informe a duração!'); return; }
     tulipas[i].nome  = nome;
@@ -1936,11 +2148,7 @@ function salvarEdicao(){
     tulipas[i].passo  = pas;
     tulipas[i].tempo  = tempo;
     tulipas[i].passos = passos;
-    var eVirt=document.getElementById('edit-virtual').checked;
-    tulipas[i].virtual=eVirt;
-    // Virtual apenas informativo — distância é nota, não afeta cálculo
-    var eVD=parseFloat(document.getElementById('edit-virtual-dist').value)||0;
-    tulipas[i].virtualDist=eVirt?eVD:0;
+    // PC mantido no togglePC
 
     // Chegada real
     var realVal = document.getElementById('edit-real').value;
@@ -1968,6 +2176,27 @@ function confirmarRemocao(){
 }
 
 /* Fechar modal */
+/* Edição rápida de virtual — reutiliza modal só com nome e dist */
+function abrirEdicaoVirtual(i){
+  var t=tulipas[i]; if(!t||t.tipo!=='virtual') return;
+  _editIdx=i;
+  document.getElementById('edit-idx').value=i;
+  document.getElementById('edit-modal-title').textContent='✏️ EDITAR VIRTUAL';
+  document.getElementById('edit-nome').value=t.nome||'';
+  document.getElementById('edit-fields-trecho').style.display='none';
+  document.getElementById('edit-fields-neutro').style.display='none';
+  document.getElementById('edit-chegada-real').style.display='none';
+  document.getElementById('edit-preview').style.display='none';
+  // Reutilizar campo de neutro-min para a distância
+  var lbl=document.querySelector('#edit-fields-neutro .lbl');
+  if(lbl) lbl.textContent='DISTÂNCIA (metros)';
+  var inp=document.getElementById('edit-neutro-min');
+  if(inp){inp.placeholder='ex: 1200';inp.value=t.dist||'';}
+  document.getElementById('edit-fields-neutro').style.display='block';
+  document.getElementById('edit-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
 function fecharModal(event){
   if(event && event.target !== document.getElementById('edit-modal')) return;
   document.getElementById('edit-modal').classList.remove('open');
@@ -2135,7 +2364,20 @@ function bordoRenderTudo(){
   if(!t){ document.getElementById('bordo-atual-nome').textContent='PROVA CONCLUÍDA ✓'; return; }
 
   // Tulipa atual
-  if(t.tipo === 'neutro'){
+  if(t.tipo === 'virtual'){
+    document.getElementById('bordo-atual-label').textContent = '🟣 VIRTUAL — ' + t.dist.toLocaleString('pt-BR') + ' m';
+    document.getElementById('bordo-atual-nome').textContent  = t.nome;
+    document.getElementById('bordo-dist').textContent  = t.dist.toLocaleString('pt-BR') + ' m';
+    document.getElementById('bordo-vel').textContent   = '—';
+    document.getElementById('bordo-passos').textContent= '—';
+    document.getElementById('bordo-prev').textContent  = t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'--:--';
+    document.getElementById('bordo-real').textContent  = '--:--';
+    document.getElementById('bordo-status').textContent= '🟣 VIRTUAL — sem marcação física';
+    document.getElementById('bordo-status').className  = 'bordo-status bs-neutro';
+    document.getElementById('bordo-cd-lbl').textContent= 'TRECHO SEM CONTROLE DE TEMPO';
+    document.getElementById('bordo-btn-cheguei').textContent = '→ AVANÇAR (VIRTUAL PERCORRIDO)';
+    document.getElementById('bordo-btn-cheguei').className   = 'bordo-cheguei bordo-cheguei-warn';
+  } else if(t.tipo === 'neutro'){
     document.getElementById('bordo-atual-label').textContent = '⏸ NEUTRO / DESCANSO';
     document.getElementById('bordo-atual-nome').textContent  = t.nome;
     document.getElementById('bordo-dist').textContent  = '—';
@@ -2188,7 +2430,9 @@ function bordoRenderLista(){
     var div = document.createElement('div');
     var cls, stBadge='', stCls='';
 
-    if(t.tipo === 'neutro'){
+    if(t.tipo === 'virtual'){
+      cls='bordo-row br-neutro'; stBadge='🟣'; stCls='brs-neutro';
+    } else if(t.tipo === 'neutro'){
       cls = 'bordo-row br-neutro';
       stBadge = '⏸'; stCls = 'brs-neutro';
     } else if(i < bordoIdx){
@@ -2483,12 +2727,463 @@ function scheduleAutoSave(){
   _autoSaveTimer = setTimeout(autoSave, 600);
 }
 
+// =====================================================================
+// APURAÇÃO — PRÉVIA DO RESULTADO
+// =====================================================================
+
+var apuracaoAberta = false;
+
+function toggleApuracao(){
+  apuracaoAberta = !apuracaoAberta;
+  var sec = document.getElementById('apuracao-section');
+  var btn = document.getElementById('ap-toggle-btn');
+  if(sec) sec.style.display = apuracaoAberta ? 'block' : 'none';
+  if(btn) btn.textContent = apuracaoAberta ? '📊 OCULTAR APURAÇÃO' : '📊 VER PRÉVIA DA APURAÇÃO';
+  if(apuracaoAberta) renderApuracao();
+}
+
+function calcApuracao(){
+  var rows = [], totalPts = 0, nGPS = 0, nVRT = 0;
+  tulipas.forEach(function(t, i){
+    if(t.tipo === 'neutro'){ return; }
+    if(t.tipo === 'virtual'){
+      nVRT++;
+      // usa != null para tratar tanto null quanto undefined (dados legados)
+      var distReal = (t.distOficial != null) ? Number(t.distOficial) : null;
+      var diff = distReal !== null ? Math.round(t.dist - distReal) : null;
+      var pontos = diff !== null ? Math.abs(diff) : null;
+      if(pontos !== null) totalPts += pontos;
+      rows.push({tipo:'VRT', seq:nVRT, idx:i, nome:t.nome,
+        km:t.dist.toLocaleString('pt-BR')+' m',
+        prev:t.dist.toLocaleString('pt-BR')+' m',
+        real:distReal !== null ? distReal.toLocaleString('pt-BR')+' m' : null,
+        diff:diff !== null ? (diff>0?'+':'')+diff+' m' : null,
+        pontos:pontos, pendente:distReal === null});
+    } else {
+      nGPS++;
+      var diffSeg = null, pontos = 0;
+      if(t.chegadaRealMin != null && t.chegadaPrevMin != null){
+        diffSeg = Math.round((t.chegadaRealMin - t.chegadaPrevMin) * 60);
+        pontos = Math.abs(diffSeg);
+      }
+      var pcPen = (t.temPC && t.pcDeveria === false) ? 200 : 0;
+      pontos += pcPen;
+      if(t.chegadaRealMin != null || pcPen > 0) totalPts += pontos;
+      rows.push({tipo:'GPS', seq:nGPS, idx:i, nome:t.nome,
+        km:(t.dist||0).toLocaleString('pt-BR')+' m',
+        prev:t.chegadaPrevMin != null ? minParaHHMM(t.chegadaPrevMin) : null,
+        real:t.chegadaRealMin != null ? minParaHHMM(t.chegadaRealMin) : null,
+        diff:diffSeg !== null ? fmtDiffSeg(diffSeg) : null,
+        pontos:t.chegadaRealMin != null || pcPen > 0 ? pontos : null,
+        pcPen:pcPen, pendente:t.chegadaRealMin == null && pcPen === 0});
+    }
+  });
+  return {rows:rows, totalPts:totalPts};
+}
+
+// =====================================================================
+// DIAGNÓSTICO DA EQUIPE
+// =====================================================================
+
+var diagnosticoAberto = false;
+
+function toggleDiagnostico(){
+  diagnosticoAberto = !diagnosticoAberto;
+  var sec = document.getElementById('diagnostico-section');
+  var btn = document.getElementById('diag-toggle-btn');
+  if(sec) sec.style.display = diagnosticoAberto ? 'block' : 'none';
+  if(btn) btn.textContent = diagnosticoAberto ? '📋 OCULTAR DIAGNÓSTICO' : '📋 VER DIAGNÓSTICO DA EQUIPE';
+  if(diagnosticoAberto) renderDiagnostico();
+}
+
+function calcDiagnostico(){
+  var gpsRows = [], vrtRows = [];
+  tulipas.forEach(function(t){
+    if(t.tipo === 'neutro') return;
+    if(t.tipo === 'virtual'){
+      if(t.distOficial != null){
+        var dof = Number(t.distOficial);
+        var dif = t.dist - dof;
+        vrtRows.push({nome:t.nome, est:t.dist, oficial:dof, dif:dif, difAbs:Math.abs(dif)});
+      }
+    } else {
+      if(t.chegadaRealMin != null && t.chegadaPrevMin != null){
+        var ds = Math.round((t.chegadaRealMin - t.chegadaPrevMin) * 60);
+        gpsRows.push({nome:t.nome, vel:t.vel, passo:t.passo, dist:t.dist,
+          diffSeg:ds, diffAbs:Math.abs(ds)});
+      }
+    }
+  });
+
+  var nGPS = gpsRows.length;
+  var mediaDesvio=0, mediaSigned=0, stddev=0;
+  var nNoTempo=0, nAtencao=0, nForaTempo=0;
+  var melhorTrecho=null, piorTrecho=null;
+  if(nGPS > 0){
+    var sumAbs=0, sumSgn=0;
+    gpsRows.forEach(function(r){
+      sumAbs += r.diffAbs; sumSgn += r.diffSeg;
+      if(r.diffAbs <= 15) nNoTempo++;
+      else if(r.diffAbs <= 30) nAtencao++;
+      else nForaTempo++;
+      if(!melhorTrecho || r.diffAbs < melhorTrecho.diffAbs) melhorTrecho = r;
+      if(!piorTrecho  || r.diffAbs > piorTrecho.diffAbs)  piorTrecho  = r;
+    });
+    mediaDesvio = sumAbs / nGPS;
+    mediaSigned = sumSgn / nGPS;
+    var vari = 0;
+    gpsRows.forEach(function(r){ vari += Math.pow(r.diffAbs - mediaDesvio, 2); });
+    stddev = nGPS > 1 ? Math.sqrt(vari / nGPS) : 0;
+  }
+
+  var nVRT = vrtRows.length;
+  var mediaVRTerro=0, mediaVRTsigned=0, vrtAcuracia=0;
+  if(nVRT > 0){
+    var sv=0, svs=0, se=0;
+    vrtRows.forEach(function(r){ sv += r.difAbs; svs += r.dif; se += r.est; });
+    mediaVRTerro   = sv / nVRT;
+    mediaVRTsigned = svs / nVRT;
+    vrtAcuracia    = Math.max(0, Math.min(100, 100 - (mediaVRTerro / (se/nVRT) * 100)));
+  }
+
+  var pcIndevidos = tulipas.filter(function(t){ return t.temPC && t.pcDeveria === false; }).length;
+  var pcCorretos  = tulipas.filter(function(t){ return t.temPC && t.pcDeveria === true; }).length;
+  var pcNaoValid  = tulipas.filter(function(t){ return t.temPC && t.pcDeveria == null; }).length;
+
+  var nivel, nivelIcon, nivelColor, nivelBg, nivelDesc;
+  if(nGPS === 0){
+    nivel='SEM DADOS GPS'; nivelIcon='📊'; nivelColor='var(--txt3)'; nivelBg='var(--surf2)';
+    nivelDesc='Registre chegadas nos trechos para desbloquear o diagnóstico completo.';
+  } else if(mediaDesvio <= 10){
+    nivel='ELITE'; nivelIcon='🥇'; nivelColor='#FFD700'; nivelBg='#1a1500';
+    nivelDesc='Precisão de campeão — média de apenas '+Math.round(mediaDesvio)+'s por trecho.';
+  } else if(mediaDesvio <= 25){
+    nivel='ALTO NÍVEL'; nivelIcon='🥈'; nivelColor='#C0C0C0'; nivelBg='#181818';
+    nivelDesc='Excelente regularidade — desvio médio de '+Math.round(mediaDesvio)+'s. Topo do pódio ao alcance.';
+  } else if(mediaDesvio <= 45){
+    nivel='COMPETITIVO'; nivelIcon='🥉'; nivelColor='#CD7F32'; nivelBg='#1a0f05';
+    nivelDesc='Bom desempenho — desvio médio de '+Math.round(mediaDesvio)+'s. Alguns ajustes te levam ao top.';
+  } else if(mediaDesvio <= 90){
+    nivel='EM DESENVOLVIMENTO'; nivelIcon='📈'; nivelColor='var(--info)'; nivelBg='#0a1020';
+    nivelDesc='Desvio médio de '+Math.round(mediaDesvio)+'s. Boa evolução — foco na calibração de ritmo.';
+  } else {
+    nivel='INICIANTE'; nivelIcon='🌱'; nivelColor='var(--acc)'; nivelBg='#0a1a0a';
+    nivelDesc='Desvio médio de '+Math.round(mediaDesvio)+'s. Cada prova é aprendizado — continue treinando!';
+  }
+
+  return {gpsRows:gpsRows, vrtRows:vrtRows, nGPS:nGPS, nVRT:nVRT,
+    mediaDesvio:mediaDesvio, mediaSigned:mediaSigned, stddev:stddev,
+    nNoTempo:nNoTempo, nAtencao:nAtencao, nForaTempo:nForaTempo,
+    melhorTrecho:melhorTrecho, piorTrecho:piorTrecho,
+    mediaVRTerro:mediaVRTerro, mediaVRTsigned:mediaVRTsigned, vrtAcuracia:vrtAcuracia,
+    pcIndevidos:pcIndevidos, pcCorretos:pcCorretos, pcNaoValid:pcNaoValid,
+    nivel:nivel, nivelIcon:nivelIcon, nivelColor:nivelColor, nivelBg:nivelBg, nivelDesc:nivelDesc};
+}
+
+function _diagRecs(d){
+  var recs = [];
+  if(d.nGPS === 0) return recs;
+
+  // PC indevido — maior prioridade
+  if(d.pcIndevidos > 0)
+    recs.push({pri:0, icon:'🔵', cor:'var(--danger)',
+      titulo:'PC INDEVIDO — '+d.pcIndevidos+' penalidade'+(d.pcIndevidos>1?'s':''),
+      corpo:'Custo: '+(d.pcIndevidos*200)+' pts. Confirme sempre o código do PC no mapa antes de bater o cartão. Dúvida? Não bate.'});
+
+  // Trecho crítico
+  if(d.piorTrecho && d.piorTrecho.diffAbs > 30){
+    var acaoCrit = d.piorTrecho.diffSeg > 0
+      ? 'Aumente a velocidade planejada em ~'+ Math.round(d.piorTrecho.diffAbs/d.piorTrecho.dist*1000)+'% para este tipo de trecho.'
+      : 'Revise se o passo está supercalibrado para este terreno.';
+    recs.push({pri:1, icon:'⚠️', cor:'var(--danger)',
+      titulo:'TRECHO CRÍTICO: '+d.piorTrecho.nome,
+      corpo:'Desvio de '+d.piorTrecho.diffAbs+'s. '+acaoCrit});
+  }
+
+  // Tendência sistemática
+  if(Math.abs(d.mediaSigned) >= 10){
+    if(d.mediaSigned > 0)
+      recs.push({pri:2, icon:'🐢', cor:'var(--warn)',
+        titulo:'TENDÊNCIA A ATRASAR — ajuste de velocidade',
+        corpo:'Sua equipe chega em média +'+Math.round(d.mediaSigned)+'s tarde. Aumente a velocidade base em ~'
+          +Math.max(1,Math.round(Math.abs(d.mediaSigned)/8))+'% nos trechos similares. Verifique também se o terreno real é mais lento que o mapa indica.'});
+    else
+      recs.push({pri:2, icon:'🐇', cor:'var(--info)',
+        titulo:'TENDÊNCIA A ADIANTAR — cuidado com a regularidade',
+        corpo:'Média de '+Math.round(Math.abs(d.mediaSigned))+'s adiantado. Em provas de regularidade chegar antes pode significar velocidade supercalibrada — verifique o fator de ajuste do terreno.'});
+  }
+
+  // Inconsistência de ritmo
+  if(d.stddev > 35)
+    recs.push({pri:3, icon:'📊', cor:'var(--warn)',
+      titulo:'RITMO INCONSISTENTE — variação de '+Math.round(d.stddev)+'s',
+      corpo:'Alta variação entre trechos indica falta de ritmo constante. Pratique trechos de 30-60 min em velocidade alvo sem parar. Consistência é o pilar da regularidade.'});
+  else if(d.nGPS >= 3 && d.stddev <= 12)
+    recs.push({pri:6, icon:'✨', cor:'var(--acc)',
+      titulo:'RITMO CONSISTENTE — ponto forte da equipe!',
+      corpo:'Desvio padrão de apenas '+Math.round(d.stddev)+'s. Mantém ritmo uniforme entre trechos — diferencial competitivo. Continue calibrando por tipo de terreno.'});
+
+  // VRT
+  if(d.nVRT > 0){
+    if(d.vrtAcuracia < 85){
+      var vDica = d.mediaVRTsigned > 30
+        ? 'Sua equipe SUPERESTIMA (+'+Math.round(d.mediaVRTsigned)+'m em média). Em trilhas densas reduza 10-15% da estimativa e use marcos físicos como referência.'
+        : d.mediaVRTsigned < -30
+          ? 'Sua equipe SUBESTIMA ('+Math.round(d.mediaVRTsigned)+'m em média). Aumente a contagem em trechos de mata fechada e confie no contador de passos.'
+          : 'Erro médio de '+Math.round(d.mediaVRTerro)+'m. Use referências visuais (curvas, cruzamentos, árvores marcantes) para calibrar a estimativa.';
+      recs.push({pri:3, icon:'🟣', cor:'#cc44ff',
+        titulo:'VIRTUAIS — assertividade de '+d.vrtAcuracia.toFixed(0)+'%',
+        corpo:vDica});
+    } else {
+      recs.push({pri:6, icon:'🟣', cor:'#cc44ff',
+        titulo:'VIRTUAIS EXCELENTES — '+d.vrtAcuracia.toFixed(0)+'% de assertividade!',
+        corpo:'Erro médio de apenas '+Math.round(d.mediaVRTerro)+'m. Metodologia de estimativa muito eficaz. Mantenha a mesma técnica de contagem de passos e referências de terreno.'});
+    }
+  }
+
+  // Elite / alto nível — reforço positivo
+  if(d.mediaDesvio <= 15 && d.nGPS >= 3)
+    recs.push({pri:7, icon:'🏆', cor:'#FFD700',
+      titulo:'PERFORMANCE DE ELITE — nível de pódio',
+      corpo:'Desvio médio de '+Math.round(d.mediaDesvio)+'s. Para subir mais: aperfeiçoe o cálculo de pace em subidas longas (+terreno) e foque na gestão mental nos trechos finais quando o cansaço afeta a precisão.'});
+
+  recs.sort(function(a,b){ return a.pri-b.pri; });
+  return recs;
+}
+
+function _diagTreinos(d){
+  var ts = [];
+  if(d.mediaDesvio > 60){
+    ts.push({i:'🦶', t:'Calibração de passo: caminhe 100m em terreno plano contando cada passada. Repita 5x e calcule a média. Este é seu passo-base para velocidades de 80-100 m/min.'});
+    ts.push({i:'⏱', t:'Treino de ritmo: cronometre trechos de 500m na velocidade-alvo. Pratique 3x por semana até manter erro menor que 5s por trecho.'});
+    ts.push({i:'🗺', t:'Leitura em movimento: calcule velocidade e distância sem parar. Cada parada desperdiça segundos — a equipe deve se dividir entre navegação e cronometragem.'});
+  } else if(d.mediaDesvio > 25){
+    ts.push({i:'🏔', t:'Calibração por terreno: pratique com variações de subida, descida, mata e campo. Cada terreno exige fator de ajuste de 5-20% sobre o passo-base.'});
+    ts.push({i:'🤝', t:'Sincronismo de dupla: a equipe deve entrar no ritmo juntos desde o 1º metro. Definam com antecedência: quem conta passos e quem controla o cronômetro.'});
+    ts.push({i:'🧘', t:'Gestão de fadiga: treinem nos últimos 30% do tempo de prova quando o cansaço derruba a precisão em até 15%. Simulem pressão e cansaço nos treinos longos.'});
+  } else {
+    ts.push({i:'⚙', t:'Ajuste fino: trabalhe variações de 2-5 m/min por tipo de terreno específico. A diferença entre ALTO NÍVEL e ELITE está nos micro-ajustes de calibração.'});
+    ts.push({i:'🌧', t:'Simulação de condições adversas: treine em chuva, calor intenso e início da noite. A precisão cai 10-20% em condições adversas — prepare-se para elas nos treinos.'});
+    ts.push({i:'🧠', t:'Pressão competitiva: próximos à liderança, muitas equipes perdem foco. Pratique a concentração absoluta nos últimos trechos — é quando os pontos se definem.'});
+  }
+  if(d.nVRT > 0 && d.vrtAcuracia < 90)
+    ts.push({i:'🟣', t:'Treino de virtual: em trilhas conhecidas feche o GPS e estime a distância apenas por passos e referências visuais. Compare com o real e corrija o fator de erro.'});
+  if(d.pcIndevidos > 0)
+    ts.push({i:'🔵', t:'Protocolo de PC: pratique o checklist — ver código no mapa, confirmar com a equipe, só então bater. Nunca bata por impulso. 200 pts de penalidade não perdoam.'});
+  return ts;
+}
+
+function renderDiagnostico(){
+  if(!diagnosticoAberto) return;
+  var container = document.getElementById('diagnostico-content');
+  if(!container) return;
+
+  var d = calcDiagnostico();
+  var html = '';
+
+  // ── NÍVEL ──────────────────────────────────────────────────────────
+  html += '<div class="diag-nivel-badge" style="border-color:'+d.nivelColor+';background:'+d.nivelBg+'">'
+    +'<span class="diag-nivel-icon">'+d.nivelIcon+'</span>'
+    +'<span class="diag-nivel-name" style="color:'+d.nivelColor+'">'+d.nivel+'</span>'
+    +'<span class="diag-nivel-desc">'+d.nivelDesc+'</span>'
+    +'</div>';
+
+  if(d.nGPS === 0 && d.nVRT === 0){
+    html += '<div class="diag-sem-dados">Registre chegadas nos trechos GPS e/ou informe distâncias oficiais nos virtuais para gerar o diagnóstico completo.</div>';
+    document.getElementById('diagnostico-content').innerHTML = html;
+    return;
+  }
+
+  // ── GPS ────────────────────────────────────────────────────────────
+  if(d.nGPS > 0){
+    var pOk  = Math.round(d.nNoTempo/d.nGPS*100);
+    var pWn  = Math.round(d.nAtencao/d.nGPS*100);
+    var pLt  = Math.round(d.nForaTempo/d.nGPS*100);
+    var pConsist = Math.max(0, Math.min(100, Math.round(100 - d.stddev)));
+
+    html += '<div class="diag-section">'
+      +'<div class="diag-sec-title">⏱ ANÁLISE DE PONTUALIDADE GPS — '+d.nGPS+' TRECHO'+(d.nGPS>1?'S':'')+'</div>'
+      +'<div class="diag-stat-grid">'
+      +'<div class="diag-stat-cell"><div class="diag-stat-val" style="color:var(--acc)">'+d.nNoTempo+'</div><div class="diag-stat-lbl">NO TEMPO ✅</div></div>'
+      +'<div class="diag-stat-cell"><div class="diag-stat-val" style="color:var(--warn)">'+d.nAtencao+'</div><div class="diag-stat-lbl">ATENÇÃO ⚠️</div></div>'
+      +'<div class="diag-stat-cell"><div class="diag-stat-val" style="color:var(--danger)">'+d.nForaTempo+'</div><div class="diag-stat-lbl">FORA 🔴</div></div>'
+      +'</div>'
+      +'<div class="diag-metric-row"><span class="diag-metric-label">No Tempo <span style="color:var(--txt3)">(≤15s)</span></span>'
+        +'<div class="diag-bar-wrap"><div class="diag-bar-fill" style="width:'+pOk+'%;background:var(--acc)"></div></div>'
+        +'<span class="diag-metric-val" style="color:var(--acc)">'+pOk+'%</span></div>'
+      +'<div class="diag-metric-row"><span class="diag-metric-label">Atenção <span style="color:var(--txt3)">(16-30s)</span></span>'
+        +'<div class="diag-bar-wrap"><div class="diag-bar-fill" style="width:'+pWn+'%;background:var(--warn)"></div></div>'
+        +'<span class="diag-metric-val" style="color:var(--warn)">'+pWn+'%</span></div>'
+      +'<div class="diag-metric-row"><span class="diag-metric-label">Fora do Tempo <span style="color:var(--txt3)">(>30s)</span></span>'
+        +'<div class="diag-bar-wrap"><div class="diag-bar-fill" style="width:'+pLt+'%;background:var(--danger)"></div></div>'
+        +'<span class="diag-metric-val" style="color:var(--danger)">'+pLt+'%</span></div>'
+      +'<div style="height:1px;background:var(--bord);margin:8px 0"></div>'
+      +'<div class="diag-metric-row"><span class="diag-metric-label">Desvio médio por trecho</span>'
+        +'<span class="diag-metric-val" style="color:'+d.nivelColor+'">'+Math.round(d.mediaDesvio)+'s</span></div>'
+      +'<div class="diag-metric-row"><span class="diag-metric-label">Consistência <span style="color:var(--txt3)">(desvio padrão)</span></span>'
+        +'<div class="diag-bar-wrap"><div class="diag-bar-fill" style="width:'+pConsist+'%;background:var(--info)"></div></div>'
+        +'<span class="diag-metric-val">'+Math.round(d.stddev)+'s</span></div>';
+
+    // Tendência
+    var tCor, tTxt, tBg;
+    if(Math.abs(d.mediaSigned) < 5){
+      tTxt='⚖️ RITMO NEUTRO — excelente equilíbrio de pace'; tCor='var(--acc)'; tBg='#0a2e0a';
+    } else if(d.mediaSigned > 0){
+      tTxt='🐢 TENDÊNCIA A ATRASAR — +'+Math.round(d.mediaSigned)+'s médio'; tCor='var(--warn)'; tBg='#1a1200';
+    } else {
+      tTxt='🐇 TENDÊNCIA A ADIANTAR — '+Math.round(d.mediaSigned)+'s médio'; tCor='var(--info)'; tBg='#0a1020';
+    }
+    html += '<div class="diag-tendency" style="color:'+tCor+';background:'+tBg+';border-color:'+tCor+'">'+tTxt+'</div>';
+
+    // Melhor / Pior
+    if(d.melhorTrecho){
+      var mColor = d.melhorTrecho.diffAbs <= 15 ? 'var(--acc)' : d.melhorTrecho.diffAbs <= 30 ? 'var(--warn)' : 'var(--danger)';
+      html += '<div class="diag-trecho-row">'
+        +'<span class="diag-trecho-lbl">🏆 MELHOR</span>'
+        +'<span class="diag-trecho-nome">'+d.melhorTrecho.nome+'</span>'
+        +'<span class="diag-trecho-val" style="color:'+mColor+'">'+d.melhorTrecho.diffAbs+'s</span></div>';
+    }
+    if(d.piorTrecho && d.piorTrecho.diffAbs > 0){
+      html += '<div class="diag-trecho-row" style="border-bottom:none">'
+        +'<span class="diag-trecho-lbl">⚠️ CRÍTICO</span>'
+        +'<span class="diag-trecho-nome">'+d.piorTrecho.nome+'</span>'
+        +'<span class="diag-trecho-val" style="color:var(--danger)">'+d.piorTrecho.diffAbs+'s</span></div>';
+    }
+    html += '</div>';
+  }
+
+  // ── VIRTUAL ────────────────────────────────────────────────────────
+  if(d.nVRT > 0){
+    var vCor = d.vrtAcuracia >= 95 ? 'var(--acc)' : d.vrtAcuracia >= 85 ? 'var(--warn)' : 'var(--danger)';
+    html += '<div class="diag-section">'
+      +'<div class="diag-sec-title">🟣 ASSERTIVIDADE DE VIRTUAIS — '+d.nVRT+' DADO'+(d.nVRT>1?'S OFICIAIS':'')+'</div>'
+      +'<div class="diag-metric-row"><span class="diag-metric-label">Assertividade geral</span>'
+        +'<div class="diag-bar-wrap"><div class="diag-bar-fill" style="width:'+d.vrtAcuracia.toFixed(0)+'%;background:'+vCor+'"></div></div>'
+        +'<span class="diag-metric-val" style="color:'+vCor+'">'+d.vrtAcuracia.toFixed(1)+'%</span></div>'
+      +'<div class="diag-metric-row"><span class="diag-metric-label">Erro médio por virtual</span>'
+        +'<span class="diag-metric-val">'+Math.round(d.mediaVRTerro)+'m</span></div>';
+
+    var vtTxt, vtCor, vtBg;
+    if(Math.abs(d.mediaVRTsigned) < 30){
+      vtTxt='⚖️ ESTIMATIVAS EQUILIBRADAS'; vtCor='var(--acc)'; vtBg='#0a2e0a';
+    } else if(d.mediaVRTsigned > 0){
+      vtTxt='📐 SUPERESTIMA DISTÂNCIA +'+Math.round(d.mediaVRTsigned)+'m em média'; vtCor='var(--warn)'; vtBg='#1a1200';
+    } else {
+      vtTxt='📐 SUBESTIMA DISTÂNCIA '+Math.round(d.mediaVRTsigned)+'m em média'; vtCor='var(--info)'; vtBg='#0a1020';
+    }
+    html += '<div class="diag-tendency" style="color:'+vtCor+';background:'+vtBg+';border-color:'+vtCor+'">'+vtTxt+'</div>';
+    html += '</div>';
+  }
+
+  // ── PC ─────────────────────────────────────────────────────────────
+  var pcTotal = tulipas.filter(function(t){ return t.temPC; }).length;
+  if(pcTotal > 0){
+    html += '<div class="diag-section">'
+      +'<div class="diag-sec-title">🔵 POSTOS DE CONTROLE</div>'
+      +'<div class="diag-stat-grid">'
+      +'<div class="diag-stat-cell"><div class="diag-stat-val" style="color:var(--acc)">'+d.pcCorretos+'</div><div class="diag-stat-lbl">CORRETOS ✅</div></div>'
+      +'<div class="diag-stat-cell"><div class="diag-stat-val" style="color:var(--danger)">'+d.pcIndevidos+'</div><div class="diag-stat-lbl">INDEVIDOS ❌</div></div>'
+      +'<div class="diag-stat-cell"><div class="diag-stat-val" style="color:var(--txt3)">'+d.pcNaoValid+'</div><div class="diag-stat-lbl">NÃO VALID.</div></div>'
+      +'</div>';
+    if(d.pcIndevidos > 0)
+      html += '<div style="text-align:center;font-size:11px;color:var(--danger);font-weight:700;padding:7px;background:#2e0a0a;border:1px solid #662020;border-radius:6px">'
+        +'⚠️ '+d.pcIndevidos+' PC indevido = +'+( d.pcIndevidos*200)+' pontos de penalidade!</div>';
+    html += '</div>';
+  }
+
+  // ── RECOMENDAÇÕES ──────────────────────────────────────────────────
+  var recs = _diagRecs(d);
+  if(recs.length > 0){
+    html += '<div class="diag-section"><div class="diag-sec-title">🎯 RECOMENDAÇÕES PARA A PRÓXIMA PROVA</div>'
+      +'<div class="diag-rec-list">';
+    recs.forEach(function(r){
+      html += '<div class="diag-rec-item" style="border-color:'+r.cor+'">'
+        +'<span class="diag-rec-title" style="color:'+r.cor+'">'+r.icon+' '+r.titulo+'</span>'
+        +'<span class="diag-rec-body">'+r.corpo+'</span></div>';
+    });
+    html += '</div></div>';
+  }
+
+  // ── TREINOS ────────────────────────────────────────────────────────
+  var treinos = _diagTreinos(d);
+  if(treinos.length > 0){
+    html += '<div class="diag-section"><div class="diag-sec-title">🏃 TREINOS SUGERIDOS</div>'
+      +'<div style="display:flex;flex-direction:column;gap:6px">';
+    treinos.forEach(function(t){
+      html += '<div class="diag-treino-item">'
+        +'<span class="diag-treino-icon">'+t.i+'</span>'
+        +'<span style="font-size:11px;color:var(--txt2);line-height:1.5">'+t.t+'</span></div>';
+    });
+    html += '</div></div>';
+  }
+
+  // ── RODAPÉ ─────────────────────────────────────────────────────────
+  html += '<div style="text-align:center;font-size:10px;color:var(--txt3);margin-top:6px;line-height:1.6">'
+    +'Diagnóstico gerado com base em '+d.nGPS+' trecho'+(d.nGPS!==1?'s':'')+' GPS concluído'+(d.nGPS!==1?'s':'')
+    +(d.nVRT>0?' e '+d.nVRT+' virtual'+(d.nVRT>1?'is':''):'')+'.<br>'
+    +'Menor pontuação = melhor resultado. Zero pontos = perfeição.</div>';
+
+  document.getElementById('diagnostico-content').innerHTML = html;
+}
+
 // init
 setManualModo('dvt',document.getElementById('mm-dvt'));
 carregarAutoSave();   // restaurar dados salvos
 renderAcum();
 renderProva();
 renderPerfis();
+
+function renderApuracao(){
+  if(!apuracaoAberta) return;
+  var container = document.getElementById('apuracao-content');
+  if(!container) return;
+  if(tulipas.length === 0){
+    container.innerHTML = '<div style="text-align:center;padding:16px;color:var(--txt3);font-size:13px">Nenhum trecho cadastrado ainda.</div>';
+    return;
+  }
+  var ap = calcApuracao();
+  var html = '<table class="ap-table"><thead><tr>'
+    + '<th>TIPO</th><th>N°</th><th>DIST</th>'
+    + '<th>PREVISTO</th><th>REAL</th><th>DIFERENÇA</th><th>PTS</th>'
+    + '</tr></thead><tbody>';
+
+  ap.rows.forEach(function(r){
+    var tipoClass = r.tipo === 'VRT' ? 'ap-tipo-vrt' : 'ap-tipo-gps';
+    var ptsStr, ptsClass;
+    if(r.pontos === null){
+      ptsStr = r.pendente ? '<span class="ap-pending">pend.</span>' : '—';
+      ptsClass = 'ap-pts-nd';
+    } else {
+      ptsStr = r.pontos;
+      ptsClass = r.pontos === 0 ? 'ap-pts-zero' : (r.pontos <= 30 ? 'ap-pts-warn' : 'ap-pts-bad');
+    }
+    if(r.pcPen > 0) ptsStr += '<span class="ap-pc-pen">+'+r.pcPen+' PC indevido</span>';
+
+    html += '<tr>'
+      + '<td class="'+tipoClass+'">'+r.tipo+'</td>'
+      + '<td>'+r.seq+'</td>'
+      + '<td style="font-size:10px;color:var(--txt2)">'+r.km+'</td>'
+      + '<td>'+(r.prev || '<span class="ap-pending">—</span>')+'</td>'
+      + '<td>'+(r.real || '<span class="ap-pending">pend.</span>')+'</td>'
+      + '<td style="font-size:11px">'+(r.diff || '<span class="ap-pending">—</span>')+'</td>'
+      + '<td class="'+ptsClass+'">'+ptsStr+'</td>'
+      + '</tr>';
+  });
+
+  var totalClass = ap.totalPts === 0 ? 'ap-pts-zero' : (ap.totalPts <= 100 ? 'ap-pts-warn' : 'ap-pts-bad');
+  html += '<tr class="ap-total-row"><td colspan="6" style="text-align:right;padding-right:8px;color:var(--txt2)">TOTAL DE PONTOS:</td>'
+    + '<td class="ap-total-pts '+totalClass+'">'+ap.totalPts+'</td></tr>';
+  html += '</tbody></table>';
+
+  // Linha de legenda
+  html += '<div style="margin-top:8px;font-size:10px;color:var(--txt3);line-height:1.7">'
+    + '<b style="color:var(--txt2)">Legenda:</b> GPS = tulipa com cronômetro &nbsp;|&nbsp; VRT = trecho virtual<br>'
+    + 'Pontos = segundos de diferença (GPS) / metros de diferença (VRT)<br>'
+    + 'PC indevido = +200 pontos de penalidade'
+    + '</div>';
+
+  container.innerHTML = html;
+}
 </script>
 </body>
 </html>
