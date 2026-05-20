@@ -550,6 +550,98 @@ select.inp option{background:var(--surf);color:var(--txt)}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--bord2);border-radius:2px}
+
+/* ================================================================
+   ABA CAMPO — Ferramentas de prova em tempo real
+   ================================================================ */
+.campo-section{background:var(--surf);border:1px solid var(--bord);border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.campo-ttl{font-size:11px;color:var(--txt3);letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:6px;font-weight:700}
+.campo-ttl::before{content:'';display:block;width:6px;height:6px;background:var(--acc);border-radius:2px;flex-shrink:0}
+.passo-counter-big{text-align:center;background:var(--meta-bg);border:2px solid var(--acc3);border-radius:14px;padding:16px;margin-bottom:10px;user-select:none;-webkit-user-select:none}
+.passo-num{font-size:72px;font-weight:700;color:var(--acc);line-height:1;font-family:var(--mono);transition:transform .08s}
+.passo-num.tap{transform:scale(.94)}
+.passo-sub{font-size:11px;color:var(--txt3);letter-spacing:2px;margin-top:6px;font-weight:700}
+.passo-dist-preview{font-size:20px;font-weight:700;color:var(--warn);margin-top:8px;font-family:var(--mono)}
+.passo-vel-preview{font-size:13px;color:var(--txt2);margin-top:4px}
+.passo-tap-btn{width:100%;padding:28px;background:var(--acc);border:none;border-radius:14px;font-size:22px;font-weight:700;font-family:var(--mono);color:#071007;cursor:pointer;letter-spacing:2px;margin-bottom:8px;-webkit-tap-highlight-color:transparent;transition:transform .08s,background .1s}
+.passo-tap-btn:active{transform:scale(.95);background:var(--acc2)}
+.passo-config-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.passo-ciclo-row{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px}
+.ciclo-btn{padding:10px 4px;background:var(--surf2);border:1.5px solid var(--bord);border-radius:8px;color:var(--txt2);font-family:var(--mono);font-size:13px;font-weight:700;cursor:pointer;text-align:center}
+.ciclo-btn.on{background:var(--meta-bg);border-color:var(--acc);color:var(--acc)}
+.vel-inst-panel{background:var(--meta-bg);border:1.5px solid var(--acc3);border-radius:12px;padding:14px;margin-bottom:8px;text-align:center}
+.vel-inst-num{font-size:52px;font-weight:700;color:var(--acc);line-height:1;font-family:var(--mono)}
+.vel-inst-num.abaixo{color:var(--danger)}
+.vel-inst-num.acima {color:var(--warn)}
+.vel-inst-lbl{font-size:11px;color:var(--txt3);letter-spacing:2px;margin-top:5px;font-weight:700}
+.vel-diff-badge{display:inline-block;margin-top:8px;padding:5px 14px;border-radius:20px;font-size:13px;font-weight:700;font-family:var(--mono)}
+.vdb-ok  {background:#0d2e14;color:var(--acc);border:1px solid var(--acc3)}
+.vdb-warn{background:#2e2200;color:var(--warn);border:1px solid #664d00}
+.vdb-bad {background:#2e0a0a;color:var(--danger);border:1px solid #662020}
+.cad-display{font-size:18px;font-weight:700;color:var(--txt2);margin-top:6px;font-family:var(--mono)}
+.ajuste-result{background:var(--surf2);border:1.5px solid var(--acc3);border-radius:10px;padding:12px;margin-top:8px;display:none}
+.ajuste-result.show{display:block}
+.ajuste-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.aj-item{background:var(--surf);border:1px solid var(--bord);border-radius:8px;padding:10px;text-align:center}
+.aj-val{font-size:20px;font-weight:700;color:var(--acc);line-height:1.1}
+.aj-val.warn{color:var(--warn)}
+.aj-val.danger{color:var(--danger)}
+.aj-lbl{font-size:9px;color:var(--txt3);letter-spacing:1px;margin-top:3px;font-weight:700}
+.ajuste-verdict{text-align:center;padding:10px;border-radius:8px;font-size:14px;font-weight:700;margin-top:6px}
+.av-ok    {background:#0d2e14;color:var(--acc);border:1px solid var(--acc3)}
+.av-warn  {background:#2e2200;color:var(--warn);border:1px solid #664d00}
+.av-danger{background:#2e0a0a;color:var(--danger);border:1px solid #662020}
+.alarme-list{max-height:180px;overflow-y:auto}
+.alarme-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bord)}
+.alarme-row:last-child{border-bottom:none}
+.alarme-info{flex:1}
+.alarme-nome{font-size:14px;font-weight:700;color:var(--txt)}
+.alarme-time{font-size:12px;color:var(--txt3);margin-top:2px}
+.alarme-status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;font-family:var(--mono)}
+.as-pend{background:var(--surf2);color:var(--txt3)}
+.as-ativ{background:#0d2e14;color:var(--acc);animation:pulse 2s infinite}
+.as-disp{background:#2e2200;color:var(--warn)}
+.as-done{background:#0a1a0a;color:var(--txt3)}
+.alarme-btn{padding:5px 10px;background:transparent;border:1px solid var(--bord2);border-radius:6px;color:var(--txt3);font-family:var(--mono);font-size:11px;cursor:pointer;margin-left:6px}
+.reset-campo-btn{width:100%;padding:11px;background:transparent;border:1.5px solid var(--bord2);border-radius:8px;font-size:13px;font-family:var(--mono);color:var(--txt3);cursor:pointer;margin-top:6px}
+.reset-campo-btn:active{background:var(--surf2)}
+.vinculo-panel{background:#0a0d1a;border:2px solid var(--info);border-radius:12px;padding:14px;margin-bottom:10px}
+.vinculo-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.vinculo-title{font-size:11px;color:var(--info);letter-spacing:2px;font-weight:700}
+.vinculo-trecho-nome{font-size:16px;font-weight:700;color:var(--txt);margin-bottom:8px;line-height:1.3}
+.vinculo-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.vg-item{background:var(--surf2);border:1px solid var(--bord);border-radius:8px;padding:9px;text-align:center}
+.vg-item.vg-ok  {background:#0d2e14;border-color:var(--acc3)}
+.vg-item.vg-warn{background:#2e2200;border-color:#664d00}
+.vg-item.vg-bad {background:#2e0a0a;border-color:#662020}
+.vg-val{font-size:18px;font-weight:700;color:var(--acc);line-height:1.1;font-family:var(--mono)}
+.vg-val.warn{color:var(--warn)}
+.vg-val.danger{color:var(--danger)}
+.vg-lbl{font-size:9px;color:var(--txt3);letter-spacing:1px;margin-top:3px;font-weight:700}
+.vinculo-barra-wrap{margin:8px 0}
+.vinculo-barra-row{display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-bottom:4px;font-weight:700}
+.vinculo-barra-bg{height:14px;background:var(--surf2);border-radius:7px;overflow:hidden;border:1px solid var(--bord)}
+.vinculo-barra-fill{height:100%;border-radius:7px;transition:width .4s ease,background .3s}
+.vinculo-alerta{text-align:center;padding:9px 12px;border-radius:8px;font-size:13px;font-weight:700;margin-top:6px;font-family:var(--mono)}
+.va-ok   {background:#0d2e14;color:var(--acc);border:1px solid var(--acc3)}
+.va-warn {background:#2e2200;color:var(--warn);border:1px solid #664d00}
+.va-bad  {background:#2e0a0a;color:var(--danger);border:1px solid #662020}
+.va-nd   {background:var(--surf2);color:var(--txt3);border:1px solid var(--bord)}
+.vinculo-proj{background:var(--surf2);border:1px solid var(--bord);border-radius:8px;padding:10px;margin-top:6px;text-align:center}
+.vinculo-proj-val{font-size:22px;font-weight:700;color:var(--acc);font-family:var(--mono)}
+.vinculo-proj-lbl{font-size:10px;color:var(--txt3);letter-spacing:1px;margin-top:3px;font-weight:700}
+select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.5px solid var(--bord2);border-radius:8px;color:var(--txt);font-family:var(--mono);font-size:13px;margin-bottom:8px;appearance:none;-webkit-appearance:none}
+.gatilho-box{background:var(--surf2);border:1px solid var(--bord2);border-radius:10px;padding:12px;margin-bottom:8px}
+.gatilho-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.gatilho-row:last-child{margin-bottom:0}
+.gatilho-lbl{font-size:13px;font-weight:700;color:var(--txt2)}
+.gatilho-sub{font-size:11px;color:var(--txt3);margin-top:2px}
+.gatilho-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:10px;font-family:var(--mono);flex-shrink:0}
+.gb-off{background:var(--surf);color:var(--txt3);border:1px solid var(--bord)}
+.gb-on {background:#0d2e14;color:var(--acc);border:1px solid var(--acc3)}
+.gatilho-toggle{padding:8px 14px;border:none;border-radius:8px;font-size:13px;font-weight:700;font-family:var(--mono);cursor:pointer;flex-shrink:0;margin-left:8px}
+.gt-off{background:var(--surf2);color:var(--txt3);border:1.5px solid var(--bord2)}
+.gt-on {background:var(--acc);color:#071007}
 </style>
 </head>
 <body>
@@ -571,12 +663,13 @@ select.inp option{background:var(--surf);color:var(--txt)}
     <input class="inp" type="time" id="inicio-time" style="width:126px;font-size:19px;padding:10px" onchange="atualizarInicio()">
   </div>
 
-  <div class="tabs" style="grid-template-columns:repeat(6,1fr)">
+  <div class="tabs" style="grid-template-columns:repeat(7,1fr)">
     <div class="tab on"  onclick="goTab('calc',this)">CALC</div>
     <div class="tab"     onclick="goTab('dtr',this)">DIST<br>REAL</div>
     <div class="tab"     onclick="goTab('crono',this)">CRONO</div>
     <div class="tab"     onclick="goTab('acum',this)">ACUM</div>
     <div class="tab"     onclick="goTab('prova',this)">PROVA</div>
+    <div class="tab"     onclick="goTab('campo',this)">🦶<br>CAMPO</div>
     <div class="tab"     onclick="goTab('dados',this)">💾<br>DADOS</div>
   </div>
 
@@ -863,6 +956,181 @@ select.inp option{background:var(--surf);color:var(--txt)}
   </div>
 
 
+  <!-- ========== CAMPO ========== -->
+  <div class="tb-panel" id="tb-campo">
+
+    <!-- ── A: CONTADOR DE PASSOS ── -->
+    <div class="campo-section">
+      <div class="campo-ttl">🦶 CONTADOR DE PASSOS</div>
+
+      <!-- Vínculo com trecho da prova -->
+      <div class="vinculo-panel" id="vinculo-panel">
+        <div class="vinculo-hdr">
+          <span class="vinculo-title">🔗 VÍNCULO COM TRECHO DA PROVA</span>
+          <button onclick="vincularTrecho()" style="padding:5px 12px;background:var(--info);border:none;border-radius:7px;font-size:12px;font-weight:700;font-family:var(--mono);color:#000;cursor:pointer">VINCULAR</button>
+        </div>
+        <select class="vinculo-sel" id="vinculo-sel">
+          <option value="">-- Selecione o trecho atual --</option>
+        </select>
+        <div id="vinculo-status-area" style="display:none">
+          <div class="vinculo-trecho-nome" id="vp-nome">—</div>
+          <div class="vinculo-grid">
+            <div class="vg-item" id="vg-dist"><div class="vg-val" id="vp-dist-perc">0 m</div><div class="vg-lbl">PERCORRIDO (est.)</div></div>
+            <div class="vg-item" id="vg-dist-total"><div class="vg-val" id="vp-dist-total">— m</div><div class="vg-lbl">TOTAL DO TRECHO</div></div>
+            <div class="vg-item" id="vg-vel-real"><div class="vg-val" id="vp-vel-real">— m/min</div><div class="vg-lbl">VEL REAL (toque)</div></div>
+            <div class="vg-item" id="vg-vel-plan"><div class="vg-val" id="vp-vel-plan">— m/min</div><div class="vg-lbl">VEL PLANEJADA</div></div>
+            <div class="vg-item" id="vg-tempo-gasto"><div class="vg-val" id="vp-tempo-gasto">0:00</div><div class="vg-lbl">TEMPO GASTO</div></div>
+            <div class="vg-item" id="vg-tempo-prev"><div class="vg-val" id="vp-tempo-prev">— min</div><div class="vg-lbl">TEMPO PREVISTO</div></div>
+          </div>
+          <div class="vinculo-barra-wrap">
+            <div class="vinculo-barra-row"><span>Progresso no trecho</span><span id="vp-prog-pct">0%</span></div>
+            <div class="vinculo-barra-bg"><div class="vinculo-barra-fill" id="vp-prog-bar" style="width:0%;background:var(--acc)"></div></div>
+          </div>
+          <div class="vinculo-proj">
+            <div class="vinculo-proj-val" id="vp-proj-chegada">--:--</div>
+            <div class="vinculo-proj-lbl">PROJEÇÃO DE CHEGADA NO PC</div>
+          </div>
+          <div class="vinculo-alerta va-nd" id="vp-alerta">Inicie a contagem de passos</div>
+        </div>
+      </div>
+
+      <!-- Config -->
+      <div class="passo-config-row">
+        <div class="fld">
+          <span class="lbl">PASSO (cm)</span>
+          <input class="inp" type="number" id="cp-passo" value="70" inputmode="decimal" step="any" oninput="cpAtualiza()">
+        </div>
+        <div class="fld">
+          <span class="lbl">VEL ALVO (m/min)</span>
+          <input class="inp" type="number" id="cp-vel-alvo" placeholder="ex: 83" inputmode="decimal" step="any" oninput="cpAtualiza()">
+        </div>
+      </div>
+
+      <!-- Ciclo de contagem -->
+      <div class="lbl" style="margin-bottom:6px">CONTAR A CADA</div>
+      <div class="passo-ciclo-row">
+        <div class="ciclo-btn on" id="ciclo-1" onclick="setCiclo(1,this)">1 passo</div>
+        <div class="ciclo-btn"   id="ciclo-2" onclick="setCiclo(2,this)">2 passos</div>
+        <div class="ciclo-btn"   id="ciclo-5" onclick="setCiclo(5,this)">5 passos</div>
+        <div class="ciclo-btn"   id="ciclo-10" onclick="setCiclo(10,this)">10 passos</div>
+      </div>
+
+      <!-- Display -->
+      <div class="passo-counter-big" id="cp-display">
+        <div class="passo-num" id="cp-num">0</div>
+        <div class="passo-sub">PASSOS CONTADOS</div>
+        <div class="passo-dist-preview" id="cp-dist">0 m</div>
+        <div class="passo-vel-preview" id="cp-cad-info">Toque no botão para contar</div>
+      </div>
+
+      <!-- Botão TAP grande -->
+      <button class="passo-tap-btn" id="cp-tap-btn" ontouchstart="cpTap(event)" onclick="cpTap(event)">
+        🦶 TOQUE PARA CONTAR
+      </button>
+
+      <!-- Gatilhos externos -->
+      <div class="gatilho-box">
+        <div class="sec-ttl" style="margin-bottom:8px">⌨️ GATILHOS EXTERNOS</div>
+        <div class="gatilho-row">
+          <div>
+            <div class="gatilho-lbl">🎧 Botão do fone / headset</div>
+            <div class="gatilho-sub">Play/Pause — funciona com fio ou Bluetooth</div>
+          </div>
+          <span class="gatilho-badge gb-off" id="gb-media">AGUARDA</span>
+        </div>
+        <div class="gatilho-row">
+          <div>
+            <div class="gatilho-lbl">🔊 Botões de Volume</div>
+            <div class="gatilho-sub">Vol+ ou Vol- conta um passo (desativa volume)</div>
+          </div>
+          <button class="gatilho-toggle gt-off" id="gt-vol-btn" onclick="toggleGatilhoVol()">ATIVAR</button>
+        </div>
+        <div class="gatilho-row">
+          <div>
+            <div class="gatilho-lbl">⌨️ Qualquer tecla Bluetooth</div>
+            <div class="gatilho-sub">Controle selfie, teclado BT, botão externo</div>
+          </div>
+          <span class="gatilho-badge gb-off" id="gb-bt">AGUARDA</span>
+        </div>
+        <div style="font-size:11px;color:var(--txt3);margin-top:8px;padding-top:8px;border-top:1px solid var(--bord);text-align:center">
+          Última tecla: <span id="gt-ultima-tecla" style="color:var(--acc);font-weight:700;font-family:var(--mono)">—</span>
+        </div>
+      </div>
+
+      <!-- Velocidade instantânea -->
+      <div class="vel-inst-panel" id="cp-vel-panel" style="display:none">
+        <div class="vel-inst-num" id="cp-vel-inst">—</div>
+        <div class="vel-inst-lbl">VELOCIDADE ATUAL (m/min)</div>
+        <div class="vel-diff-badge vdb-ok" id="cp-vel-badge">aguardando</div>
+        <div class="cad-display" id="cp-cad-display">— passos/min</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:6px">
+        <button class="reset-campo-btn" onclick="cpReset()">↺ ZERAR</button>
+        <button class="acc-btn" style="margin-top:0;font-size:13px" onclick="cpAddAcum()">+ ACUMULAR</button>
+      </div>
+    </div>
+
+    <!-- ── B: CALCULADORA DE AJUSTE ── -->
+    <div class="campo-section">
+      <div class="campo-ttl">⚡ AJUSTE DE RITMO</div>
+      <div style="font-size:11px;color:var(--txt3);margin-bottom:10px">
+        Faltam X metros e Y minutos para o PC — qual velocidade preciso manter?
+      </div>
+      <div class="col2">
+        <div class="fld">
+          <span class="lbl">DIST RESTANTE (m)</span>
+          <input class="inp" type="number" id="aj-dist" placeholder="ex: 850" inputmode="decimal" step="any" oninput="calcAjuste()">
+        </div>
+        <div class="fld">
+          <span class="lbl">TEMPO RESTANTE (min)</span>
+          <input class="inp" type="number" id="aj-tempo" placeholder="ex: 8.5" inputmode="decimal" step="any" oninput="calcAjuste()">
+          <div class="unit-hint">8.5 = 8min 30seg</div>
+        </div>
+      </div>
+      <div class="fld">
+        <span class="lbl">SEU PASSO (cm)</span>
+        <input class="inp" type="number" id="aj-passo" value="70" inputmode="decimal" step="any" oninput="calcAjuste()">
+      </div>
+      <div class="ajuste-result" id="aj-result">
+        <div class="ajuste-grid">
+          <div class="aj-item" style="background:var(--meta-bg);border-color:var(--acc3);grid-column:1/-1">
+            <div class="aj-val" id="aj-vel-nec" style="font-size:26px">—</div>
+            <div class="aj-lbl">VELOCIDADE NECESSÁRIA (m/min)</div>
+          </div>
+          <div class="aj-item"><div class="aj-val" id="aj-kmh">—</div><div class="aj-lbl">km/h</div></div>
+          <div class="aj-item"><div class="aj-val" id="aj-passos-min">—</div><div class="aj-lbl">PASSOS/MIN</div></div>
+          <div class="aj-item"><div class="aj-val" id="aj-passos-total">—</div><div class="aj-lbl">PASSOS TOTAIS</div></div>
+          <div class="aj-item"><div class="aj-val" id="aj-tempo-fmt">—</div><div class="aj-lbl">TEMPO (min:seg)</div></div>
+        </div>
+        <div class="ajuste-verdict" id="aj-verdict">—</div>
+      </div>
+    </div>
+
+    <!-- ── C: ALARME DE PC ── -->
+    <div class="campo-section">
+      <div class="campo-ttl">🔔 ALARME DE PC</div>
+      <div style="font-size:11px;color:var(--txt3);margin-bottom:10px">
+        Aviso sonoro antes de cada PC — configurado a partir dos trechos da prova
+      </div>
+      <div class="fld">
+        <span class="lbl">AVISO ANTECIPADO (segundos)</span>
+        <input class="inp" type="number" id="al-antecip" value="30" inputmode="numeric" min="5" max="120">
+        <div class="unit-hint">Alarme dispara X segundos antes do horário previsto de chegada</div>
+      </div>
+      <button class="go-btn" style="font-size:16px;padding:14px;margin-bottom:8px" onclick="ativarAlarmes()">
+        🔔 ATIVAR ALARMES DA PROVA
+      </button>
+      <div class="alarme-list" id="al-list">
+        <div style="color:var(--txt3);font-size:13px;text-align:center;padding:16px">
+          Configure os trechos na aba PROVA e ative os alarmes aqui.
+        </div>
+      </div>
+      <button class="reset-campo-btn" onclick="desativarAlarmes()">✕ DESATIVAR TODOS</button>
+    </div>
+
+  </div>
+
   <!-- ========== DADOS / PERFIS ========== -->
   <div class="tb-panel" id="tb-dados">
 
@@ -1086,13 +1354,16 @@ function toggleTheme(){
 
 // ===== TABS =====
 function goTab(id,el){
-  ['calc','dtr','crono','acum','prova'].forEach(function(t){document.getElementById('tb-'+t).classList.remove('on');});
+  ['calc','dtr','crono','acum','prova','campo','dados'].forEach(function(t){
+    var p=document.getElementById('tb-'+t); if(p) p.classList.remove('on');
+  });
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
   document.getElementById('tb-'+id).classList.add('on');
   el.classList.add('on');
   window.scrollTo(0,0);
   if(id==='prova') renderProva();
   if(id==='dados'){ renderPerfis(); }
+  if(id==='campo'){ renderAlarmes(); popularVinculoSelect(); iniciarGatilhos(); mostrarInstrucoesGatilho(); }
 }
 
 // ===== INÍCIO =====
@@ -3183,6 +3454,483 @@ function renderApuracao(){
     + '</div>';
 
   container.innerHTML = html;
+}
+
+// =====================================================================
+//  ABA CAMPO — Contador, Velocidade, Ajuste, Alarmes
+// =====================================================================
+
+// ── VÍNCULO CONTADOR x TRECHO DA PROVA ────────────────────────────
+var cpTrechoVinculado = null;
+var cpVincInterval    = null;
+
+function popularVinculoSelect(){
+  var sel = document.getElementById('vinculo-sel');
+  if(!sel) return;
+  var prev = sel.value;
+  sel.innerHTML = '<option value="">-- Selecione o trecho atual --</option>';
+  tulipas.forEach(function(t, i){
+    if(t.tipo === 'neutro' || t.tipo === 'virtual') return;
+    var opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = (i+1) + '. ' + t.nome +
+      ' (' + t.dist.toLocaleString('pt-BR') + 'm @ ' + t.vel.toFixed(1) + ' m/min)';
+    sel.appendChild(opt);
+  });
+  if(prev) sel.value = prev;
+}
+
+function vincularTrecho(){
+  var sel = document.getElementById('vinculo-sel');
+  var idx = parseInt(sel.value);
+  if(isNaN(idx) || !tulipas[idx]){ alert('Selecione um trecho da prova!'); return; }
+  cpTrechoVinculado = tulipas[idx];
+  document.getElementById('cp-vel-alvo').value = cpTrechoVinculado.vel.toFixed(1);
+  cpVelAlvo = cpTrechoVinculado.vel;
+  if(cpTrechoVinculado.passo > 0){
+    document.getElementById('cp-passo').value = cpTrechoVinculado.passo;
+    cpPasso = cpTrechoVinculado.passo;
+  }
+  document.getElementById('vinculo-status-area').style.display = 'block';
+  document.getElementById('vp-nome').textContent = cpTrechoVinculado.nome;
+  document.getElementById('vp-dist-total').textContent = cpTrechoVinculado.dist.toLocaleString('pt-BR') + ' m';
+  document.getElementById('vp-vel-plan').textContent = cpTrechoVinculado.vel.toFixed(1) + ' m/min';
+  document.getElementById('vp-tempo-prev').textContent = fmtMin(cpTrechoVinculado.tempo);
+  cpReset();
+  clearInterval(cpVincInterval);
+  cpVincInterval = setInterval(atualizarVinculo, 2000);
+  alert('✅ Vinculado ao trecho: ' + cpTrechoVinculado.nome +
+        '\n\nVelocidade alvo ajustada para ' + cpTrechoVinculado.vel.toFixed(1) + ' m/min' +
+        '\nPasso ajustado para ' + cpPasso + ' cm\n\nInicie a contagem!');
+}
+
+function atualizarVinculo(){
+  if(!cpTrechoVinculado || cpTotal === 0) return;
+  var t = cpTrechoVinculado;
+  var distPerc  = cpTotal * (cpPasso / 100);
+  var distTotal = t.dist;
+  var pct       = Math.min(100, (distPerc / distTotal) * 100);
+  var tempoGastoMs  = cpInicio ? Date.now() - cpInicio : 0;
+  var tempoGastoMin = tempoGastoMs / 1000 / 60;
+  var velReal = tempoGastoMin > 0 ? distPerc / tempoGastoMin : 0;
+  var tempoEstTotal = velReal > 0 ? distTotal / velReal : null;
+  var projChegada = '--:--';
+  if(cpInicio && tempoEstTotal !== null){
+    var chegadaMs  = cpInicio + tempoEstTotal * 60 * 1000;
+    var chegadaDt  = new Date(chegadaMs);
+    var hh = chegadaDt.getHours(), mm = chegadaDt.getMinutes();
+    projChegada = (hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm;
+  }
+  var desvio    = velReal > 0 ? ((velReal - t.vel) / t.vel) * 100 : 0;
+  var desvioMin = tempoEstTotal !== null ? tempoEstTotal - t.tempo : null;
+  document.getElementById('vp-dist-perc').textContent  = distPerc.toFixed(1) + ' m';
+  document.getElementById('vp-vel-real').textContent    = velReal.toFixed(1) + ' m/min';
+  document.getElementById('vp-tempo-gasto').textContent = fmtMin(tempoGastoMin);
+  document.getElementById('vp-prog-pct').textContent    = pct.toFixed(0) + '%';
+  document.getElementById('vp-proj-chegada').textContent= projChegada;
+  var bar = document.getElementById('vp-prog-bar');
+  bar.style.width = pct + '%';
+  var vgVel  = document.getElementById('vg-vel-real');
+  var velEl  = document.getElementById('vp-vel-real');
+  var alerta = document.getElementById('vp-alerta');
+  var barColor, alertaMsg, alertaCls;
+  if(velReal === 0){
+    barColor='var(--acc3)'; alertaMsg='Inicie a contagem de passos'; alertaCls='va-nd';
+    vgVel.className='vg-item'; velEl.className='vg-val';
+  } else if(Math.abs(desvio) <= 5){
+    barColor='var(--acc)'; vgVel.className='vg-item vg-ok'; velEl.className='vg-val';
+    alertaMsg='✅ NO RITMO — velocidade ideal para o trecho'; alertaCls='va-ok';
+  } else if(desvio < -5 && desvio >= -15){
+    barColor='var(--warn)'; vgVel.className='vg-item vg-warn'; velEl.className='vg-val warn';
+    alertaMsg='⚠️ '+ Math.abs(desvio).toFixed(0)+'% abaixo — acelere '+Math.abs(velReal-t.vel).toFixed(1)+' m/min';
+    alertaCls='va-warn';
+  } else if(desvio < -15){
+    barColor='var(--danger)'; vgVel.className='vg-item vg-bad'; velEl.className='vg-val danger';
+    var atraso = desvioMin !== null ? ' | chegará ~'+Math.abs(desvioMin).toFixed(1)+'min atrasado' : '';
+    alertaMsg='🔴 MUITO ABAIXO — '+Math.abs(velReal-t.vel).toFixed(1)+' m/min de déficit'+atraso;
+    alertaCls='va-bad';
+  } else if(desvio > 5){
+    barColor='var(--warn)'; vgVel.className='vg-item'; velEl.className='vg-val warn';
+    alertaMsg='⚡ '+desvio.toFixed(0)+'% acima — pode desacelerar um pouco'; alertaCls='va-warn';
+  } else {
+    barColor='var(--acc)'; alertaMsg='✅ OK'; alertaCls='va-ok';
+  }
+  bar.style.background = barColor;
+  alerta.textContent   = alertaMsg;
+  alerta.className     = 'vinculo-alerta ' + alertaCls;
+  var projEl = document.getElementById('vp-proj-chegada');
+  if(t.chegadaPrevMin !== null && tempoEstTotal !== null){
+    var chegadaMs2 = cpInicio + tempoEstTotal*60*1000;
+    var chegDt2    = new Date(chegadaMs2);
+    var chegMin2   = chegDt2.getHours()*60 + chegDt2.getMinutes();
+    var diffPC     = chegMin2 - t.chegadaPrevMin;
+    projEl.style.color = Math.abs(diffPC)<=0.5 ? 'var(--acc)' : (diffPC>0?'var(--danger)':'var(--warn)');
+  }
+}
+
+// =====================================================================
+//  GATILHOS EXTERNOS — Fone, Volume, Bluetooth
+// =====================================================================
+var gatilhoVolAtivo = false;
+var gatilhoContando = false;
+
+function gatilhoFlash(){
+  var el = document.getElementById('cp-display');
+  if(!el) return;
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+  setTimeout(function(){ el.classList.remove('flash'); }, 200);
+}
+
+function gatilhoLog(tecla){
+  var el = document.getElementById('gt-ultima-tecla');
+  if(el) el.textContent = tecla;
+}
+
+function gatilhoExterno(fonte){
+  if(gatilhoContando) return;
+  gatilhoContando = true;
+  setTimeout(function(){ gatilhoContando=false; }, 200);
+  var tabCampo = document.getElementById('tb-campo');
+  if(!tabCampo || !tabCampo.classList.contains('on')) return;
+  gatilhoFlash();
+  gatilhoLog(fonte);
+  cpTap(null);
+}
+
+function ativarGatilhoMedia(){
+  if('mediaSession' in navigator){
+    try{
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: 'TrekCalc — Contador de Passos',
+        artist: 'Gafanhoto Novo',
+        album: 'Prova de Regularidade'
+      });
+      navigator.mediaSession.setActionHandler('play',  function(){ gatilhoExterno('Fone: Play'); });
+      navigator.mediaSession.setActionHandler('pause', function(){ gatilhoExterno('Fone: Pause'); });
+      navigator.mediaSession.setActionHandler('nexttrack', function(){ gatilhoExterno('Fone: Next'); });
+      navigator.mediaSession.playbackState = 'playing';
+      document.getElementById('gb-media').textContent = 'ATIVO';
+      document.getElementById('gb-media').className   = 'gatilho-badge gb-on';
+    } catch(e){ console.warn('MediaSession:', e); }
+  }
+  try{
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var buf = ctx.createBuffer(1,1,22050);
+    var src = ctx.createBufferSource();
+    src.buffer=buf; src.connect(ctx.destination); src.start(0);
+    window._mediaCtx = ctx;
+  } catch(e){}
+}
+
+function toggleGatilhoVol(){
+  gatilhoVolAtivo = !gatilhoVolAtivo;
+  var btn = document.getElementById('gt-vol-btn');
+  if(gatilhoVolAtivo){
+    btn.textContent = 'DESATIVAR';
+    btn.className   = 'gatilho-toggle gt-on';
+    if(!window._volWarned){
+      alert('🔊 Botões de volume ativados como gatilho!\n\nO volume do celular não mudará enquanto estiver contando.\n\nDesative quando terminar.');
+      window._volWarned = true;
+    }
+  } else {
+    btn.textContent = 'ATIVAR';
+    btn.className   = 'gatilho-toggle gt-off';
+  }
+}
+
+document.addEventListener('keydown', function(e){
+  var code = e.code || e.key;
+  if(code === 'VolumeUp' || code === 'AudioVolumeUp' || e.keyCode === 175){
+    if(gatilhoVolAtivo){ e.preventDefault(); gatilhoExterno('Vol+'); return; }
+  }
+  if(code === 'VolumeDown' || code === 'AudioVolumeDown' || e.keyCode === 174){
+    if(gatilhoVolAtivo){ e.preventDefault(); gatilhoExterno('Vol-'); return; }
+  }
+  if(code === 'MediaPlayPause' || code === 'MediaPlay' || e.keyCode === 179){
+    e.preventDefault(); gatilhoExterno('Fone/Media'); return;
+  }
+  if((code==='Enter'||code==='Space') && e.target===document.body){
+    var tabCampo = document.getElementById('tb-campo');
+    if(tabCampo && tabCampo.classList.contains('on')){
+      e.preventDefault(); gatilhoExterno('BT: '+(code==='Enter'?'Enter':'Space'));
+    }
+    return;
+  }
+  if(e.keyCode>=112 && e.keyCode<=119){
+    var tabCampo2 = document.getElementById('tb-campo');
+    if(tabCampo2 && tabCampo2.classList.contains('on')){
+      e.preventDefault(); gatilhoExterno('BT: F'+(e.keyCode-111));
+    }
+    return;
+  }
+  var btBadge = document.getElementById('gb-bt');
+  if(btBadge){ btBadge.textContent='DETECTADO'; btBadge.className='gatilho-badge gb-on'; }
+}, { passive: false });
+
+function iniciarGatilhos(){ ativarGatilhoMedia(); }
+
+function mostrarInstrucoesGatilho(){
+  if(window._gatilhoInstr) return;
+  window._gatilhoInstr = true;
+  setTimeout(function(){
+    var el = document.getElementById('gt-ultima-tecla');
+    if(el) el.textContent = 'aguardando tecla...';
+  }, 500);
+}
+
+// ── CONTADOR DE PASSOS ──────────────────────────────────────────────
+var cpTotal    = 0;
+var cpCiclo    = 1;
+var cpPasso    = 70;
+var cpVelAlvo  = 0;
+var cpInicio   = null;
+var cpUltimoTq = null;
+var cpCadBuffer= [];
+var cpAnimId   = null;
+
+function setCiclo(n, el){
+  cpCiclo = n;
+  document.querySelectorAll('.ciclo-btn').forEach(function(b){ b.classList.remove('on'); });
+  el.classList.add('on');
+}
+
+function cpAtualiza(){
+  cpPasso   = parseFloat(document.getElementById('cp-passo').value)  || 70;
+  cpVelAlvo = parseFloat(document.getElementById('cp-vel-alvo').value)|| 0;
+  cpRenderDist();
+}
+
+function cpTap(e){
+  if(e && e.type==='click' && e.pointerType==='touch') return;
+  if(e) e.preventDefault();
+  var agora = Date.now();
+  cpTotal += cpCiclo;
+  var numEl = document.getElementById('cp-num');
+  numEl.classList.add('tap');
+  clearTimeout(cpAnimId);
+  cpAnimId = setTimeout(function(){ numEl.classList.remove('tap'); }, 80);
+  if(!cpInicio) cpInicio = agora;
+  if(cpUltimoTq !== null){
+    cpCadBuffer.push(agora - cpUltimoTq);
+    if(cpCadBuffer.length > 6) cpCadBuffer.shift();
+  }
+  cpUltimoTq = agora;
+  cpRenderDist();
+  cpRenderVel();
+  if(cpTrechoVinculado) atualizarVinculo();
+  scheduleAutoSave();
+}
+
+function cpRenderDist(){
+  var dist = (cpTotal * (cpPasso/100));
+  document.getElementById('cp-num').textContent  = cpTotal.toLocaleString('pt-BR');
+  document.getElementById('cp-dist').textContent = dist.toFixed(1) + ' m';
+  if(cpInicio && cpTotal > 0){
+    var elapsed = (Date.now() - cpInicio) / 1000 / 60;
+    var cadAcum = elapsed > 0 ? cpTotal / elapsed : 0;
+    var velAcum = cadAcum * (cpPasso/100) * 60 / 1000 * 1000;
+    document.getElementById('cp-cad-info').textContent =
+      cadAcum.toFixed(0) + ' passos/min  |  ' + velAcum.toFixed(1) + ' m/min (acumulado)';
+  }
+}
+
+function cpRenderVel(){
+  var panel = document.getElementById('cp-vel-panel');
+  if(cpCadBuffer.length < 2){ panel.style.display='none'; return; }
+  panel.style.display = 'block';
+  var sumMs = cpCadBuffer.reduce(function(s,v){ return s+v; }, 0);
+  var avgMs = sumMs / cpCadBuffer.length;
+  var cadInst = (cpCiclo / avgMs) * 60000;
+  var velInst = cadInst * (cpPasso/100) * 60 / 1000 * 1000 / 60;
+  var velEl  = document.getElementById('cp-vel-inst');
+  var badge  = document.getElementById('cp-vel-badge');
+  var cadEl  = document.getElementById('cp-cad-display');
+  velEl.textContent = velInst.toFixed(1);
+  cadEl.textContent = cadInst.toFixed(0) + ' passos/min';
+  if(cpVelAlvo > 0){
+    var diff = velInst - cpVelAlvo;
+    var pct  = (diff / cpVelAlvo) * 100;
+    if(Math.abs(pct) <= 5){
+      velEl.className='vel-inst-num'; badge.textContent='✅ NO RITMO CERTO'; badge.className='vel-diff-badge vdb-ok';
+    } else if(diff > 0){
+      velEl.className='vel-inst-num acima'; badge.textContent='⚠️ +'+Math.abs(diff).toFixed(1)+' m/min ACIMA — reduza'; badge.className='vel-diff-badge vdb-warn';
+    } else {
+      velEl.className='vel-inst-num abaixo'; badge.textContent='🔴 -'+Math.abs(diff).toFixed(1)+' m/min ABAIXO — acelere'; badge.className='vel-diff-badge vdb-bad';
+    }
+  } else {
+    velEl.className='vel-inst-num'; badge.textContent='Configure velocidade alvo'; badge.className='vel-diff-badge vdb-ok';
+  }
+}
+
+function cpReset(){
+  cpTotal=0; cpInicio=null; cpUltimoTq=null; cpCadBuffer=[];
+  document.getElementById('cp-num').textContent   = '0';
+  document.getElementById('cp-dist').textContent  = '0 m';
+  document.getElementById('cp-cad-info').textContent = 'Toque no botão para contar';
+  document.getElementById('cp-vel-panel').style.display = 'none';
+  if(document.getElementById('vp-dist-perc')){
+    document.getElementById('vp-dist-perc').textContent  = '0 m';
+    document.getElementById('vp-vel-real').textContent   = '— m/min';
+    document.getElementById('vp-tempo-gasto').textContent= '0:00';
+    document.getElementById('vp-prog-pct').textContent   = '0%';
+    document.getElementById('vp-proj-chegada').textContent='--:--';
+    var bar=document.getElementById('vp-prog-bar');
+    if(bar){bar.style.width='0%';bar.style.background='var(--acc)';}
+    var al=document.getElementById('vp-alerta');
+    if(al){al.textContent='Inicie a contagem de passos';al.className='vinculo-alerta va-nd';}
+  }
+}
+
+function cpAddAcum(){
+  if(cpTotal === 0){ alert('Nenhum passo contado!'); return; }
+  var dist = cpTotal * (cpPasso/100);
+  var tempo = cpInicio ? (Date.now()-cpInicio)/1000/60 : 0;
+  var vel   = tempo>0 ? dist/tempo : 0;
+  acEntradas.push({
+    nome: 'Contador: '+cpTotal.toLocaleString('pt-BR')+' passos — '+dist.toFixed(1)+'m',
+    dist:dist, tempoMin:tempo, velMmin:vel, passos:cpTotal
+  });
+  renderAcum();
+  scheduleAutoSave();
+  alert('Adicionado ao acumulado!');
+}
+
+// ── CALCULADORA DE AJUSTE ──────────────────────────────────────────
+function calcAjuste(){
+  var dist  = parseFloat(document.getElementById('aj-dist').value)  || 0;
+  var tempo = parseFloat(document.getElementById('aj-tempo').value) || 0;
+  var passo = parseFloat(document.getElementById('aj-passo').value) || 70;
+  var res = document.getElementById('aj-result');
+  if(dist<=0||tempo<=0){ res.classList.remove('show'); return; }
+  var velNec     = dist / tempo;
+  var velKmh     = velNec * 60 / 1000;
+  var passosMin  = velNec / (passo/100);
+  var passosTotal= Math.round(dist / (passo/100));
+  document.getElementById('aj-vel-nec').textContent    = velNec.toFixed(1);
+  document.getElementById('aj-kmh').textContent         = velKmh.toFixed(2);
+  document.getElementById('aj-passos-min').textContent  = passosMin.toFixed(0);
+  document.getElementById('aj-passos-total').textContent= passosTotal.toLocaleString('pt-BR');
+  document.getElementById('aj-tempo-fmt').textContent   = fmtMin(tempo);
+  var verd = document.getElementById('aj-verdict');
+  var ajVelNecEl = document.getElementById('aj-vel-nec');
+  if(velNec <= 60){
+    verd.textContent='✅ Ritmo tranquilo — totalmente viável'; verd.className='ajuste-verdict av-ok'; ajVelNecEl.className='aj-val';
+  } else if(velNec <= 100){
+    verd.textContent='⚠️ Ritmo elevado — exige esforço constante'; verd.className='ajuste-verdict av-warn'; ajVelNecEl.className='aj-val warn';
+  } else if(velNec <= 140){
+    verd.textContent='🔴 Ritmo muito alto — praticamente correndo'; verd.className='ajuste-verdict av-danger'; ajVelNecEl.className='aj-val danger';
+  } else {
+    verd.textContent='💀 Impossível no tempo — PC já está comprometido'; verd.className='ajuste-verdict av-danger'; ajVelNecEl.className='aj-val danger';
+  }
+  res.classList.add('show');
+}
+
+// ── ALARMES DE PC ──────────────────────────────────────────────────
+var alarmes        = [];
+var alarmeInterval = null;
+
+function ativarAlarmes(){
+  var antecip = parseInt(document.getElementById('al-antecip').value) || 30;
+  var pcs = tulipas.filter(function(t){ return t.temPC && t.chegadaPrevMin !== null; });
+  if(pcs.length === 0){
+    alert('Nenhum trecho marcado como PC com horário previsto!\nMarque os PCs na aba PROVA e defina o horário de início.');
+    return;
+  }
+  desativarAlarmes();
+  alarmes = pcs.map(function(t){
+    return { nome: t.nome, horarioPrevMin: t.chegadaPrevMin, antecipSeg: antecip, status: 'pend', timerId: null };
+  });
+  alarmeInterval = setInterval(alarmeTick, 5000);
+  alarmeTick();
+  renderAlarmes();
+  alert('🔔 ' + alarmes.length + ' alarme(s) ativado(s)!\nCertifique-se de que o som do celular está ligado.');
+}
+
+function alarmeTick(){
+  if(alarmes.length === 0) return;
+  var now = new Date();
+  var nowMin = now.getHours()*60 + now.getMinutes() + now.getSeconds()/60;
+  var changed = false;
+  alarmes.forEach(function(al){
+    if(al.status==='done') return;
+    var dispMin = al.horarioPrevMin - (al.antecipSeg/60);
+    var chegMin = al.horarioPrevMin;
+    if(nowMin >= chegMin){
+      if(al.status !== 'done'){ al.status='done'; changed=true; }
+    } else if(nowMin >= dispMin){
+      if(al.status !== 'disp'){ al.status='disp'; changed=true; alarmeTocar(al.nome, al.antecipSeg); }
+    } else if(nowMin >= dispMin - 1){
+      if(al.status === 'pend'){ al.status='ativ'; changed=true; }
+    }
+  });
+  if(changed) renderAlarmes();
+}
+
+function alarmeTocar(nome, antecip){
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    function beep(freq, dur, delay){
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq; osc.type = 'sine';
+      gain.gain.setValueAtTime(0.4, ctx.currentTime+delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+delay+dur);
+      osc.start(ctx.currentTime+delay);
+      osc.stop(ctx.currentTime+delay+dur+0.05);
+    }
+    beep(880, 0.15, 0.0); beep(880, 0.15, 0.2); beep(1100,0.3, 0.4);
+  } catch(e){ console.warn('AudioContext indisponivel'); }
+  if(navigator.vibrate) navigator.vibrate([200,100,200,100,400]);
+  if(window.Notification && Notification.permission==='granted'){
+    new Notification('🔔 PC em '+antecip+'s — '+nome, {body:'Prepare-se para o Posto de Controle!'});
+  } else {
+    var orig = document.title, cnt = 0;
+    var blink = setInterval(function(){
+      document.title = cnt%2===0 ? '🔔 PC CHEGANDO! '+nome : orig;
+      if(++cnt>10){ clearInterval(blink); document.title=orig; }
+    }, 500);
+  }
+}
+
+function renderAlarmes(){
+  var list = document.getElementById('al-list');
+  if(!list) return;
+  if(alarmes.length === 0){
+    list.innerHTML='<div style="color:var(--txt3);font-size:13px;text-align:center;padding:16px">Configure os trechos na aba PROVA e ative os alarmes aqui.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  alarmes.forEach(function(al){
+    var div = document.createElement('div');
+    div.className = 'alarme-row';
+    var stLbl, stCls;
+    if(al.status==='done')    { stLbl='✓ PASSOU';    stCls='as-done'; }
+    else if(al.status==='disp'){ stLbl='🔔 DISPAROU'; stCls='as-disp'; }
+    else if(al.status==='ativ'){ stLbl='⚡ IMINENTE'; stCls='as-ativ'; }
+    else                       { stLbl='⏳ AGUARDA';  stCls='as-pend'; }
+    div.innerHTML =
+      '<div class="alarme-info">'
+      +'<div class="alarme-nome">'+al.nome+'</div>'
+      +'<div class="alarme-time">PC previsto: '+minParaHHMM(al.horarioPrevMin)+' | Aviso: '+al.antecipSeg+'s antes</div>'
+      +'</div>'
+      +'<span class="alarme-status '+stCls+'">'+stLbl+'</span>';
+    list.appendChild(div);
+  });
+}
+
+function desativarAlarmes(){
+  clearInterval(alarmeInterval);
+  alarmeInterval = null;
+  alarmes.forEach(function(al){ if(al.timerId) clearTimeout(al.timerId); });
+  alarmes = [];
+  renderAlarmes();
+}
+
+function pedirPermissaoNotif(){
+  if(window.Notification && Notification.permission==='default') Notification.requestPermission();
 }
 </script>
 </body>
