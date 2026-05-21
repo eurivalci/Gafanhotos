@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0a0f0a">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
 <title>TrekCalc — Gafanhoto Novo</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -642,6 +644,10 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
 .gatilho-toggle{padding:8px 14px;border:none;border-radius:8px;font-size:13px;font-weight:700;font-family:var(--mono);cursor:pointer;flex-shrink:0;margin-left:8px}
 .gt-off{background:var(--surf2);color:var(--txt3);border:1.5px solid var(--bord2)}
 .gt-on {background:var(--acc);color:#071007}
+@keyframes vel-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.8;transform:scale(1.06)}}
+.vel-diff-badge.pulsing{animation:vel-pulse .55s ease infinite}
+.wake-lock-badge{position:fixed;bottom:74px;right:10px;background:var(--surf2);border:1px solid var(--bord2);border-radius:20px;padding:4px 9px;font-size:10px;color:var(--txt3);font-family:var(--mono);font-weight:700;display:none;z-index:200;letter-spacing:1px}
+.wake-lock-badge.ativo{color:var(--acc);border-color:var(--acc3);background:var(--meta-bg)}
 </style>
 </head>
 <body>
@@ -1353,7 +1359,10 @@ function toggleTheme(){
 }
 
 // ===== TABS =====
+var abaAtualId = 'calc';
 function goTab(id,el){
+  if(abaAtualId === 'campo' && id !== 'campo') cpReleaseWakeLock();
+  abaAtualId = id;
   ['calc','dtr','crono','acum','prova','campo','dados'].forEach(function(t){
     var p=document.getElementById('tb-'+t); if(p) p.classList.remove('on');
   });
@@ -1363,7 +1372,7 @@ function goTab(id,el){
   window.scrollTo(0,0);
   if(id==='prova') renderProva();
   if(id==='dados'){ renderPerfis(); }
-  if(id==='campo'){ renderAlarmes(); popularVinculoSelect(); iniciarGatilhos(); mostrarInstrucoesGatilho(); }
+  if(id==='campo'){ renderAlarmes(); popularVinculoSelect(); iniciarGatilhos(); mostrarInstrucoesGatilho(); cpAcquireWakeLock(); }
 }
 
 // ===== INÍCIO =====
@@ -2799,7 +2808,10 @@ function estadoAtual(){
     inicioVal: document.getElementById('inicio-time').value || '',
     acEntradas: acEntradas,
     tulipas: tulipas,
-    isDark: isDark
+    isDark: isDark,
+    cpTotal: cpTotal,
+    cpCiclo: cpCiclo,
+    cpPasso: cpPasso
   };
 }
 
@@ -2822,6 +2834,24 @@ function restaurarEstado(e){
       isDark = e.isDark;
       document.body.classList.toggle('light', !isDark);
       document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
+    }
+
+    // CAMPO — restaura contador de passos (cpInicio não é restaurado; temporização recomeça ao primeiro toque)
+    if(typeof e.cpTotal !== 'undefined'){
+      cpTotal = e.cpTotal || 0;
+      cpCiclo = e.cpCiclo || 1;
+      cpPasso = e.cpPasso || 70;
+      cpInicio = null; cpUltimoTq = null; cpCadBuffer = [];
+      var numEl = document.getElementById('cp-num');
+      if(numEl){
+        numEl.textContent = cpTotal.toLocaleString('pt-BR');
+        var d = document.getElementById('cp-dist');
+        if(d) d.textContent = (cpTotal*(cpPasso/100)).toFixed(1)+' m';
+        var ci = document.getElementById('cp-cad-info');
+        if(ci && cpTotal>0) ci.textContent = cpTotal.toLocaleString('pt-BR')+' passos salvos — toque para continuar';
+        var pi = document.getElementById('cp-passo');
+        if(pi) pi.value = cpPasso;
+      }
     }
 
     renderAcum();
@@ -3680,6 +3710,32 @@ function mostrarInstrucoesGatilho(){
   }, 500);
 }
 
+// ── WAKE LOCK ──────────────────────────────────────────────────────
+var cpWakeLock = null;
+function cpAcquireWakeLock(){
+  if(!('wakeLock' in navigator)) return;
+  navigator.wakeLock.request('screen').then(function(wl){
+    cpWakeLock = wl;
+    var b = document.getElementById('wake-lock-badge');
+    if(b){ b.style.display='block'; b.classList.add('ativo'); }
+    wl.addEventListener('release', function(){
+      cpWakeLock = null;
+      var b2 = document.getElementById('wake-lock-badge');
+      if(b2){ b2.classList.remove('ativo'); b2.style.display='none'; }
+    });
+  }).catch(function(e){ console.warn('Wake lock negado:', e.message); });
+}
+function cpReleaseWakeLock(){
+  if(cpWakeLock){ cpWakeLock.release(); cpWakeLock=null; }
+  var b = document.getElementById('wake-lock-badge');
+  if(b){ b.classList.remove('ativo'); b.style.display='none'; }
+}
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState==='visible' && abaAtualId==='campo' && !cpWakeLock){
+    cpAcquireWakeLock();
+  }
+});
+
 // ── CONTADOR DE PASSOS ──────────────────────────────────────────────
 var cpTotal    = 0;
 var cpCiclo    = 1;
@@ -3752,12 +3808,13 @@ function cpRenderVel(){
   if(cpVelAlvo > 0){
     var diff = velInst - cpVelAlvo;
     var pct  = (diff / cpVelAlvo) * 100;
+    var pulso = Math.abs(pct) > 10 ? ' pulsing' : '';
     if(Math.abs(pct) <= 5){
       velEl.className='vel-inst-num'; badge.textContent='✅ NO RITMO CERTO'; badge.className='vel-diff-badge vdb-ok';
     } else if(diff > 0){
-      velEl.className='vel-inst-num acima'; badge.textContent='⚠️ +'+Math.abs(diff).toFixed(1)+' m/min ACIMA — reduza'; badge.className='vel-diff-badge vdb-warn';
+      velEl.className='vel-inst-num acima'; badge.textContent='⚠️ +'+Math.abs(diff).toFixed(1)+' m/min ACIMA — reduza'; badge.className='vel-diff-badge vdb-warn'+pulso;
     } else {
-      velEl.className='vel-inst-num abaixo'; badge.textContent='🔴 -'+Math.abs(diff).toFixed(1)+' m/min ABAIXO — acelere'; badge.className='vel-diff-badge vdb-bad';
+      velEl.className='vel-inst-num abaixo'; badge.textContent='🔴 -'+Math.abs(diff).toFixed(1)+' m/min ABAIXO — acelere'; badge.className='vel-diff-badge vdb-bad'+pulso;
     }
   } else {
     velEl.className='vel-inst-num'; badge.textContent='Configure velocidade alvo'; badge.className='vel-diff-badge vdb-ok';
@@ -3932,6 +3989,14 @@ function desativarAlarmes(){
 function pedirPermissaoNotif(){
   if(window.Notification && Notification.permission==='default') Notification.requestPermission();
 }
+
+// ── SERVICE WORKER ──────────────────────────────────────────────────
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js').catch(function(e){ console.warn('SW:', e); });
+  });
+}
 </script>
+<div class="wake-lock-badge" id="wake-lock-badge">🔆 TELA ATIVA</div>
 </body>
 </html>
