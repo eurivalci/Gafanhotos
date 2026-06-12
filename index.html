@@ -648,6 +648,12 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
 .vel-diff-badge.pulsing{animation:vel-pulse .55s ease infinite}
 .wake-lock-badge{position:fixed;bottom:74px;right:10px;background:var(--surf2);border:1px solid var(--bord2);border-radius:20px;padding:4px 9px;font-size:10px;color:var(--txt3);font-family:var(--mono);font-weight:700;display:none;z-index:200;letter-spacing:1px}
 .wake-lock-badge.ativo{color:var(--acc);border-color:var(--acc3);background:var(--meta-bg)}
+/* MAPA */
+#mapa-leaflet{width:100%;height:420px;border-radius:10px;overflow:hidden;border:1.5px solid var(--bord2);background:var(--surf2)}
+.mapa-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.mapa-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.mapa-hint{font-size:11px;color:var(--txt3);text-align:center;margin-top:8px;line-height:1.5}
+.mapa-sem-dados{text-align:center;padding:40px 16px;color:var(--txt3);font-size:13px}
 /* AJUDA */
 .ajuda-sec{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:13px;margin-bottom:10px;box-shadow:var(--shadow)}
 .ajuda-item{padding:8px 0;border-bottom:1px solid var(--bord);font-size:13px;line-height:1.7;color:var(--txt2)}
@@ -700,9 +706,10 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
       <div class="inicio-val" id="inicio-display">--:--</div>
     </div>
     <input class="inp" type="time" id="inicio-time" style="width:126px;font-size:19px;padding:10px" onchange="atualizarInicio()">
+    <button onclick="goAjuda()" style="flex-shrink:0;background:var(--surf3);border:1.5px solid var(--bord2);border-radius:50%;width:38px;height:38px;font-size:18px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center" title="Ajuda / Manual">❓</button>
   </div>
 
-  <div class="tabs" style="grid-template-columns:repeat(7,1fr)">
+  <div class="tabs" style="grid-template-columns:repeat(4,1fr)">
     <div class="tab on"  onclick="goTab('calc',this)">CALC</div>
     <div class="tab"     onclick="goTab('dtr',this)">DIST<br>REAL</div>
     <div class="tab"     onclick="goTab('crono',this)">CRONO</div>
@@ -710,7 +717,7 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
     <div class="tab"     onclick="goTab('prova',this)">PROVA</div>
     <div class="tab"     onclick="goTab('campo',this)">🦶<br>CAMPO</div>
     <div class="tab"     onclick="goTab('dados',this)">💾<br>DADOS</div>
-    <div class="tab"     onclick="goTab('ajuda',this)">❓<br>AJUDA</div>
+    <div class="tab"     onclick="goTab('mapa',this)">🗺️<br>MAPA</div>
   </div>
 
   <!-- ========== CALC ========== -->
@@ -932,9 +939,9 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
       <div style="height:1px;background:var(--bord);margin:10px 0"></div>
       <div class="fld" style="margin-bottom:0">
         <span class="lbl">MEU PASSO (cm)</span>
-        <div style="display:flex;gap:8px;align-items:flex-end">
-          <input class="inp" type="number" id="meu-passo-inp" value="70" inputmode="decimal" step="any" style="flex:1">
-          <button class="acc-btn" onclick="aplicarMeuPasso()" style="margin-top:0;flex-shrink:0;padding:13px 16px;white-space:nowrap">↺ APLICAR</button>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px">
+          <input class="inp" type="number" id="meu-passo-inp" value="70" inputmode="decimal" step="any">
+          <button onclick="aplicarMeuPasso()" style="padding:13px 14px;background:var(--meta-bg);border:1.5px solid var(--acc3);border-radius:8px;font-size:13px;font-weight:700;font-family:var(--mono);color:var(--acc);cursor:pointer;white-space:nowrap">↺ APLICAR</button>
         </div>
         <div class="unit-hint">Recalcula os passos de todos os trechos com o seu comprimento de passo</div>
       </div>
@@ -1385,6 +1392,25 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
 
   </div>
 
+  <!-- ========== MAPA GPS ========== -->
+  <div class="tb-panel" id="tb-mapa">
+
+    <div class="mapa-stats">
+      <div class="gps-sub"><div class="gps-sub-v" id="mapa-dist">0 m</div><div class="gps-sub-l">DISTÂNCIA</div></div>
+      <div class="gps-sub"><div class="gps-sub-v" id="mapa-pts">0</div><div class="gps-sub-l">PONTOS GPS</div></div>
+      <div class="gps-sub"><div class="gps-sub-v" id="mapa-gps-status">—</div><div class="gps-sub-l">GPS</div></div>
+    </div>
+
+    <div id="mapa-leaflet"></div>
+
+    <div class="mapa-btn-row">
+      <button class="acc-btn" onclick="mapaCentralizar()" style="margin-top:0">⊕ CENTRALIZAR</button>
+      <button class="danger-btn" onclick="mapaLimparRota()" style="margin-top:0;padding:11px">🗑 LIMPAR ROTA</button>
+    </div>
+    <div class="mapa-hint">Inicie o GPS na aba CAMPO para registrar o percurso</div>
+
+  </div>
+
   <!-- ═══════════════════ PAINEL DE BORDO ═══════════════════ -->
   <div class="bordo-overlay" id="bordo-overlay">
 
@@ -1548,6 +1574,9 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
   </div>
 
 </div>
+<!-- Leaflet.js — mapa de percurso -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <!-- Firebase SDK (compat v9) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -1562,10 +1591,19 @@ function toggleTheme(){
 
 // ===== TABS =====
 var abaAtualId = 'calc';
+var TODAS_ABAS = ['calc','dtr','crono','acum','prova','campo','dados','ajuda','mapa'];
+function goAjuda(){
+  if(typeof abaAtualId !== 'undefined' && abaAtualId === 'campo') cpReleaseWakeLock();
+  abaAtualId = 'ajuda';
+  TODAS_ABAS.forEach(function(t){ var p=document.getElementById('tb-'+t); if(p) p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  document.getElementById('tb-ajuda').classList.add('on');
+  window.scrollTo(0,0);
+}
 function goTab(id,el){
   if(abaAtualId === 'campo' && id !== 'campo') cpReleaseWakeLock();
   abaAtualId = id;
-  ['calc','dtr','crono','acum','prova','campo','dados','ajuda'].forEach(function(t){
+  TODAS_ABAS.forEach(function(t){
     var p=document.getElementById('tb-'+t); if(p) p.classList.remove('on');
   });
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
@@ -1575,6 +1613,7 @@ function goTab(id,el){
   if(id==='prova') renderProva();
   if(id==='dados'){ renderPerfis(); }
   if(id==='campo'){ renderAlarmes(); popularVinculoSelect(); iniciarGatilhos(); mostrarInstrucoesGatilho(); cpAcquireWakeLock(); }
+  if(id==='mapa'){ setTimeout(mapaAbrir, 120); }
 }
 
 // ===== INÍCIO =====
@@ -3651,6 +3690,7 @@ var gpsDist     = 0;
 var gpsLastPos  = null;
 var gpsPontos   = 0;
 var gpsVelAtual = 0;
+var gpsTrack    = [];  // [[lat,lng], ...] — trilha completa
 
 function gpsStart(){
   if(!navigator.geolocation){
@@ -3690,6 +3730,7 @@ function gpsStart(){
         }
       }
       gpsLastPos = { lat:lat, lng:lng, ts:ts };
+      gpsTrack.push([lat, lng]);
 
       var distEl = document.getElementById('gps-dist');
       distEl.textContent = gpsDist >= 1000
@@ -3697,6 +3738,10 @@ function gpsStart(){
         : Math.round(gpsDist) + ' m';
 
       document.getElementById('gps-status').textContent = '● Rastreando — precisão ' + Math.round(acc) + ' m';
+
+      // Atualizar mapa se estiver visível
+      mapaAtualizarStats();
+      if(abaAtualId === 'mapa') mapaDesenharRota();
     },
     function(err){
       var msg = {1:'Permissão negada',2:'Posição indisponível',3:'Timeout de GPS'};
@@ -3720,7 +3765,7 @@ function gpsStop(){
 
 function gpsReset(){
   gpsStop();
-  gpsDist = 0; gpsLastPos = null; gpsPontos = 0; gpsVelAtual = 0;
+  gpsDist = 0; gpsLastPos = null; gpsPontos = 0; gpsVelAtual = 0; gpsTrack = [];
   document.getElementById('gps-dist').textContent = '0 m';
   document.getElementById('gps-vel').textContent  = '—';
   document.getElementById('gps-pts').textContent  = '0';
@@ -3737,6 +3782,118 @@ function haversineM(lat1, lng1, lat2, lng2){
         + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)
         * Math.sin(dLng/2)*Math.sin(dLng/2);
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// =====================================================================
+//  MAPA DE PERCURSO — Leaflet + OpenStreetMap
+// =====================================================================
+var mapaL        = null;   // instância Leaflet
+var mapaPolyline = null;   // linha do percurso
+var mapaMarker   = null;   // marcador de posição atual
+var mapaStartMk  = null;   // marcador de início
+var mapaIniciado = false;
+
+var iconAtual = null;
+var iconIni   = null;
+
+function mapaAbrir(){
+  if(!mapaIniciado){
+    mapaL = L.map('mapa-leaflet', { zoomControl:true, attributionControl:true });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom:19
+    }).addTo(mapaL);
+
+    iconAtual = L.divIcon({
+      className:'',
+      html:'<div style="width:14px;height:14px;background:#39ff5a;border:3px solid #071007;border-radius:50%;box-shadow:0 0 10px #39ff5a88"></div>',
+      iconSize:[14,14], iconAnchor:[7,7]
+    });
+    iconIni = L.divIcon({
+      className:'',
+      html:'<div style="width:12px;height:12px;background:#ffcc00;border:3px solid #1a0a00;border-radius:50%;box-shadow:0 0 8px #ffcc0088"></div>',
+      iconSize:[12,12], iconAnchor:[6,6]
+    });
+    mapaIniciado = true;
+  }
+  mapaL.invalidateSize();
+  if(gpsTrack.length > 0){
+    mapaDesenharRota();
+  } else {
+    // Centro padrão — Brasil
+    mapaL.setView([-15, -47], 5);
+  }
+  mapaAtualizarStats();
+}
+
+function mapaDesenharRota(){
+  if(!mapaL || gpsTrack.length === 0) return;
+
+  if(mapaPolyline){
+    mapaPolyline.setLatLngs(gpsTrack);
+  } else {
+    mapaPolyline = L.polyline(gpsTrack, {
+      color:'#39ff5a', weight:4, opacity:0.9
+    }).addTo(mapaL);
+  }
+
+  // Marcador de início
+  if(!mapaStartMk && gpsTrack.length >= 1){
+    mapaStartMk = L.marker(gpsTrack[0], { icon:iconIni })
+      .bindTooltip('Início', {permanent:false, direction:'top'})
+      .addTo(mapaL);
+  }
+
+  // Marcador de posição atual
+  var ultimo = gpsTrack[gpsTrack.length - 1];
+  if(mapaMarker){
+    mapaMarker.setLatLng(ultimo);
+  } else {
+    mapaMarker = L.marker(ultimo, { icon:iconAtual })
+      .bindTooltip('Posição atual', {permanent:false, direction:'top'})
+      .addTo(mapaL);
+  }
+
+  // Só faz fit ao abrir ou quando há poucos pontos
+  if(gpsTrack.length <= 3){
+    mapaL.fitBounds(mapaPolyline.getBounds(), { padding:[30,30], maxZoom:17 });
+  }
+}
+
+function mapaAtualizarStats(){
+  var d = document.getElementById('mapa-dist');
+  var p = document.getElementById('mapa-pts');
+  var s = document.getElementById('mapa-gps-status');
+  if(d) d.textContent = gpsDist >= 1000 ? (gpsDist/1000).toFixed(3)+' km' : Math.round(gpsDist)+' m';
+  if(p) p.textContent = gpsTrack.length;
+  if(s) s.textContent = gpsWatchId !== null ? '● ON' : (gpsTrack.length > 0 ? 'Parado' : '—');
+  if(s && gpsWatchId !== null) s.style.color='var(--acc)';
+  else if(s) s.style.color='';
+}
+
+function mapaCentralizar(){
+  if(!mapaL) return;
+  if(mapaPolyline && gpsTrack.length > 1){
+    mapaL.fitBounds(mapaPolyline.getBounds(), { padding:[30,30] });
+  } else if(gpsTrack.length === 1){
+    mapaL.setView(gpsTrack[0], 17);
+  } else if(gpsLastPos){
+    mapaL.setView([gpsLastPos.lat, gpsLastPos.lng], 17);
+  }
+}
+
+function mapaLimparRota(){
+  if(gpsTrack.length === 0){ alert('Nenhum percurso registrado.'); return; }
+  if(!confirm('Limpar o percurso registrado no mapa?')) return;
+  gpsTrack = []; gpsDist = 0; gpsPontos = 0;
+  if(mapaPolyline){ mapaL.removeLayer(mapaPolyline); mapaPolyline = null; }
+  if(mapaMarker)  { mapaL.removeLayer(mapaMarker);   mapaMarker  = null; }
+  if(mapaStartMk) { mapaL.removeLayer(mapaStartMk);  mapaStartMk = null; }
+  mapaAtualizarStats();
+  // Atualizar aba CAMPO também
+  document.getElementById('gps-dist').textContent = '0 m';
+  document.getElementById('gps-pts').textContent  = '0';
+  document.getElementById('gps-status').textContent = 'Inativo';
 }
 
 // =====================================================================
