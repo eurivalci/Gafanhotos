@@ -909,7 +909,16 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
           </select>
         </div>
       </div>
-      <div id="fb-status" class="fb-status fb-na">☁ Firebase não configurado — dados salvos localmente</div>
+      <div style="height:1px;background:var(--bord);margin:10px 0"></div>
+      <div class="fld" style="margin-bottom:0">
+        <span class="lbl">MEU PASSO (cm)</span>
+        <div style="display:flex;gap:8px;align-items:flex-end">
+          <input class="inp" type="number" id="meu-passo-inp" value="70" inputmode="decimal" step="any" style="flex:1">
+          <button class="acc-btn" onclick="aplicarMeuPasso()" style="margin-top:0;flex-shrink:0;padding:13px 16px;white-space:nowrap">↺ APLICAR</button>
+        </div>
+        <div class="unit-hint">Recalcula os passos de todos os trechos com o seu comprimento de passo</div>
+      </div>
+      <div id="fb-status" class="fb-status fb-na" style="margin-top:10px">☁ Firebase não configurado — dados salvos localmente</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
         <button class="acc-btn" id="fb-salvar-btn" onclick="salvarProvaFirebase()" style="margin-top:0">💾 SALVAR PROVA</button>
         <button class="sec-btn" onclick="abrirListaProvas()" style="margin-top:0">📂 CARREGAR</button>
@@ -1440,6 +1449,7 @@ function atualizarInicio(){
   var p=v.split(':');
   inicioMin=parseInt(p[0])*60+parseInt(p[1]);
   document.getElementById('inicio-display').textContent=v;
+  recalcHorarios();
   renderAcum();renderProva();scheduleAutoSave();
 }
 function minParaHHMM(m){
@@ -2873,6 +2883,7 @@ function estadoAtual(){
     acEntradas: acEntradas,
     tulipas: tulipas,
     provaMeta: provaMeta,
+    meuPasso: meuPasso,
     isDark: isDark,
     cpTotal: cpTotal,
     cpCiclo: cpCiclo,
@@ -2896,6 +2907,7 @@ function restaurarEstado(e){
 
     // Meta da prova
     if(e.provaMeta){ provaMeta = e.provaMeta; preencherUIProvaMeta(); }
+    if(e.meuPasso){ meuPasso = e.meuPasso; var inp = document.getElementById('meu-passo-inp'); if(inp) inp.value = meuPasso; }
 
     // Tema
     if(typeof e.isDark !== 'undefined'){
@@ -3516,6 +3528,27 @@ var fbReady = false;
 var fbPending = false;
 
 var provaMeta = { id:null, dia:'', etapa:'', local:'', difFisica:'', difTecnica:'' };
+var meuPasso = 70;  // comprimento de passo pessoal (cm)
+
+function aplicarMeuPasso(){
+  var p = parseFloat(document.getElementById('meu-passo-inp').value);
+  if(!p || p <= 0){ alert('Informe um comprimento de passo válido (cm)!'); return; }
+  if(tulipas.length === 0){ alert('Nenhum trecho carregado para recalcular.'); return; }
+  meuPasso = p;
+  var n = 0;
+  tulipas.forEach(function(t){
+    if(t.tipo === 'neutro') return;
+    t.passo  = meuPasso;
+    t.passos = Math.round(t.dist / (meuPasso / 100));
+    n++;
+  });
+  renderProva();
+  scheduleAutoSave();
+  var btn = event.target;
+  var orig = btn.textContent;
+  btn.textContent = '✓ ' + n + ' trechos!';
+  setTimeout(function(){ btn.textContent = orig; }, 2000);
+}
 
 function fbConfigurado(){
   return FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== 'COLE_SUA_API_KEY_AQUI';
@@ -3579,6 +3612,7 @@ function preencherUIProvaMeta(){
   var l = document.getElementById('mp-local');     if(l) l.value = provaMeta.local||'';
   var f = document.getElementById('mp-dif-fis');   if(f) f.value = provaMeta.difFisica||'';
   var t = document.getElementById('mp-dif-tec');   if(t) t.value = provaMeta.difTecnica||'';
+  var p = document.getElementById('meu-passo-inp'); if(p) p.value = meuPasso;
 }
 
 function salvarProvaFirebase(){
