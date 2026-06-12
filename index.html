@@ -341,7 +341,7 @@ select.inp option{background:var(--surf);color:var(--txt)}
 .bordo-time-box{border-radius:10px;padding:10px;text-align:center}
 .bordo-time-prev{background:#0d2e14;border:1px solid var(--acc3)}
 .bordo-time-real{background:var(--surf2);border:1.5px solid var(--bord2)}
-.bordo-time-val{font-size:26px;font-weight:700;line-height:1;font-family:var(--mono)}
+.bordo-time-val{font-size:22px;font-weight:700;line-height:1;font-family:var(--mono)}
 .bordo-time-prev .bordo-time-val{color:var(--acc)}
 .bordo-time-real .bordo-time-val{color:var(--warn)}
 .bordo-time-lbl{font-size:10px;color:var(--txt3);letter-spacing:1px;margin-top:4px;font-weight:700}
@@ -648,6 +648,20 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
 .vel-diff-badge.pulsing{animation:vel-pulse .55s ease infinite}
 .wake-lock-badge{position:fixed;bottom:74px;right:10px;background:var(--surf2);border:1px solid var(--bord2);border-radius:20px;padding:4px 9px;font-size:10px;color:var(--txt3);font-family:var(--mono);font-weight:700;display:none;z-index:200;letter-spacing:1px}
 .wake-lock-badge.ativo{color:var(--acc);border-color:var(--acc3);background:var(--meta-bg)}
+/* DADOS DA PROVA + FIREBASE */
+.meta-prova-sec{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:13px;margin-bottom:10px;box-shadow:var(--shadow)}
+.fb-status{font-size:11px;font-weight:700;letter-spacing:.5px;padding:7px 10px;border-radius:7px;text-align:center;margin:8px 0 4px;line-height:1.4}
+.fb-ok  {background:#0d2e14;color:var(--acc);border:1px solid var(--acc3)}
+.fb-off {background:#1a1200;color:var(--warn);border:1px solid #5a3a00}
+.fb-sync{background:#0a1a30;color:var(--info);border:1px solid #0a4a80}
+.fb-err {background:#2e0a0a;color:var(--danger);border:1px solid #662020}
+.fb-na  {background:var(--surf2);color:var(--txt3);border:1px solid var(--bord)}
+.cloud-list{margin-top:2px}
+.cloud-item{background:var(--surf2);border:1.5px solid var(--bord2);border-radius:8px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:border-color .15s}
+.cloud-item:active{border-color:var(--acc)}
+.cloud-nome{font-size:14px;font-weight:700;color:var(--txt)}
+.cloud-meta{font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.5}
+.cloud-dif{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surf3);color:var(--txt2);margin-right:4px;margin-top:3px}
 </style>
 </head>
 <body>
@@ -862,6 +876,46 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
 
   <!-- ========== PROVA COMPLETA ========== -->
   <div class="tb-panel" id="tb-prova">
+
+    <!-- META DA PROVA -->
+    <div class="meta-prova-sec">
+      <div class="sec-ttl">DADOS DA PROVA</div>
+      <div class="col2">
+        <div class="fld"><span class="lbl">DIA</span><input class="inp" type="date" id="mp-dia" onchange="lerProvaMetaDaUI();autoSave()"></div>
+        <div class="fld"><span class="lbl">ETAPA</span><input class="inp" type="text" id="mp-etapa" placeholder="ex: Etapa 1" style="font-size:16px" oninput="lerProvaMetaDaUI();scheduleAutoSave()"></div>
+      </div>
+      <div class="fld"><span class="lbl">LOCAL</span><input class="inp" type="text" id="mp-local" placeholder="ex: Serra da Mantiqueira" style="font-size:16px" oninput="lerProvaMetaDaUI();scheduleAutoSave()"></div>
+      <div class="col2">
+        <div class="fld">
+          <span class="lbl">DIF. FÍSICA</span>
+          <select class="inp" id="mp-dif-fis" onchange="lerProvaMetaDaUI();autoSave()">
+            <option value="">—</option>
+            <option value="1-Fácil">1 — Fácil</option>
+            <option value="2-Leve">2 — Leve</option>
+            <option value="3-Moderado">3 — Moderado</option>
+            <option value="4-Difícil">4 — Difícil</option>
+            <option value="5-Extremo">5 — Extremo</option>
+          </select>
+        </div>
+        <div class="fld">
+          <span class="lbl">DIF. TÉCNICA</span>
+          <select class="inp" id="mp-dif-tec" onchange="lerProvaMetaDaUI();autoSave()">
+            <option value="">—</option>
+            <option value="1-Fácil">1 — Fácil</option>
+            <option value="2-Leve">2 — Leve</option>
+            <option value="3-Moderado">3 — Moderado</option>
+            <option value="4-Difícil">4 — Difícil</option>
+            <option value="5-Extremo">5 — Extremo</option>
+          </select>
+        </div>
+      </div>
+      <div id="fb-status" class="fb-status fb-na">☁ Firebase não configurado — dados salvos localmente</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
+        <button class="acc-btn" id="fb-salvar-btn" onclick="salvarProvaFirebase()" style="margin-top:0">☁ COMPARTILHAR</button>
+        <button class="sec-btn" onclick="abrirListaProvas()" style="margin-top:0">📂 CARREGAR</button>
+      </div>
+      <div id="fb-lista-box" style="display:none;margin-top:8px"></div>
+    </div>
 
     <!-- RESUMO GERAL (aparece quando há trechos) -->
     <div class="prova-resumo" id="prova-resumo-box" style="display:none">
@@ -1231,11 +1285,11 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
       <!-- Horários -->
       <div class="bordo-times">
         <div class="bordo-time-box bordo-time-prev">
-          <div class="bordo-time-val" id="bordo-prev">--:--</div>
+          <div class="bordo-time-val" id="bordo-prev">--:--:--</div>
           <div class="bordo-time-lbl">CHEGADA PREVISTA</div>
         </div>
         <div class="bordo-time-box bordo-time-real">
-          <div class="bordo-time-val" id="bordo-real">--:--</div>
+          <div class="bordo-time-val" id="bordo-real">--:--:--</div>
           <div class="bordo-time-lbl">CHEGADA REAL</div>
         </div>
       </div>
@@ -1349,6 +1403,9 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
   </div>
 
 </div>
+<!-- Firebase SDK (compat v9) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
 // ===== TEMA =====
 var isDark=true;
@@ -1391,6 +1448,13 @@ function minParaHHMM(m){
   var h=Math.floor(m/60),mm=Math.round(m%60);
   if(mm===60){h=(h+1)%24;mm=0;}
   return(h<10?'0':'')+h+':'+(mm<10?'0':'')+mm;
+}
+function minParaHHMMSS(m){
+  if(m===null||m===undefined||isNaN(m))return'--:--:--';
+  m=((m%1440)+1440)%1440;
+  var h=Math.floor(m/60),rem=m%60,mm=Math.floor(rem),ss=Math.round((rem-mm)*60);
+  if(ss===60){mm++;ss=0;}if(mm===60){h=(h+1)%24;mm=0;}
+  return(h<10?'0':'')+h+':'+(mm<10?'0':'')+mm+':'+(ss<10?'0':'')+ss;
 }
 function calcChegada(totalMin){
   if(inicioMin===null)return'--:--';
@@ -1672,7 +1736,7 @@ function renderAcum(){
   document.getElementById('ac-total-p').textContent=tp>0?tp.toLocaleString('pt-BR'):'—';
   document.getElementById('ac-total-vel').textContent=vm;
   document.getElementById('ac-inicio-val').textContent=ini;
-  document.getElementById('ac-fim-val').textContent=calcChegada(tm);
+  document.getElementById('ac-fim-val').textContent=inicioMin!==null?minParaHHMMSS(inicioMin+tm):'--:--:--';
   document.getElementById('ac-list-panel').style.display=acEntradas.length?'block':'none';
 }
 
@@ -1890,14 +1954,14 @@ function renderProva(){
   if(tulipas.length>0){
     res.style.display='block';
     var chegadaFinal = tulipas.length>0 && tulipas[tulipas.length-1].chegadaPrevMin!==null
-      ? minParaHHMM(tulipas[tulipas.length-1].chegadaPrevMin) : '--:--';
+      ? minParaHHMMSS(tulipas[tulipas.length-1].chegadaPrevMin) : '--:--:--';
     var ultimaReal=null;
     for(var j=tulipas.length-1;j>=0;j--){if(tulipas[j].chegadaRealMin!==null){ultimaReal=tulipas[j].chegadaRealMin;break;}}
     document.getElementById('pr-dist').textContent   = r.totalDist>0 ? r.totalDist.toLocaleString('pt-BR')+' m':'— m';
     document.getElementById('pr-tempo').textContent  = fmtMin(r.totalTempo)+' • '+fmtHoras(r.totalTempo);
     document.getElementById('pr-passos').textContent = r.totalPassos>0?r.totalPassos.toLocaleString('pt-BR'):'—';
     document.getElementById('pr-chegada').textContent= chegadaFinal;
-    document.getElementById('pr-chegada-real').textContent= ultimaReal!==null?minParaHHMM(ultimaReal):'--:--';
+    document.getElementById('pr-chegada-real').textContent= ultimaReal!==null?minParaHHMMSS(ultimaReal):'--:--:--';
     document.getElementById('pr-ok').textContent     = nEmoji(r.nOk,'✅');
     document.getElementById('pr-warn').textContent   = nEmoji(r.nWarn,'⚠️');
     document.getElementById('pr-late').textContent   = nEmoji(r.nLate,'🔴');
@@ -1988,7 +2052,7 @@ function renderProva(){
           +'  <div class="tm" style="background:#2e2200;border-color:#664d00"><div class="tm-val" style="color:var(--warn)">'+fmtHoras(tempoAcum)+'</div><div class="tm-lbl">TEMPO ACUM.</div></div>'
           +'</div>'
           +'<div class="tulipa-time-row">'
-          +'  <div class="ttr ttr-prev"><div class="ttr-val">'+(t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'--:--')+'</div><div class="ttr-lbl">CHEGADA APÓS NEUTRO</div></div>'
+          +'  <div class="ttr ttr-prev"><div class="ttr-val">'+(t.chegadaPrevMin!==null?minParaHHMMSS(t.chegadaPrevMin):'--:--:--')+'</div><div class="ttr-lbl">CHEGADA APÓS NEUTRO</div></div>'
           +'  <div class="ttr ttr-real" style="opacity:.5"><div class="ttr-val">—</div><div class="ttr-lbl">SEM CHEGADA REAL</div></div>'
           +'</div>'
           +'<div style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px">'
@@ -2024,8 +2088,8 @@ function renderProva(){
     }
 
     // Horários
-    var prevTxt  = t.chegadaPrevMin!==null ? minParaHHMM(t.chegadaPrevMin) : '--:--';
-    var realTxt  = t.chegadaRealMin!==null ? minParaHHMM(t.chegadaRealMin) : '--:--';
+    var prevTxt  = t.chegadaPrevMin!==null ? minParaHHMMSS(t.chegadaPrevMin) : '--:--:--';
+    var realTxt  = t.chegadaRealMin!==null ? minParaHHMMSS(t.chegadaRealMin) : '--:--:--';
     var realVal  = t.chegadaRealMin!==null ? minParaHHMM(t.chegadaRealMin) : '';
 
     var card = document.createElement('div');
@@ -2375,7 +2439,7 @@ function atualizarPreviewEdicao(){
   tulipas.forEach(function(t, idx){
     if(idx < _editIdx) acumAntes += t.tempo;
   });
-  var chegadaPrev = inicioMin !== null ? minParaHHMM(inicioMin + acumAntes + tempo) : '--:--';
+  var chegadaPrev = inicioMin !== null ? minParaHHMMSS(inicioMin + acumAntes + tempo) : '--:--:--';
 
   document.getElementById('ep-dist').textContent   = dist.toLocaleString('pt-BR') + ' m';
   document.getElementById('ep-tempo').textContent  = fmtMin(tempo);
@@ -2583,14 +2647,14 @@ function bordoTick(){
     else                     { statusTxt = '🐇 ADIANTADO ' + fmtDiff(diff); statusCls = 'bs-warn'; }
     document.getElementById('bordo-status').textContent = statusTxt;
     document.getElementById('bordo-status').className   = 'bordo-status ' + statusCls;
-    document.getElementById('bordo-real').textContent   = minParaHHMM(t.chegadaRealMin);
+    document.getElementById('bordo-real').textContent   = minParaHHMMSS(t.chegadaRealMin);
     bordoSetCountdown(0, 'chegou');
     document.getElementById('bordo-cd-lbl').textContent = 'CHEGADA REGISTRADA';
     document.getElementById('bordo-btn-cheguei').textContent = '→ AVANÇAR PARA PRÓXIMO';
     document.getElementById('bordo-btn-cheguei').className   = 'bordo-cheguei bordo-cheguei-warn';
   } else {
     // Ainda não chegou
-    document.getElementById('bordo-real').textContent = '--:--';
+    document.getElementById('bordo-real').textContent = '--:--:--';
     document.getElementById('bordo-btn-cheguei').textContent = '✓ REGISTRAR CHEGADA AGORA';
     document.getElementById('bordo-btn-cheguei').className   = 'bordo-cheguei';
 
@@ -2650,8 +2714,8 @@ function bordoRenderTudo(){
     document.getElementById('bordo-dist').textContent  = t.dist.toLocaleString('pt-BR') + ' m';
     document.getElementById('bordo-vel').textContent   = '—';
     document.getElementById('bordo-passos').textContent= '—';
-    document.getElementById('bordo-prev').textContent  = t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'--:--';
-    document.getElementById('bordo-real').textContent  = '--:--';
+    document.getElementById('bordo-prev').textContent  = t.chegadaPrevMin!==null?minParaHHMMSS(t.chegadaPrevMin):'--:--:--';
+    document.getElementById('bordo-real').textContent  = '--:--:--';
     document.getElementById('bordo-status').textContent= '🟣 VIRTUAL — sem marcação física';
     document.getElementById('bordo-status').className  = 'bordo-status bs-neutro';
     document.getElementById('bordo-cd-lbl').textContent= 'TRECHO SEM CONTROLE DE TEMPO';
@@ -2663,8 +2727,8 @@ function bordoRenderTudo(){
     document.getElementById('bordo-dist').textContent  = '—';
     document.getElementById('bordo-vel').textContent   = '—';
     document.getElementById('bordo-passos').textContent= '—';
-    document.getElementById('bordo-prev').textContent  = t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'--:--';
-    document.getElementById('bordo-real').textContent  = '--:--';
+    document.getElementById('bordo-prev').textContent  = t.chegadaPrevMin!==null?minParaHHMMSS(t.chegadaPrevMin):'--:--:--';
+    document.getElementById('bordo-real').textContent  = '--:--:--';
     document.getElementById('bordo-status').textContent= '⏸ DESCANSO — ' + fmtMin(t.tempo);
     document.getElementById('bordo-status').className  = 'bordo-status bs-neutro';
     document.getElementById('bordo-cd-lbl').textContent= 'FIM DO NEUTRO PREVISTO';
@@ -2679,8 +2743,8 @@ function bordoRenderTudo(){
     document.getElementById('bordo-dist').textContent  = t.dist>0?t.dist.toLocaleString('pt-BR')+' m':'—';
     document.getElementById('bordo-vel').textContent   = t.vel>0?t.vel.toFixed(1):'—';
     document.getElementById('bordo-passos').textContent= t.passos>0?t.passos.toLocaleString('pt-BR'):'—';
-    document.getElementById('bordo-prev').textContent  = t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'--:--';
-    document.getElementById('bordo-real').textContent  = t.chegadaRealMin!==null?minParaHHMM(t.chegadaRealMin):'--:--';
+    document.getElementById('bordo-prev').textContent  = t.chegadaPrevMin!==null?minParaHHMMSS(t.chegadaPrevMin):'--:--:--';
+    document.getElementById('bordo-real').textContent  = t.chegadaRealMin!==null?minParaHHMMSS(t.chegadaRealMin):'--:--:--';
     document.getElementById('bordo-btn-cheguei').textContent = '✓ REGISTRAR CHEGADA AGORA';
     document.getElementById('bordo-btn-cheguei').className   = 'bordo-cheguei';
   }
@@ -2693,7 +2757,7 @@ function bordoRenderTudo(){
     document.getElementById('bordo-prox-dist').textContent  = prox.dist>0?prox.dist.toLocaleString('pt-BR')+' m':'—';
     document.getElementById('bordo-prox-vel').textContent   = prox.vel>0?prox.vel.toFixed(1)+' m/min':'neutro';
     document.getElementById('bordo-prox-tempo').textContent = fmtMin(prox.tempo);
-    document.getElementById('bordo-prox-prev').textContent  = prox.chegadaPrevMin!==null?minParaHHMM(prox.chegadaPrevMin):'--:--';
+    document.getElementById('bordo-prox-prev').textContent  = prox.chegadaPrevMin!==null?minParaHHMMSS(prox.chegadaPrevMin):'--:--:--';
   } else {
     pc.style.display = 'none';
   }
@@ -2739,7 +2803,7 @@ function bordoRenderLista(){
       +'<span class="bordo-row-nome" style="display:flex;align-items:center;gap:4px">'
       +(t.tipo==='neutro'?'⏸ ':'')+t.nome+' '+pcTag+virtTag
       +'</span>'
-      +'<span class="bordo-row-prev">'+(t.chegadaPrevMin!==null?minParaHHMM(t.chegadaPrevMin):'—')+'</span>'
+      +'<span class="bordo-row-prev">'+(t.chegadaPrevMin!==null?minParaHHMMSS(t.chegadaPrevMin):'—')+'</span>'
       +'<span class="bordo-row-status '+stCls+'">'+stBadge+'</span>';
 
     // Click para navegar
@@ -2808,6 +2872,7 @@ function estadoAtual(){
     inicioVal: document.getElementById('inicio-time').value || '',
     acEntradas: acEntradas,
     tulipas: tulipas,
+    provaMeta: provaMeta,
     isDark: isDark,
     cpTotal: cpTotal,
     cpCiclo: cpCiclo,
@@ -2828,6 +2893,9 @@ function restaurarEstado(e){
     // Dados
     acEntradas = e.acEntradas || [];
     tulipas    = e.tulipas    || [];
+
+    // Meta da prova
+    if(e.provaMeta){ provaMeta = e.provaMeta; preencherUIProvaMeta(); }
 
     // Tema
     if(typeof e.isDark !== 'undefined'){
@@ -3072,8 +3140,8 @@ function calcApuracao(){
       if(t.chegadaRealMin != null || pcPen > 0) totalPts += pontos;
       rows.push({tipo:'GPS', seq:nGPS, idx:i, nome:t.nome,
         km:(t.dist||0).toLocaleString('pt-BR')+' m',
-        prev:t.chegadaPrevMin != null ? minParaHHMM(t.chegadaPrevMin) : null,
-        real:t.chegadaRealMin != null ? minParaHHMM(t.chegadaRealMin) : null,
+        prev:t.chegadaPrevMin != null ? minParaHHMMSS(t.chegadaPrevMin) : null,
+        real:t.chegadaRealMin != null ? minParaHHMMSS(t.chegadaRealMin) : null,
         diff:diffSeg !== null ? fmtDiffSeg(diffSeg) : null,
         pontos:t.chegadaRealMin != null || pcPen > 0 ? pontos : null,
         pcPen:pcPen, pendente:t.chegadaRealMin == null && pcPen === 0});
@@ -3427,12 +3495,240 @@ function renderDiagnostico(){
   document.getElementById('diagnostico-content').innerHTML = html;
 }
 
+// =====================================================================
+//  FIREBASE — CADASTRO E COMPARTILHAMENTO DE PROVAS
+// =====================================================================
+
+// ⚠️  CONFIGURE AQUI as credenciais do seu projeto Firebase:
+//    Firebase Console → Configurações do Projeto → Seus aplicativos → Web → SDK
+var FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyAZrHzl7b0d-b5VPCbGCtzD5hF8LX3NrLE",
+  authDomain:        "treckcalc.firebaseapp.com",
+  projectId:         "treckcalc",
+  storageBucket:     "treckcalc.firebasestorage.app",
+  messagingSenderId: "859589321015",
+  appId:             "1:859589321015:web:1bbc78a2e2f539b881bab2",
+  measurementId:     "G-VJRS70V9FN"
+};
+
+var fbDb    = null;
+var fbReady = false;
+var fbPending = false;
+
+var provaMeta = { id:null, dia:'', etapa:'', local:'', difFisica:'', difTecnica:'' };
+
+function fbConfigurado(){
+  return FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== 'COLE_SUA_API_KEY_AQUI';
+}
+
+function initFirebase(){
+  if(!fbConfigurado()) return;
+  try {
+    if(!firebase.apps || !firebase.apps.length){
+      firebase.initializeApp(FIREBASE_CONFIG);
+    }
+    fbDb = firebase.firestore();
+    fbReady = true;
+    atualizarFbStatus();
+    if(fbPending) syncProvaFirebase();
+  } catch(err){
+    console.warn('Firebase init:', err);
+    fbReady = false;
+    atualizarFbStatus();
+  }
+}
+
+function atualizarFbStatus(){
+  var el = document.getElementById('fb-status');
+  if(!el) return;
+  if(!fbConfigurado()){
+    el.className='fb-status fb-na';
+    el.textContent='☁ Firebase não configurado — salvo localmente';
+    return;
+  }
+  if(!navigator.onLine){
+    el.className='fb-status fb-off';
+    el.textContent='● OFFLINE — salvo localmente'+(fbPending?' · sync pendente':'');
+    return;
+  }
+  if(!fbReady){
+    el.className='fb-status fb-err';
+    el.textContent='✗ Erro Firebase — verifique a configuração';
+    return;
+  }
+  if(fbPending){
+    el.className='fb-status fb-sync';
+    el.textContent='↑ Sincronizando com Firebase...';
+  } else {
+    el.className='fb-status fb-ok';
+    el.textContent='● Online — Firebase ativo';
+  }
+}
+
+function lerProvaMetaDaUI(){
+  provaMeta.dia        = (document.getElementById('mp-dia')||{}).value || '';
+  provaMeta.etapa      = ((document.getElementById('mp-etapa')||{}).value||'').trim();
+  provaMeta.local      = ((document.getElementById('mp-local')||{}).value||'').trim();
+  provaMeta.difFisica  = (document.getElementById('mp-dif-fis')||{}).value || '';
+  provaMeta.difTecnica = (document.getElementById('mp-dif-tec')||{}).value || '';
+}
+
+function preencherUIProvaMeta(){
+  var d = document.getElementById('mp-dia');       if(d) d.value = provaMeta.dia||'';
+  var e = document.getElementById('mp-etapa');     if(e) e.value = provaMeta.etapa||'';
+  var l = document.getElementById('mp-local');     if(l) l.value = provaMeta.local||'';
+  var f = document.getElementById('mp-dif-fis');   if(f) f.value = provaMeta.difFisica||'';
+  var t = document.getElementById('mp-dif-tec');   if(t) t.value = provaMeta.difTecnica||'';
+}
+
+function salvarProvaFirebase(){
+  lerProvaMetaDaUI();
+  if(!provaMeta.etapa && !provaMeta.local && !provaMeta.dia){
+    alert('Preencha ao menos o Dia, Etapa ou Local da prova antes de compartilhar!');
+    return;
+  }
+  autoSave();
+
+  if(!fbConfigurado()){
+    alert('Firebase não configurado.\n\nEdite FIREBASE_CONFIG no código com as credenciais do seu projeto Firebase Console.');
+    return;
+  }
+  if(!navigator.onLine){
+    fbPending = true;
+    localStorage.setItem('trekcalc_fb_pending','1');
+    atualizarFbStatus();
+    alert('Sem conexão — dados salvos localmente.\nSerão enviados ao Firebase quando a conexão for restabelecida.');
+    return;
+  }
+  if(!fbReady) initFirebase();
+  if(!fbReady){ alert('Erro ao conectar ao Firebase. Verifique FIREBASE_CONFIG.'); return; }
+  syncProvaFirebase();
+}
+
+function syncProvaFirebase(){
+  if(!fbDb||!fbReady) return;
+  fbPending = true;
+  atualizarFbStatus();
+  var dados = {
+    dia:         provaMeta.dia,
+    etapa:       provaMeta.etapa,
+    local:       provaMeta.local,
+    difFisica:   provaMeta.difFisica,
+    difTecnica:  provaMeta.difTecnica,
+    trechos:     JSON.parse(JSON.stringify(tulipas)),
+    atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  var col = fbDb.collection('provas');
+  var prom;
+  if(provaMeta.id){
+    prom = col.doc(provaMeta.id).update(dados);
+  } else {
+    dados.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
+    prom = col.add(dados).then(function(doc){
+      provaMeta.id = doc.id;
+      autoSave();
+    });
+  }
+  prom.then(function(){
+    fbPending = false;
+    localStorage.removeItem('trekcalc_fb_pending');
+    atualizarFbStatus();
+    var btn = document.getElementById('fb-salvar-btn');
+    if(btn){ var t=btn.textContent; btn.textContent='✓ SALVO!'; setTimeout(function(){btn.textContent=t;},2000); }
+  }).catch(function(err){
+    console.error('Firebase write:', err);
+    fbPending = true;
+    atualizarFbStatus();
+    alert('Erro Firebase: '+err.message);
+  });
+}
+
+function abrirListaProvas(){
+  var box = document.getElementById('fb-lista-box');
+  if(!box) return;
+  if(box.style.display !== 'none'){ box.style.display='none'; return; }
+
+  if(!fbConfigurado()){
+    box.style.display='block';
+    box.innerHTML='<div style="color:var(--txt3);font-size:12px;padding:10px;text-align:center">Firebase não configurado.<br>Preencha FIREBASE_CONFIG no código.</div>';
+    return;
+  }
+  if(!navigator.onLine){
+    box.style.display='block';
+    box.innerHTML='<div style="color:var(--warn);font-size:12px;padding:10px;text-align:center">Sem conexão — lista indisponível offline.</div>';
+    return;
+  }
+  if(!fbReady) initFirebase();
+  box.style.display='block';
+  box.innerHTML='<div style="color:var(--txt3);font-size:12px;padding:10px;text-align:center">Carregando...</div>';
+  fbDb.collection('provas').orderBy('atualizadoEm','desc').limit(30).get()
+    .then(function(snap){
+      if(snap.empty){
+        box.innerHTML='<div style="color:var(--txt3);font-size:12px;padding:10px;text-align:center">Nenhuma prova salva ainda.</div>';
+        return;
+      }
+      var html='<div class="cloud-list">';
+      snap.forEach(function(doc){
+        var d = doc.data();
+        var nm = [d.etapa,d.local].filter(Boolean).join(' — ')||'(sem nome)';
+        var dt = d.dia ? d.dia.split('-').reverse().join('/') : '';
+        var n  = (d.trechos||[]).length;
+        var df = d.difFisica  ? '<span class="cloud-dif">F:'+d.difFisica+'</span>'  : '';
+        var dt2= d.difTecnica ? '<span class="cloud-dif">T:'+d.difTecnica+'</span>' : '';
+        html += '<div class="cloud-item" onclick="carregarProvaDaFirebase(\''+doc.id+'\')">'
+          +'<div class="cloud-nome">'+nm+'</div>'
+          +'<div class="cloud-meta">'+(dt?dt+' · ':'')+n+' trecho'+(n!==1?'s':'')+'</div>'
+          +'<div>'+df+dt2+'</div>'
+          +'</div>';
+      });
+      html += '</div>';
+      box.innerHTML = html;
+    })
+    .catch(function(err){
+      box.innerHTML='<div style="color:var(--danger);font-size:12px;padding:10px">Erro: '+err.message+'</div>';
+    });
+}
+
+function carregarProvaDaFirebase(id){
+  if(!confirm('Carregar esta prova?\nOs trechos atuais serão substituídos.')) return;
+  fbDb.collection('provas').doc(id).get()
+    .then(function(doc){
+      if(!doc.exists){ alert('Prova não encontrada!'); return; }
+      var d = doc.data();
+      provaMeta = { id:id, dia:d.dia||'', etapa:d.etapa||'', local:d.local||'', difFisica:d.difFisica||'', difTecnica:d.difTecnica||'' };
+      tulipas = d.trechos || [];
+      preencherUIProvaMeta();
+      recalcHorarios();
+      renderProva();
+      autoSave();
+      document.getElementById('fb-lista-box').style.display='none';
+      atualizarFbStatus();
+      alert('Prova carregada: '+(d.etapa||d.local||id));
+    })
+    .catch(function(err){ alert('Erro ao carregar: '+err.message); });
+}
+
+window.addEventListener('online', function(){
+  atualizarFbStatus();
+  if(fbPending && fbConfigurado()){
+    if(!fbReady) initFirebase();
+    if(fbReady) syncProvaFirebase();
+  }
+});
+window.addEventListener('offline', function(){ atualizarFbStatus(); });
+
+(function(){
+  if(localStorage.getItem('trekcalc_fb_pending')==='1') fbPending=true;
+  if(fbConfigurado()) initFirebase();
+})();
+
 // init
 setManualModo('dvt',document.getElementById('mm-dvt'));
 carregarAutoSave();   // restaurar dados salvos
 renderAcum();
 renderProva();
 renderPerfis();
+atualizarFbStatus();
 
 function renderApuracao(){
   if(!apuracaoAberta) return;
@@ -3971,7 +4267,7 @@ function renderAlarmes(){
     div.innerHTML =
       '<div class="alarme-info">'
       +'<div class="alarme-nome">'+al.nome+'</div>'
-      +'<div class="alarme-time">PC previsto: '+minParaHHMM(al.horarioPrevMin)+' | Aviso: '+al.antecipSeg+'s antes</div>'
+      +'<div class="alarme-time">PC previsto: '+minParaHHMMSS(al.horarioPrevMin)+' | Aviso: '+al.antecipSeg+'s antes</div>'
       +'</div>'
       +'<span class="alarme-status '+stCls+'">'+stLbl+'</span>';
     list.appendChild(div);
