@@ -648,6 +648,25 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
 .vel-diff-badge.pulsing{animation:vel-pulse .55s ease infinite}
 .wake-lock-badge{position:fixed;bottom:74px;right:10px;background:var(--surf2);border:1px solid var(--bord2);border-radius:20px;padding:4px 9px;font-size:10px;color:var(--txt3);font-family:var(--mono);font-weight:700;display:none;z-index:200;letter-spacing:1px}
 .wake-lock-badge.ativo{color:var(--acc);border-color:var(--acc3);background:var(--meta-bg)}
+/* AJUDA */
+.ajuda-sec{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:13px;margin-bottom:10px;box-shadow:var(--shadow)}
+.ajuda-item{padding:8px 0;border-bottom:1px solid var(--bord);font-size:13px;line-height:1.7;color:var(--txt2)}
+.ajuda-item:last-child{border-bottom:none;padding-bottom:0}
+.ajuda-key{display:inline-block;background:var(--surf3);border:1px solid var(--bord2);border-radius:5px;padding:1px 7px;font-size:11px;font-weight:700;color:var(--acc);margin:1px 2px}
+.ajuda-nota{font-size:11px;color:var(--txt3);margin-top:5px;line-height:1.6;padding-left:8px;border-left:2px solid var(--bord2)}
+/* GPS TRACKER */
+.gps-panel{background:var(--meta-bg);border:2px solid var(--acc3);border-radius:12px;padding:13px;margin-bottom:10px}
+.gps-big{font-size:42px;font-weight:700;color:var(--acc);text-align:center;line-height:1;font-family:var(--mono)}
+.gps-lbl{font-size:11px;color:var(--txt3);letter-spacing:2px;text-align:center;margin-top:4px;font-weight:700;margin-bottom:9px}
+.gps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:9px}
+.gps-sub{background:var(--surf2);border:1px solid var(--bord);border-radius:7px;padding:8px;text-align:center}
+.gps-sub-v{font-size:13px;font-weight:700;color:var(--acc);line-height:1.2}
+.gps-sub-l{font-size:9px;color:var(--txt3);letter-spacing:.5px;margin-top:3px;font-weight:700}
+.gps-acc-ok {color:var(--acc)}
+.gps-acc-warn{color:var(--warn)}
+.gps-acc-bad {color:var(--danger)}
+.gps-status{font-size:11px;text-align:center;margin-bottom:9px;color:var(--txt3);font-weight:600}
+.gps-running .gps-big{animation:blink-d 1.2s infinite}
 /* DADOS DA PROVA + FIREBASE */
 .meta-prova-sec{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:13px;margin-bottom:10px;box-shadow:var(--shadow)}
 .fb-status{font-size:11px;font-weight:700;letter-spacing:.5px;padding:7px 10px;border-radius:7px;text-align:center;margin:8px 0 4px;line-height:1.4}
@@ -691,6 +710,7 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
     <div class="tab"     onclick="goTab('prova',this)">PROVA</div>
     <div class="tab"     onclick="goTab('campo',this)">🦶<br>CAMPO</div>
     <div class="tab"     onclick="goTab('dados',this)">💾<br>DADOS</div>
+    <div class="tab"     onclick="goTab('ajuda',this)">❓<br>AJUDA</div>
   </div>
 
   <!-- ========== CALC ========== -->
@@ -1198,6 +1218,26 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
       <button class="reset-campo-btn" onclick="desativarAlarmes()">✕ DESATIVAR TODOS</button>
     </div>
 
+    <!-- ── GPS TRACKER ── -->
+    <div class="campo-section">
+      <div class="campo-ttl">📍 RASTREIO GPS</div>
+      <div class="gps-panel" id="gps-panel">
+        <div class="gps-big" id="gps-dist">0 m</div>
+        <div class="gps-lbl">DISTÂNCIA PERCORRIDA</div>
+        <div class="gps-grid">
+          <div class="gps-sub"><div class="gps-sub-v" id="gps-vel">—</div><div class="gps-sub-l">m/min</div></div>
+          <div class="gps-sub"><div class="gps-sub-v" id="gps-pts">0</div><div class="gps-sub-l">PONTOS GPS</div></div>
+          <div class="gps-sub"><div class="gps-sub-v" id="gps-acc">—</div><div class="gps-sub-l">PRECISÃO</div></div>
+        </div>
+        <div class="gps-status" id="gps-status">Inativo</div>
+        <div class="c-btns" style="margin-bottom:8px">
+          <button class="c-btn c-start" id="gps-start-btn" onclick="gpsStart()">▶ INICIAR</button>
+          <button class="c-btn c-reset" id="gps-stop-btn" onclick="gpsStop()">■ PARAR</button>
+        </div>
+        <button class="sec-btn" style="margin-top:0" onclick="gpsReset()">↺ ZERAR</button>
+      </div>
+    </div>
+
   </div>
 
   <!-- ========== DADOS / PERFIS ========== -->
@@ -1248,6 +1288,102 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
 
   </div>
 
+
+  <!-- ========== AJUDA / MINI MANUAL ========== -->
+  <div class="tb-panel" id="tb-ajuda">
+
+    <div class="ajuda-sec">
+      <div class="sec-ttl">🕐 HORÁRIO DE INÍCIO</div>
+      <div class="ajuda-item">
+        Defina o horário de largada no campo <span class="ajuda-key">INÍCIO</span> no topo da tela. Todos os horários previstos de chegada nos trechos são calculados em cascata a partir desse valor.
+        <div class="ajuda-nota">Alterar o horário recalcula automaticamente toda a sequência de chegadas previstas.</div>
+      </div>
+    </div>
+
+    <div class="ajuda-sec">
+      <div class="sec-ttl">📐 CALC — CALCULADORA</div>
+      <div class="ajuda-item">
+        Calcule distância, velocidade, tempo ou passos com qualquer combinação de variáveis. Escolha o modo <span class="ajuda-key">DVT</span> <span class="ajuda-key">DTV</span> <span class="ajuda-key">VDT</span> etc. e preencha os campos conhecidos.
+        <div class="ajuda-nota">Use <span class="ajuda-key">+ ACUM</span> para enviar o resultado para o acumulado.</div>
+      </div>
+    </div>
+
+    <div class="ajuda-sec">
+      <div class="sec-ttl">📍 GPS (aba CAMPO)</div>
+      <div class="ajuda-item">
+        Mede a distância percorrida pelo GPS do celular em tempo real durante a prova.
+        <div class="ajuda-nota">
+          <strong>▶ INICIAR</strong> — começa o rastreio GPS.<br>
+          <strong>■ PARAR</strong> — congela a distância acumulada.<br>
+          <strong>↺ ZERAR</strong> — reinicia a contagem do zero.<br>
+          Precisão abaixo de 10 m (verde) é ideal. Evite locais cobertos ou vales fechados.
+        </div>
+      </div>
+    </div>
+
+    <div class="ajuda-sec">
+      <div class="sec-ttl">🦶 CONTADOR DE PASSOS (aba CAMPO)</div>
+      <div class="ajuda-item">
+        Toque na área central para registrar cada passada. Configure o comprimento de passo (cm) e o ciclo (1 ou 2 pés).
+        <div class="ajuda-nota">
+          Vincule a um trecho da prova com <span class="ajuda-key">VINCULAR</span> para ver progresso, velocidade real e projeção de chegada no PC.<br>
+          O app mantém a tela acesa automaticamente durante a contagem.
+        </div>
+      </div>
+    </div>
+
+    <div class="ajuda-sec">
+      <div class="sec-ttl">🗺️ PROVA — CADASTRAR TRECHOS</div>
+      <div class="ajuda-item">
+        Cadastre cada trecho com nome, dist. inicial, dist. final, velocidade e passo. Adicione <span class="ajuda-key">NEUTRO</span> para pausas (sem distância) e <span class="ajuda-key">VIRTUAL</span> para trechos sem marcação física.
+        <div class="ajuda-nota">
+          <strong>Editar trecho cadastrado:</strong> expanda o card do trecho (toque no nome) → botão <span class="ajuda-key">✏️ editar</span>. Permite alterar todos os campos e registrar a chegada real.<br>
+          <strong>Remover trecho:</strong> dentro do modal de edição → <span class="ajuda-key">🗑 REMOVER ESTE TRECHO</span>.
+        </div>
+      </div>
+    </div>
+
+    <div class="ajuda-sec">
+      <div class="sec-ttl">👣 MEU PASSO — AJUSTE INDIVIDUAL</div>
+      <div class="ajuda-item">
+        Ao carregar uma prova criada por outro usuário (que tem comprimento de passo diferente), informe o seu passo no campo <span class="ajuda-key">MEU PASSO (cm)</span> no topo da aba PROVA e toque em <span class="ajuda-key">↺ APLICAR</span>.
+        <div class="ajuda-nota">
+          Recalcula os passos de todos os trechos sem alterar velocidade, tempo ou os dados salvos na nuvem. Cada usuário mantém seu próprio valor salvo localmente.
+        </div>
+      </div>
+    </div>
+
+    <div class="ajuda-sec">
+      <div class="sec-ttl">☁ FIREBASE — SALVAR E COMPARTILHAR</div>
+      <div class="ajuda-item">
+        Salve a prova na nuvem com <span class="ajuda-key">💾 SALVAR PROVA</span> (aba PROVA). Outros usuários podem carregar com <span class="ajuda-key">📂 CARREGAR</span>. Após salvar a tela é limpa para nova prova.
+        <div class="ajuda-nota">
+          <strong>Offline:</strong> dados são guardados localmente e enviados ao Firebase quando a conexão for restabelecida.<br>
+          <strong>Para ativar:</strong> edite <span class="ajuda-key">FIREBASE_CONFIG</span> no código com as credenciais do seu projeto (Firebase Console → Configurações → Apps → Web).
+        </div>
+      </div>
+    </div>
+
+    <div class="ajuda-sec">
+      <div class="sec-ttl">📊 ACUMULADO (aba ACUM)</div>
+      <div class="ajuda-item">
+        Registro manual de trechos percorridos. Adicione distância, tempo, velocidade ou passos com o modo que preferir. O total é calculado automaticamente.
+        <div class="ajuda-nota">Use <span class="ajuda-key">ZERAR ACUMULADO</span> ao início de cada prova.</div>
+      </div>
+    </div>
+
+    <div class="ajuda-sec">
+      <div class="sec-ttl">💾 DADOS — PERFIS E EXPORTAÇÃO</div>
+      <div class="ajuda-item">
+        Salve perfis nomeados para separar competidores no mesmo aparelho. Use <span class="ajuda-key">EXPORTAR</span> para gerar um código e enviar a outro dispositivo via WhatsApp ou e-mail.
+        <div class="ajuda-nota">
+          O app salva automaticamente no dispositivo a cada alteração — não é preciso salvar manualmente para não perder dados.<br>
+          <span class="ajuda-key">IMPORTAR</span> carrega um código recebido de outro competidor.
+        </div>
+      </div>
+    </div>
+
+  </div>
 
   <!-- ═══════════════════ PAINEL DE BORDO ═══════════════════ -->
   <div class="bordo-overlay" id="bordo-overlay">
@@ -1429,7 +1565,7 @@ var abaAtualId = 'calc';
 function goTab(id,el){
   if(abaAtualId === 'campo' && id !== 'campo') cpReleaseWakeLock();
   abaAtualId = id;
-  ['calc','dtr','crono','acum','prova','campo','dados'].forEach(function(t){
+  ['calc','dtr','crono','acum','prova','campo','dados','ajuda'].forEach(function(t){
     var p=document.getElementById('tb-'+t); if(p) p.classList.remove('on');
   });
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
@@ -3505,6 +3641,102 @@ function renderDiagnostico(){
     +'Menor pontuação = melhor resultado. Zero pontos = perfeição.</div>';
 
   document.getElementById('diagnostico-content').innerHTML = html;
+}
+
+// =====================================================================
+//  GPS TRACKER
+// =====================================================================
+var gpsWatchId  = null;
+var gpsDist     = 0;
+var gpsLastPos  = null;
+var gpsPontos   = 0;
+var gpsVelAtual = 0;
+
+function gpsStart(){
+  if(!navigator.geolocation){
+    alert('Seu dispositivo não suporta geolocalização!');
+    return;
+  }
+  gpsDist = 0; gpsLastPos = null; gpsPontos = 0; gpsVelAtual = 0;
+  document.getElementById('gps-dist').textContent = '0 m';
+  document.getElementById('gps-vel').textContent  = '—';
+  document.getElementById('gps-pts').textContent  = '0';
+  document.getElementById('gps-acc').textContent  = '—';
+  document.getElementById('gps-acc').className    = 'gps-sub-v';
+  document.getElementById('gps-status').textContent = '⏳ Aguardando sinal GPS...';
+  document.getElementById('gps-panel').classList.add('gps-running');
+  document.getElementById('gps-start-btn').disabled = true;
+
+  gpsWatchId = navigator.geolocation.watchPosition(
+    function(pos){
+      var lat = pos.coords.latitude;
+      var lng = pos.coords.longitude;
+      var acc = pos.coords.accuracy;
+      var ts  = pos.timestamp;
+      gpsPontos++;
+      document.getElementById('gps-pts').textContent = gpsPontos;
+
+      var accEl = document.getElementById('gps-acc');
+      accEl.textContent = Math.round(acc) + 'm';
+      accEl.className = 'gps-sub-v ' + (acc <= 10 ? 'gps-acc-ok' : acc <= 30 ? 'gps-acc-warn' : 'gps-acc-bad');
+
+      if(gpsLastPos !== null){
+        var d  = haversineM(gpsLastPos.lat, gpsLastPos.lng, lat, lng);
+        var dt = (ts - gpsLastPos.ts) / 1000;
+        if(d > 0.3 && d < 80 && dt > 0){
+          gpsDist += d;
+          gpsVelAtual = (d / dt) * 60;
+          document.getElementById('gps-vel').textContent = gpsVelAtual.toFixed(1);
+        }
+      }
+      gpsLastPos = { lat:lat, lng:lng, ts:ts };
+
+      var distEl = document.getElementById('gps-dist');
+      distEl.textContent = gpsDist >= 1000
+        ? (gpsDist/1000).toFixed(3) + ' km'
+        : Math.round(gpsDist) + ' m';
+
+      document.getElementById('gps-status').textContent = '● Rastreando — precisão ' + Math.round(acc) + ' m';
+    },
+    function(err){
+      var msg = {1:'Permissão negada',2:'Posição indisponível',3:'Timeout de GPS'};
+      document.getElementById('gps-status').textContent = '✗ ' + (msg[err.code] || 'Erro GPS');
+      document.getElementById('gps-panel').classList.remove('gps-running');
+      document.getElementById('gps-start-btn').disabled = false;
+    },
+    { enableHighAccuracy:true, maximumAge:1000, timeout:15000 }
+  );
+}
+
+function gpsStop(){
+  if(gpsWatchId !== null){
+    navigator.geolocation.clearWatch(gpsWatchId);
+    gpsWatchId = null;
+  }
+  document.getElementById('gps-panel').classList.remove('gps-running');
+  document.getElementById('gps-start-btn').disabled = false;
+  document.getElementById('gps-status').textContent = 'Parado — ' + Math.round(gpsDist) + ' m registrados';
+}
+
+function gpsReset(){
+  gpsStop();
+  gpsDist = 0; gpsLastPos = null; gpsPontos = 0; gpsVelAtual = 0;
+  document.getElementById('gps-dist').textContent = '0 m';
+  document.getElementById('gps-vel').textContent  = '—';
+  document.getElementById('gps-pts').textContent  = '0';
+  document.getElementById('gps-acc').textContent  = '—';
+  document.getElementById('gps-acc').className    = 'gps-sub-v';
+  document.getElementById('gps-status').textContent = 'Inativo';
+}
+
+function haversineM(lat1, lng1, lat2, lng2){
+  var R = 6371000;
+  var dLat = (lat2 - lat1) * Math.PI / 180;
+  var dLng = (lng2 - lng1) * Math.PI / 180;
+  var a = Math.sin(dLat/2)*Math.sin(dLat/2)
+        + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)
+        * Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
 // =====================================================================
