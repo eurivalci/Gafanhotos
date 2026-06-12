@@ -911,7 +911,7 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
       </div>
       <div id="fb-status" class="fb-status fb-na">☁ Firebase não configurado — dados salvos localmente</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
-        <button class="acc-btn" id="fb-salvar-btn" onclick="salvarProvaFirebase()" style="margin-top:0">☁ COMPARTILHAR</button>
+        <button class="acc-btn" id="fb-salvar-btn" onclick="salvarProvaFirebase()" style="margin-top:0">💾 SALVAR PROVA</button>
         <button class="sec-btn" onclick="abrirListaProvas()" style="margin-top:0">📂 CARREGAR</button>
       </div>
       <div id="fb-lista-box" style="display:none;margin-top:8px"></div>
@@ -3633,6 +3633,13 @@ function syncProvaFirebase(){
     fbPending = false;
     localStorage.removeItem('trekcalc_fb_pending');
     atualizarFbStatus();
+    // Limpar tela após salvar
+    tulipas = [];
+    provaMeta = { id:null, dia:'', etapa:'', local:'', difFisica:'', difTecnica:'' };
+    preencherUIProvaMeta();
+    recalcHorarios();
+    renderProva();
+    autoSave();
     var btn = document.getElementById('fb-salvar-btn');
     if(btn){ var t=btn.textContent; btn.textContent='✓ SALVO!'; setTimeout(function(){btn.textContent=t;},2000); }
   }).catch(function(err){
