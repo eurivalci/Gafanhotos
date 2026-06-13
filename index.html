@@ -3843,15 +3843,25 @@ function gpsVisualizarRota(i){
   var rotas = JSON.parse(localStorage.getItem('trekcalc_rotas') || '[]');
   var r = rotas[i];
   if(!r || r.track.length === 0){ alert('Rota sem pontos GPS.'); return; }
-  // Substituir track atual pelo da rota salva (somente para visualização) e abrir mapa
-  var trackAnterior = gpsTrack;
-  gpsTrack = r.track;
+  mapaVisualizando = true; // bloquear overwrite do GPS ao vivo
   goTab('mapa', null);
   setTimeout(function(){
-    mapaDesenharRota();
-    mapaCentralizar();
-    gpsTrack = trackAnterior;
-  }, 300);
+    if(!mapaL){ mapaVisualizando = false; return; }
+    // Remover camadas anteriores
+    if(mapaPolyline){ mapaL.removeLayer(mapaPolyline); mapaPolyline = null; }
+    if(mapaMarker)  { mapaL.removeLayer(mapaMarker);   mapaMarker   = null; }
+    if(mapaStartMk) { mapaL.removeLayer(mapaStartMk);  mapaStartMk  = null; }
+    // Desenhar todos os pontos da rota salva
+    mapaPolyline = L.polyline(r.track, {color:'#39ff5a', weight:4, opacity:0.9}).addTo(mapaL);
+    mapaStartMk = L.marker(r.track[0], {icon:iconIni})
+      .bindTooltip('Início — ' + r.nome, {permanent:false, direction:'top'})
+      .addTo(mapaL);
+    mapaMarker = L.marker(r.track[r.track.length - 1], {icon:iconAtual})
+      .bindTooltip('Fim', {permanent:false, direction:'top'})
+      .addTo(mapaL);
+    // Centralizar no percurso completo
+    mapaL.fitBounds(mapaPolyline.getBounds(), {padding:[30,30], maxZoom:17});
+  }, 350);
 }
 
 function haversineM(lat1, lng1, lat2, lng2){
@@ -3872,11 +3882,13 @@ var mapaPolyline = null;   // linha do percurso
 var mapaMarker   = null;   // marcador de posição atual
 var mapaStartMk  = null;   // marcador de início
 var mapaIniciado = false;
+var mapaVisualizando = false; // true quando exibindo rota salva (bloqueia overwrite do GPS ao vivo)
 
 var iconAtual = null;
 var iconIni   = null;
 
 function mapaAbrir(){
+  mapaVisualizando = false; // ao abrir aba normalmente, volta ao modo ao vivo
   if(!mapaIniciado){
     mapaL = L.map('mapa-leaflet', { zoomControl:true, attributionControl:true });
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -3907,6 +3919,7 @@ function mapaAbrir(){
 }
 
 function mapaDesenharRota(){
+  if(mapaVisualizando) return; // rota salva em exibição — não sobrescrever
   if(!mapaL || gpsTrack.length === 0) return;
 
   if(mapaPolyline){
@@ -3934,7 +3947,7 @@ function mapaDesenharRota(){
       .addTo(mapaL);
   }
 
-  // Só faz fit ao abrir ou quando há poucos pontos
+  // Faz fit apenas ao abrir (poucos pontos) — depois o usuário centraliza manualmente
   if(gpsTrack.length <= 3){
     mapaL.fitBounds(mapaPolyline.getBounds(), { padding:[30,30], maxZoom:17 });
   }
@@ -3952,6 +3965,7 @@ function mapaAtualizarStats(){
 }
 
 function mapaCentralizar(){
+  mapaVisualizando = false; // centralizar = voltar ao modo GPS ao vivo
   if(!mapaL) return;
   if(mapaPolyline && gpsTrack.length > 1){
     mapaL.fitBounds(mapaPolyline.getBounds(), { padding:[30,30] });
