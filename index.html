@@ -1242,7 +1242,14 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
           <button class="c-btn c-reset" id="gps-stop-btn" onclick="gpsStop()">■ PARAR</button>
         </div>
         <button class="sec-btn" style="margin-top:0" onclick="gpsReset()">↺ ZERAR</button>
+        <button class="acc-btn" style="margin-top:6px" onclick="gpsSalvarRota()">💾 SALVAR ROTA</button>
       </div>
+    </div>
+
+    <!-- Rotas salvas -->
+    <div class="campo-section">
+      <div class="campo-ttl">🗂 ROTAS SALVAS</div>
+      <div id="gps-rotas-lista"><div style="color:var(--txt3);font-size:13px;text-align:center;padding:12px">Nenhuma rota salva ainda.</div></div>
     </div>
 
   </div>
@@ -1612,7 +1619,7 @@ function goTab(id,el){
   window.scrollTo(0,0);
   if(id==='prova') renderProva();
   if(id==='dados'){ renderPerfis(); }
-  if(id==='campo'){ renderAlarmes(); popularVinculoSelect(); iniciarGatilhos(); mostrarInstrucoesGatilho(); cpAcquireWakeLock(); }
+  if(id==='campo'){ renderAlarmes(); popularVinculoSelect(); iniciarGatilhos(); mostrarInstrucoesGatilho(); cpAcquireWakeLock(); renderRotasSalvas(); }
   if(id==='mapa'){ setTimeout(mapaAbrir, 120); }
 }
 
@@ -2776,6 +2783,9 @@ function abrirBordo(){
   // Relógio
   bordoRelogioIv = setInterval(bordoAtualizaRelogio, 1000);
   bordoAtualizaRelogio();
+
+  // Iniciar rastreio GPS automaticamente se não estiver ativo
+  if(navigator.geolocation && gpsWatchId === null) gpsStart();
 }
 
 /* Fechar bordo */
@@ -3774,6 +3784,76 @@ function gpsReset(){
   document.getElementById('gps-status').textContent = 'Inativo';
 }
 
+function gpsSalvarRota(){
+  if(gpsTrack.length < 2){ alert('Registre ao menos 2 pontos GPS antes de salvar a rota.'); return; }
+  var nome = perfilAtivo
+    ? perfilAtivo + ' — ' + (provaMeta.etapa || provaMeta.local || new Date().toLocaleDateString('pt-BR'))
+    : (provaMeta.etapa || provaMeta.local || new Date().toLocaleDateString('pt-BR'));
+  var rota = {
+    nome:        nome,
+    ts:          Date.now(),
+    distM:       Math.round(gpsDist),
+    pontos:      gpsPontos,
+    competidor:  perfilAtivo || '',
+    prova:       { dia: provaMeta.dia, etapa: provaMeta.etapa, local: provaMeta.local },
+    track:       JSON.parse(JSON.stringify(gpsTrack))
+  };
+  var rotas = JSON.parse(localStorage.getItem('trekcalc_rotas') || '[]');
+  rotas.unshift(rota);
+  localStorage.setItem('trekcalc_rotas', JSON.stringify(rotas));
+  renderRotasSalvas();
+  alert('Rota salva: ' + nome);
+}
+
+function renderRotasSalvas(){
+  var el = document.getElementById('gps-rotas-lista');
+  if(!el) return;
+  var rotas = JSON.parse(localStorage.getItem('trekcalc_rotas') || '[]');
+  if(rotas.length === 0){
+    el.innerHTML = '<div style="color:var(--txt3);font-size:13px;text-align:center;padding:12px">Nenhuma rota salva ainda.</div>';
+    return;
+  }
+  var html = '';
+  rotas.forEach(function(r, i){
+    var dist = r.distM >= 1000 ? (r.distM/1000).toFixed(2) + ' km' : r.distM + ' m';
+    var data = new Date(r.ts).toLocaleString('pt-BR');
+    var prova = [r.prova.dia, r.prova.etapa, r.prova.local].filter(Boolean).join(' · ') || '—';
+    html += '<div class="perfil-card" style="flex-direction:column;align-items:flex-start;gap:4px">'
+      + '<div style="display:flex;justify-content:space-between;width:100%;align-items:center">'
+      + '<div class="perfil-nome">🛤 ' + r.nome + '</div>'
+      + '<button class="perfil-btn pb-del" onclick="gpsRemoverRota(' + i + ')">✕</button>'
+      + '</div>'
+      + '<div class="perfil-meta">' + data + ' · ' + dist + ' · ' + r.pontos + ' pts GPS</div>'
+      + '<div class="perfil-meta">Prova: ' + prova + (r.competidor ? ' · ' + r.competidor : '') + '</div>'
+      + '<button class="sec-btn" style="margin-top:4px;padding:5px 10px;font-size:11px" onclick="gpsVisualizarRota(' + i + ')">🗺 VER NO MAPA</button>'
+      + '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function gpsRemoverRota(i){
+  var rotas = JSON.parse(localStorage.getItem('trekcalc_rotas') || '[]');
+  if(!confirm('Remover a rota "' + rotas[i].nome + '"?')) return;
+  rotas.splice(i, 1);
+  localStorage.setItem('trekcalc_rotas', JSON.stringify(rotas));
+  renderRotasSalvas();
+}
+
+function gpsVisualizarRota(i){
+  var rotas = JSON.parse(localStorage.getItem('trekcalc_rotas') || '[]');
+  var r = rotas[i];
+  if(!r || r.track.length === 0){ alert('Rota sem pontos GPS.'); return; }
+  // Substituir track atual pelo da rota salva (somente para visualização) e abrir mapa
+  var trackAnterior = gpsTrack;
+  gpsTrack = r.track;
+  goTab('mapa', null);
+  setTimeout(function(){
+    mapaDesenharRota();
+    mapaCentralizar();
+    gpsTrack = trackAnterior;
+  }, 300);
+}
+
 function haversineM(lat1, lng1, lat2, lng2){
   var R = 6371000;
   var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -4038,6 +4118,7 @@ function syncProvaFirebase(){
     local:       provaMeta.local,
     difFisica:   provaMeta.difFisica,
     difTecnica:  provaMeta.difTecnica,
+    competidor:  perfilAtivo || '',
     trechos:     JSON.parse(JSON.stringify(tulipas)),
     atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
   };
