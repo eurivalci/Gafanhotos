@@ -686,6 +686,9 @@ select.vinculo-sel{width:100%;padding:9px 10px;background:var(--surf2);border:1.
 .cloud-item:active{border-color:var(--acc)}
 .cloud-nome{font-size:14px;font-weight:700;color:var(--txt)}
 .cloud-meta{font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.5}
+.cloud-item{position:relative}
+.cloud-del{position:absolute;top:8px;right:8px;background:transparent;border:1.5px solid var(--danger);color:var(--danger);border-radius:6px;font-size:12px;font-weight:700;font-family:var(--mono);padding:4px 8px;cursor:pointer}
+.cloud-item .cloud-nome{padding-right:44px}
 .cloud-dif{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surf3);color:var(--txt2);margin-right:4px;margin-top:3px}
 </style>
 </head>
@@ -2114,7 +2117,13 @@ function agora(i){
 /* Limpar toda a prova */
 function limparProva(){
   if(tulipas.length===0)return;
-  if(confirm('Apagar todos os trechos da prova?')){tulipas=[];tulipaOpen=-1;renderProva();scheduleAutoSave();}
+  if(confirm('Apagar todos os trechos da prova?')){
+    tulipas=[];tulipaOpen=-1;
+    // Desvincular da prova no Firebase: os próximos trechos são de uma prova nova
+    // e não podem ser gravados por cima (nem somados) à prova já compartilhada.
+    provaMeta.id=null;
+    renderProva();scheduleAutoSave();atualizarFbStatus();
+  }
 }
 
 /* Calcular resumo da prova */
@@ -4227,6 +4236,7 @@ function abrirListaProvas(){
       snap.forEach(function(doc){
         var d = doc.data();
         var nm = [d.etapa,d.local].filter(Boolean).join(' — ')||'(sem nome)';
+        _fbNomesProvas[doc.id] = nm;
         var dt = d.dia ? d.dia.split('-').reverse().join('/') : '';
         var n  = (d.trechos||[]).length;
         var df = d.difFisica  ? '<span class="cloud-dif">F:'+d.difFisica+'</span>'  : '';
@@ -4235,6 +4245,7 @@ function abrirListaProvas(){
           +'<div class="cloud-nome">'+nm+'</div>'
           +'<div class="cloud-meta">'+(dt?dt+' · ':'')+n+' trecho'+(n!==1?'s':'')+'</div>'
           +'<div>'+df+dt2+'</div>'
+          +'<button class="cloud-del" title="Excluir prova" onclick="event.stopPropagation();excluirProvaFirebase(\''+doc.id+'\')">🗑</button>'
           +'</div>';
       });
       html += '</div>';
@@ -4243,6 +4254,30 @@ function abrirListaProvas(){
     .catch(function(err){
       box.innerHTML='<div style="color:var(--danger);font-size:12px;padding:10px">Erro: '+err.message+'</div>';
     });
+}
+
+/* Excluir uma prova do Firebase (definitivo) */
+var _fbNomesProvas = {};
+function excluirProvaFirebase(id){
+  var nome = _fbNomesProvas[id] || id;
+  if(!confirm('Excluir a prova "'+nome+'" do Firebase?\n\nEla será apagada para toda a equipe e não poderá ser recuperada.')) return;
+  if(!navigator.onLine){ alert('Sem conexão — não é possível excluir agora.'); return; }
+  if(!fbReady) initFirebase();
+  if(!fbReady || !fbDb){ alert('Erro ao conectar ao Firebase.'); return; }
+  fbDb.collection('provas').doc(id).delete()
+    .then(function(){
+      // Se a prova excluída é a que está na tela, desvincular para não recriá-la
+      if(provaMeta.id === id){
+        provaMeta.id = null;
+        localStorage.removeItem('trekcalc_fb_trechos_pending');
+        autoSave();
+      }
+      var box = document.getElementById('fb-lista-box');
+      if(box) box.style.display = 'none';
+      abrirListaProvas(); // recarregar a lista
+      alert('Prova excluída: '+nome);
+    })
+    .catch(function(err){ alert('Erro ao excluir: '+err.message); });
 }
 
 function carregarProvaDaFirebase(id){
