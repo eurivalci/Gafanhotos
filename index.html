@@ -1963,6 +1963,7 @@ function addVirtual(){
   document.getElementById('pv-dist').value='';
   renderProva();
   scheduleAutoSave();
+  fbAtualizarTrechos();
 }
 
 function addNeutro(){
@@ -1979,6 +1980,7 @@ function addNeutro(){
   document.getElementById('pn-nome').value='';
   document.getElementById('pn-min').value='';
   renderProva();scheduleAutoSave();
+  fbAtualizarTrechos();
 }
 
 /* Adicionar neutro no acumulado */
@@ -2058,6 +2060,7 @@ function addTulipa(){
   ['pt-nome','pt-dist-ini','pt-dist-fim','pt-vel'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('pt-dist-ini').value = dFim; // próxima ini = fim anterior
   renderProva();scheduleAutoSave();
+  fbAtualizarTrechos();
 }
 
 /* Recalcular chegadas previstas em cascata (trechos + neutros) */
@@ -2075,6 +2078,7 @@ function remTulipa(i){
   recalcHorarios();
   tulipaOpen = -1;
   renderProva();scheduleAutoSave();
+  fbAtualizarTrechos();
 }
 
 /* Expandir/colapsar card */
@@ -2365,6 +2369,10 @@ function renderProva(){
     });
     if(posSelect.querySelector('option[value="'+curVal+'"]')) posSelect.value = curVal;
   }
+
+  // Manter apuração/diagnóstico em sincronia com a lista atual
+  if(apuracaoAberta) renderApuracao();
+  if(diagnosticoAberto) renderDiagnostico();
 }
 
 function nEmoji(n,e){return n>0?n+'× '+e:'—';}
@@ -2655,7 +2663,7 @@ function salvarEdicao(){
     var d=parseFloat(document.getElementById('edit-neutro-min').value)||0;
     if(d<=0){alert('Informe a distância!');return;}
     tulipas[i].nome=nome; tulipas[i].dist=d;
-    recalcHorarios(); fecharModal(); renderProva(); scheduleAutoSave();
+    recalcHorarios(); fecharModal(); renderProva(); scheduleAutoSave(); fbAtualizarTrechos();
     if(bordoAberto) bordoRenderTudo(); return;
   } else if(isNeutro){
     var dur = parseFloat(document.getElementById('edit-neutro-min').value);
@@ -2696,6 +2704,7 @@ function salvarEdicao(){
   fecharModal();
   renderProva();
   scheduleAutoSave();
+  fbAtualizarTrechos();
 
   // Se o bordo está aberto, atualizar também
   if(bordoAberto) bordoRenderTudo();
@@ -4168,6 +4177,28 @@ function syncProvaFirebase(){
   });
 }
 
+/* Atualizar só os trechos de uma prova já salva no Firebase (sem limpar a tela).
+   Sem isso, trechos excluídos/editados localmente voltavam ao recarregar a prova. */
+function fbAtualizarTrechos(){
+  if(!provaMeta.id || !fbConfigurado()) return;
+  if(!navigator.onLine){
+    localStorage.setItem('trekcalc_fb_trechos_pending','1');
+    return;
+  }
+  if(!fbReady) initFirebase();
+  if(!fbReady || !fbDb) return;
+  var id = provaMeta.id;
+  fbDb.collection('provas').doc(id).update({
+    trechos: JSON.parse(JSON.stringify(tulipas)),
+    atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function(){
+    localStorage.removeItem('trekcalc_fb_trechos_pending');
+  }).catch(function(err){
+    console.error('Firebase update trechos:', err);
+    localStorage.setItem('trekcalc_fb_trechos_pending','1');
+  });
+}
+
 function abrirListaProvas(){
   var box = document.getElementById('fb-lista-box');
   if(!box) return;
@@ -4238,6 +4269,8 @@ window.addEventListener('online', function(){
   if(fbPending && fbConfigurado()){
     if(!fbReady) initFirebase();
     if(fbReady) syncProvaFirebase();
+  } else if(localStorage.getItem('trekcalc_fb_trechos_pending')==='1'){
+    fbAtualizarTrechos();
   }
 });
 window.addEventListener('offline', function(){ atualizarFbStatus(); });
